@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、40 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、41 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -55,7 +55,7 @@ node src/cli.ts technique gen --count 8 --seed 42
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（34 core ＋ 6 M3）
+# 测试（35 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -277,7 +277,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 30 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 43.7 KB）
 ```
 
 ```js
@@ -409,7 +409,7 @@ minglu/
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 30 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 43.7 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -618,6 +618,8 @@ minglu/
 | **M4** | CBDB pack、碰撞索引 | AC-01~10、74~79 |
 | **M5** | 法宝/宗门/丹药/功法 | 单独 AC |
 
+> M5 的 16 条验收标准见 [需求拆解与验收标准](docs/名箓-需求拆解与验收标准.md) 9.2 节；其中 M5-09 规定丹药/功法的前缀/核心/中段不得与后缀同词。
+
 ## 实现状态（M1/M2/M3 原型：seed + core + cbdb）
 
 | 项 | 状态 |
@@ -628,10 +630,10 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 43.7 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 40 项（34 core ＋ 6 M3；`npm test`） |
+| 测试 | ✅ 41 项（35 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |

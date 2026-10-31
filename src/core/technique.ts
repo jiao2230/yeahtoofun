@@ -91,17 +91,28 @@ function generateOne(
     degreeSet === null
       ? pack.techniques.middles
       : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
+  const middleCandidates = middlePool.filter((item) => item.text !== head.text);
   const middle =
     long || mid
-      ? pickWithLength(rng, middlePool.length > 0 ? middlePool : pack.techniques.middles, 2, 2).text
+      ? pickWithLength(
+          rng,
+          middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles,
+          2,
+          2,
+        ).text
       : null;
+  const forbidden = new Set([head.text, ...(middle ? [middle] : [])]);
   const suffixPool = suffixes.filter((item) => {
+    if (forbidden.has(item.text)) return false;
     if (head.kind === '程度' && head.text.length === 1) {
       return item.text === '诀' || item.text === '功' || item.text === '真经';
     }
     return true;
   });
-  const suffix = rng.weightedPick(suffixPool.length > 0 ? suffixPool : suffixes, (item) => {
+  if (suffixPool.length === 0) {
+    throw new Error('E_TECHNIQUE_SLOT_DUPLICATE: 没有可用后缀（起手/中段不能与后缀同词）');
+  }
+  const suffix = rng.weightedPick(suffixPool, (item) => {
     let weight = item.weight;
     if (middle === null) weight += item.text === '功' || item.text === '诀' ? 4 : 0;
     if (head.kind === '程度') weight += item.text === '诀' || item.text === '功' ? 2 : 0;

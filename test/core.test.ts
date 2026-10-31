@@ -302,6 +302,23 @@ test('technique examples are reproducible from seeds', () => {
   }
 });
 
+test('pill and technique never repeat a slot word as suffix', () => {
+  const pillPack = JSON.parse(JSON.stringify(pack)) as typeof pack;
+  pillPack.pills.modifiers.push({ text: '丹', kind: '通用', weight: 1000 });
+  pillPack.pills.cores.push({ text: '丹', kind: '通用', weight: 1000 });
+  for (const pill of generatePills({ count: 300, seed: 1 }, pillPack)) {
+    assert.notEqual(pill.modifier, pill.suffix);
+    assert.notEqual(pill.core, pill.suffix);
+  }
+
+  const techniquePack = JSON.parse(JSON.stringify(pack)) as typeof pack;
+  techniquePack.techniques.heads.push({ text: '真经', kind: '动作', weight: 1000 });
+  for (const technique of generateTechniques({ count: 300, seed: 1 }, techniquePack)) {
+    assert.notEqual(technique.head, technique.suffix);
+    if (technique.middle !== null) assert.notEqual(technique.middle, technique.suffix);
+  }
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });

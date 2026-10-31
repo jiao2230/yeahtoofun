@@ -73,18 +73,28 @@ function generateOne(
   const targetedCores = modifier.targets?.length
     ? compatibleCores.filter((core) => modifier.targets!.includes(core.text))
     : compatibleCores;
-  const core = pickWithLength(
+  let core = pickWithLength(
     rng,
     targetedCores.length > 0 ? targetedCores : compatibleCores.length > 0 ? compatibleCores : cores,
     long ? 2 : 1,
   );
   if (modifier.text === core.text) {
-    return generateOne(seed ^ 0x9e3779b9, pack, modifiers, cores, suffixes);
+    const alternatives = (targetedCores.length > 0 ? targetedCores : compatibleCores).filter(
+      (item) => item.text !== modifier.text,
+    );
+    if (alternatives.length === 0) {
+      throw new Error('E_PILL_SLOT_DUPLICATE: 修饰词与核心不能同词');
+    }
+    core = pickWithLength(rng, alternatives, long ? 2 : 1);
   }
-  const compatibleSuffixes = suffixes.filter((item) => suffixAllowed(core.kind, item.text));
-  const suffix = rng.weightedPick(
-    compatibleSuffixes.length > 0 ? compatibleSuffixes : suffixes,
-    (item) => {
+  const forbidden = new Set([modifier.text, core.text]);
+  const compatibleSuffixes = suffixes.filter(
+    (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text),
+  );
+  if (compatibleSuffixes.length === 0) {
+    throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用后缀（前缀/核心不能与后缀同词）');
+  }
+  const suffix = rng.weightedPick(compatibleSuffixes, (item) => {
       let weight = item.weight;
       if (item.preferred.includes(modifier.kind)) weight += 2;
       if (item.preferred.includes(core.kind)) weight += 2;

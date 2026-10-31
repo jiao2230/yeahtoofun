@@ -330,17 +330,29 @@ function generateOne3(seed, pack, modifiers, cores, suffixes) {
     (core2) => modifier.kind === "\u5929\u5730" || core2.kind === modifier.kind || core2.kind === "\u901A\u7528"
   );
   const targetedCores = modifier.targets?.length ? compatibleCores.filter((core2) => modifier.targets.includes(core2.text)) : compatibleCores;
-  const core = pickWithLength(
+  let core = pickWithLength(
     rng,
     targetedCores.length > 0 ? targetedCores : compatibleCores.length > 0 ? compatibleCores : cores,
     long ? 2 : 1
   );
   if (modifier.text === core.text) {
-    return generateOne3(seed ^ 2654435769, pack, modifiers, cores, suffixes);
+    const alternatives = (targetedCores.length > 0 ? targetedCores : compatibleCores).filter(
+      (item) => item.text !== modifier.text
+    );
+    if (alternatives.length === 0) {
+      throw new Error("E_PILL_SLOT_DUPLICATE: \u4FEE\u9970\u8BCD\u4E0E\u6838\u5FC3\u4E0D\u80FD\u540C\u8BCD");
+    }
+    core = pickWithLength(rng, alternatives, long ? 2 : 1);
   }
-  const compatibleSuffixes = suffixes.filter((item) => suffixAllowed(core.kind, item.text));
+  const forbidden = /* @__PURE__ */ new Set([modifier.text, core.text]);
+  const compatibleSuffixes = suffixes.filter(
+    (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text)
+  );
+  if (compatibleSuffixes.length === 0) {
+    throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00\uFF08\u524D\u7F00/\u6838\u5FC3\u4E0D\u80FD\u4E0E\u540E\u7F00\u540C\u8BCD\uFF09");
+  }
   const suffix = rng.weightedPick(
-    compatibleSuffixes.length > 0 ? compatibleSuffixes : suffixes,
+    compatibleSuffixes,
     (item) => {
       let weight = item.weight;
       if (item.preferred.includes(modifier.kind)) weight += 2;
@@ -477,14 +489,25 @@ function generateOne4(seed, pack, heads, suffixes) {
   const head = pickWithLength2(rng, headPool, headLength, headLength === 2 ? 1 : 2);
   const degreeSet = head.kind === "\u7A0B\u5EA6" ? head.text.length === 1 ? DEGREE_ONE_MIDDLES : DEGREE_MIDDLES : null;
   const middlePool = degreeSet === null ? pack.techniques.middles : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
-  const middle = long || mid ? pickWithLength2(rng, middlePool.length > 0 ? middlePool : pack.techniques.middles, 2, 2).text : null;
+  const middleCandidates = middlePool.filter((item) => item.text !== head.text);
+  const middle = long || mid ? pickWithLength2(
+    rng,
+    middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles,
+    2,
+    2
+  ).text : null;
+  const forbidden = /* @__PURE__ */ new Set([head.text, ...middle ? [middle] : []]);
   const suffixPool = suffixes.filter((item) => {
+    if (forbidden.has(item.text)) return false;
     if (head.kind === "\u7A0B\u5EA6" && head.text.length === 1) {
       return item.text === "\u8BC0" || item.text === "\u529F" || item.text === "\u771F\u7ECF";
     }
     return true;
   });
-  const suffix = rng.weightedPick(suffixPool.length > 0 ? suffixPool : suffixes, (item) => {
+  if (suffixPool.length === 0) {
+    throw new Error("E_TECHNIQUE_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00\uFF08\u8D77\u624B/\u4E2D\u6BB5\u4E0D\u80FD\u4E0E\u540E\u7F00\u540C\u8BCD\uFF09");
+  }
+  const suffix = rng.weightedPick(suffixPool, (item) => {
     let weight = item.weight;
     if (middle === null) weight += item.text === "\u529F" || item.text === "\u8BC0" ? 4 : 0;
     if (head.kind === "\u7A0B\u5EA6") weight += item.text === "\u8BC0" || item.text === "\u529F" ? 2 : 0;
