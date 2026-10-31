@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { loadSeedPack } from '../src/core/data.ts';
 import { generate, generateBatch, phoneticIssues, resolveProfile } from '../src/core/generator.ts';
 import { generateArtifacts } from '../src/core/artifact.ts';
+import { generateSects } from '../src/core/sect.ts';
 import { checkName } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
 
@@ -176,6 +177,31 @@ test('artifact batch is unique', () => {
   assert.equal(new Set(artifacts.map((a) => a.name)).size, artifacts.length);
 });
 
+test('sect names are deterministic and follow prefix+suffix', () => {
+  const a = generateSects({ count: 12, seed: 42 }, pack);
+  const b = generateSects({ count: 12, seed: 42 }, pack);
+  assert.deepEqual(a, b);
+  for (const sect of a) {
+    assert.ok(/^[\u4e00-\u9fa5]{3}$/.test(sect.fullName));
+    assert.ok(['宗', '门', '派', '宫', '教'].includes(sect.suffix));
+    assert.equal(sect.fullName, sect.prefix + sect.suffix);
+  }
+});
+
+test('sect alignment filters prefixes and avoids 教 for 正道', () => {
+  const sects = generateSects({ count: 30, seed: 9, alignment: '正道' }, pack);
+  assert.ok(sects.length > 0);
+  for (const sect of sects) {
+    assert.equal(sect.alignment, '正道');
+    assert.notEqual(sect.suffix, '教');
+  }
+});
+
+test('sect batch is unique', () => {
+  const sects = generateSects({ count: 60, seed: 7 }, pack);
+  assert.equal(new Set(sects.map((s) => s.fullName)).size, sects.length);
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });
@@ -183,4 +209,5 @@ test('SDK createGenerator exposes the core API', () => {
   assert.equal('courtesy' in person, false);
   assert.equal(sdk.check('范统').valid, false);
   assert.ok(sdk.artifacts({ count: 1, seed: 1 })[0]?.name);
+  assert.ok(sdk.sects({ count: 1, seed: 1 })[0]?.fullName);
 });

@@ -5,6 +5,7 @@ import type {
   CharEntry,
   GenerationPreset,
   GivenEntry,
+  SectPack,
   SeedPack,
   SurnameEntry,
 } from './types.ts';
@@ -52,6 +53,7 @@ export function loadSeedPack(): SeedPack {
       ? readJson<Record<string, AllusionEntry[]>>('allusions.json')
       : {},
     artifacts: readJson<ArtifactPack>('artifacts.json'),
+    sects: readJson<SectPack>('sects.json'),
     blacklist: readJson<string[]>('blacklist.json'),
     famous: readJson<string[]>('famous.json'),
     collision: existsSync(new URL('collision.json', DATA_DIR))

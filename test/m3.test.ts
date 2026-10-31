@@ -30,7 +30,7 @@ function resolveRef(root: Record<string, unknown>, ref: string): unknown {
 
 test('OpenAPI document is 3.1 and has the M3 routes', () => {
   assert.equal(openapi.openapi, '3.1.0');
-  for (const path of ['/v1/names', '/v1/batch', '/v1/pack', '/openapi.json', '/health']) {
+  for (const path of ['/v1/names', '/v1/batch', '/v1/pack', '/v1/sects', '/openapi.json', '/health']) {
     assert.ok(Object.hasOwn(openapi.paths, path), `missing ${path}`);
   }
 });

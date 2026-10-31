@@ -120,6 +120,7 @@ def main() -> int:
 
     copy = lambda name: json.loads((seed_dir / name).read_text(encoding="utf-8"))
     artifacts = copy("artifacts.json")
+    sects = copy("sects.json")
     blacklist = copy("blacklist.json")
     famous = copy("famous.json")
 
@@ -129,6 +130,7 @@ def main() -> int:
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)
+    write(args.out / "sects.json", sects)
     write(args.out / "blacklist.json", blacklist)
     write(args.out / "famous.json", famous)
     write(args.out / "collision.json", collision)

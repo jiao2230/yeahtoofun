@@ -87,6 +87,53 @@ export interface ArtifactName {
   license: string;
 }
 
+export type SectAlignment = '正道' | '魔道' | '中立';
+export type SectTone = '堂皇' | '凛冽' | '苍茫';
+
+export interface SectPrefix {
+  text: string;
+  alignment: SectAlignment;
+  tone: SectTone;
+  tags: string[];
+  note: string;
+  weight: number;
+}
+
+export interface SectSuffix {
+  text: string;
+  alignment: SectAlignment;
+  tone: SectTone;
+  weight: number;
+}
+
+export interface SectPack {
+  prefixes: SectPrefix[];
+  suffixes: SectSuffix[];
+  blacklist: string[];
+}
+
+export interface SectName {
+  schemaVersion: '1.0';
+  fullName: string;
+  prefix: string;
+  suffix: string;
+  alignment: SectAlignment;
+  tone: SectTone;
+  tags: string[];
+  description: string;
+  score: number;
+  seed: number;
+  warnings: Warning[];
+  pack: Record<string, string>;
+  license: string;
+}
+
+export interface SectOptions {
+  count?: number;
+  seed?: number | string;
+  alignment?: SectAlignment | 'any';
+}
+
 export interface SeedPack {
   id: string;
   version: string;
@@ -98,6 +145,7 @@ export interface SeedPack {
   generations: GenerationPreset[];
   allusions: Record<string, AllusionEntry[]>;
   artifacts: ArtifactPack;
+  sects: SectPack;
   blacklist: string[];
   famous: string[];
   collision: string[];

@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { loadSeedPack } from './core/data.ts';
 import { checkName, summarizeWarnings } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
+import { generateSects, sectParts } from './core/sect.ts';
 import { generate, generateBatch, resolveProfile } from './core/generator.ts';
 import type { PersonName, Profile } from './core/types.ts';
 
@@ -67,6 +68,47 @@ async function run(): Promise<void> {
       for (const warning of report.warnings) console.log(`  - [${warning.code}] ${warning.message}`);
       if (report.collisions.length > 0) console.log(`  重名：${report.collisions.join('、')}`);
     }
+    return;
+  }
+
+  if (command === 'sect' && positional[0] === 'gen') {
+    const alignmentRaw = stringFlag(flags, 'alignment');
+    if (
+      alignmentRaw !== undefined &&
+      alignmentRaw !== 'any' &&
+      alignmentRaw !== '正道' &&
+      alignmentRaw !== '魔道' &&
+      alignmentRaw !== '中立'
+    ) {
+      throw new Error('E_SECT_ALIGNMENT: --alignment 只支持 正道 / 魔道 / 中立 / any');
+    }
+    const sects = generateSects(
+      {
+        count: numberFlag(flags, 'count') ?? 5,
+        seed: seedFlag(flags),
+        alignment: alignmentRaw as '正道' | '魔道' | '中立' | 'any' | undefined,
+      },
+      pack,
+    );
+    if (flags.json === true) {
+      console.log(JSON.stringify(sects.length === 1 ? sects[0] : sects, null, 2));
+    } else {
+      for (const sect of sects) {
+        const warning = sect.warnings.length > 0 ? `  ⚠ ${summarizeWarnings(sect.warnings)}` : '';
+        console.log(`${sect.fullName}  [${sect.alignment} / ${sect.tone}]  seed=${sect.seed}`);
+        console.log(`  ${sect.description}${warning}`);
+      }
+    }
+    return;
+  }
+
+  if (command === 'sect' && positional[0] === 'list') {
+    const parts = sectParts(pack);
+    console.log(`prefixes (${parts.prefixes.length}):`);
+    for (const prefix of parts.prefixes) {
+      console.log(`  ${prefix.text}\t${prefix.alignment}\t${prefix.tone}\t${prefix.weight}`);
+    }
+    console.log(`suffixes (${parts.suffixes.length}): ${parts.suffixes.map((s) => s.text).join(' ')}`);
     return;
   }
 
@@ -282,6 +324,8 @@ function printHelp(): void {
   minglu batch --profile <json> [--count N] [--out file] [--format json|jsonl|csv] [--bom]
   minglu check <姓名> [--json]
   minglu generation list
+  minglu sect gen [--count N] [--alignment 正道|魔道|中立|any] [--seed S] [--json]
+  minglu sect list
   minglu artifact gen --count 6 --seed 42 --json
   minglu artifact list
   minglu data info
@@ -307,6 +351,7 @@ gen 选项：
 示例：
   minglu gen --era song --gender male --class 士族 --seed 42 --json
   minglu gen --surname 沈 --generation ming-imperial --generation-index 8
+  minglu sect gen --count 9 --seed 42
   minglu artifact gen --count 6 --seed 42 --json
   minglu batch --profile profiles/sect.json --count 20 --out out.csv --format csv
 

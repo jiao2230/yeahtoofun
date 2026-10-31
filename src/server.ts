@@ -4,6 +4,7 @@ import { URL } from 'node:url';
 import { loadSeedPack } from './core/data.ts';
 import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
+import { generateSects, sectParts } from './core/sect.ts';
 import { generateBatch } from './core/generator.ts';
 import { openapi } from './openapi.ts';
 import type { Profile } from './core/types.ts';
@@ -120,6 +121,29 @@ export function startServer(options: ServerOptions = {}): Server {
       }
       if (req.method === 'GET' && url.pathname === '/v1/artifact-parts') {
         json(res, 200, { ok: true, data: pack.artifacts });
+        return;
+      }
+      if (req.method === 'GET' && url.pathname === '/v1/sect-parts') {
+        json(res, 200, { ok: true, data: sectParts(pack) });
+        return;
+      }
+      if (req.method === 'POST' && url.pathname === '/v1/sects') {
+        const body = await readJson(req);
+        const count = clampCount(body.count, 1, 10_000);
+        const alignment = body.alignment === undefined ? 'any' : String(body.alignment);
+        const sects = generateSects(
+          {
+            count,
+            seed: valueSeed(body.seed),
+            alignment: alignment as '正道' | '魔道' | '中立' | 'any',
+          },
+          pack,
+        );
+        json(res, 200, {
+          ok: true,
+          data: sects,
+          meta: metaFor(pack, count, sects.length, Date.now() - started),
+        });
         return;
       }
       if (req.method === 'POST' && url.pathname === '/v1/artifacts') {

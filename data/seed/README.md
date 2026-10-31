@@ -9,6 +9,7 @@
 | `given-names.json` | 双字名 | 50 |
 | `generations.json` | 字辈模板 | 3 |
 | `artifacts.json` | 法宝修饰词 + 器型 | 38 + 20 |
+| `sects.json` | 宗门前缀 + 后缀 | 107 + 5 |
 | `blacklist.json` | 不雅谐音/黑名单 | 7 |
 | `famous.json` | 历史名人碰撞示例 | 10 |
 

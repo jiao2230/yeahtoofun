@@ -206,6 +206,81 @@ function generateOne(seed, pack) {
   };
 }
 
+// src/core/sect.ts
+var DEFAULT_COUNT = 5;
+var MAX_COUNT = 1e4;
+function generateSects(options = {}, pack) {
+  const count = Math.min(MAX_COUNT, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT)));
+  if (count === 0) return [];
+  const alignment = options.alignment ?? "any";
+  const prefixes = alignment === "any" ? pack.sects.prefixes : pack.sects.prefixes.filter((prefix) => prefix.alignment === alignment);
+  if (prefixes.length === 0) {
+    throw new Error(`E_SECT_ALIGNMENT: \u6CA1\u6709\u300C${alignment}\u300D\u9635\u8425\u7684\u524D\u7F00`);
+  }
+  const suffixes = pack.sects.suffixes.filter(
+    (suffix) => !(alignment === "\u6B63\u9053" && suffix.text === "\u6559")
+  );
+  if (suffixes.length === 0) throw new Error("E_SECT_PACK: \u5B97\u95E8\u540E\u7F00\u4E3A\u7A7A");
+  const baseSeed = seedFrom(options.seed);
+  const sects = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (let i = 0; i < count; i++) {
+    let sect = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const seed = seedForItem(baseSeed, i + attempt * 1000003);
+      const candidate = generateOne2(seed, pack, prefixes, suffixes);
+      if (pack.sects.blacklist.includes(candidate.fullName)) continue;
+      if (seen.has(candidate.fullName)) continue;
+      sect = candidate;
+      break;
+    }
+    if (!sect) {
+      const seed = seedForItem(baseSeed, i + 9000019);
+      sect = generateOne2(seed, pack, prefixes, suffixes);
+      sect.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
+    }
+    seen.add(sect.fullName);
+    sects.push(sect);
+  }
+  return sects;
+}
+function generateOne2(seed, pack, prefixes, suffixes) {
+  const rng = new Rng(seed);
+  const prefix = rng.weightedPick(prefixes, (item) => item.weight);
+  const suffix = rng.weightedPick(suffixes, (item) => {
+    let weight = item.weight;
+    if (item.alignment === prefix.alignment) weight += 2;
+    if (item.text === "\u6559" && prefix.alignment === "\u9B54\u9053") weight += 2;
+    if (item.text === "\u5B97" && prefix.alignment === "\u6B63\u9053") weight += 1;
+    return weight;
+  });
+  const fullName = `${prefix.text}${suffix.text}`;
+  const warnings = [];
+  if (pack.sects.blacklist.includes(fullName)) {
+    warnings.push({ code: "sect_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u5B97\u95E8\u540D\u51B2\u7A81" });
+  }
+  const alignmentBonus = prefix.alignment === suffix.alignment ? 0.08 : 0;
+  const cultBonus = suffix.text === "\u6559" && prefix.alignment === "\u9B54\u9053" ? 0.05 : 0;
+  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + alignmentBonus + cultBonus).toFixed(4));
+  const tags = [.../* @__PURE__ */ new Set([prefix.alignment, prefix.tone, ...prefix.tags])];
+  const note = prefix.note ? `${prefix.note}\u3002` : "";
+  return {
+    schemaVersion: "1.0",
+    fullName,
+    prefix: prefix.text,
+    suffix: suffix.text,
+    alignment: prefix.alignment,
+    tone: prefix.tone,
+    tags,
+    description: `${fullName}\uFF1A${prefix.alignment}\u52BF\u529B\uFF0C\u6C14\u8D28${prefix.tone}\u3002${note}`,
+    score,
+    seed,
+    warnings,
+    pack: packManifest(pack),
+    license: pack.license
+  };
+}
+
 // src/core/generator.ts
 var ERAS = ["preqin", "han", "weijin", "tang", "song", "ming", "qing", "xianxia"];
 var GENDERS = ["male", "female", "any"];
@@ -289,7 +364,7 @@ function resolveProfile(input = {}) {
     mode
   };
 }
-function generateOne2(input, pack, index = 0, seedOverride) {
+function generateOne3(input, pack, index = 0, seedOverride) {
   const profile = resolveProfile(input);
   const baseSeed = seedFrom(profile.seed);
   const seed = seedOverride ?? seedForItem(baseSeed, index);
@@ -346,7 +421,7 @@ function generateOne2(input, pack, index = 0, seedOverride) {
   };
 }
 function generate(input, pack) {
-  return generateOne2(input, pack, 0);
+  return generateOne3(input, pack, 0);
 }
 function generateBatch(input, pack) {
   const profile = resolveProfile(input);
@@ -365,7 +440,7 @@ function generateBatch(input, pack) {
     const mmrPool = [];
     for (let attempt = 0; attempt < 8; attempt++) {
       const salt = attempt === 0 ? i : i + attempt * 1000003;
-      const candidate = generateOne2(input, pack, salt);
+      const candidate = generateOne3(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
       if (profile.mode === "diverse" && count >= 20) {
         const s = candidate.surname.text;
@@ -387,7 +462,7 @@ function generateBatch(input, pack) {
       person = pickByMmr(mmrPool, results);
     }
     if (!person) {
-      person = generateOne2(input, pack, i + 9000019);
+      person = generateOne3(input, pack, i + 9000019);
       person.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
       if (profile.mode === "diverse" && count >= 20) {
         person.warnings.push({ code: "quota_relaxed", message: "\u914D\u989D\u91CD\u63B7 8 \u6B21\u4ECD\u672A\u6EE1\u8DB3\uFF0C\u5DF2\u653E\u5BBD" });
@@ -769,7 +844,8 @@ function createGenerator(pack) {
     generate: (profile = {}) => generate(profile, pack),
     generateBatch: (profile = {}) => generateBatch(profile, pack),
     check: (name) => checkName(name, pack),
-    artifacts: (options = {}) => generateArtifacts(options, pack)
+    artifacts: (options = {}) => generateArtifacts(options, pack),
+    sects: (options = {}) => generateSects(options, pack)
   };
 }
 async function loadPack(url, headers = {}) {

@@ -37,6 +37,33 @@ export const openapi = {
         responses: { '200': { description: 'pack 对象' } },
       },
     },
+    '/v1/sect-parts': {
+      get: {
+        summary: '列出宗门前缀与后缀',
+        responses: { '200': { description: '宗门词表' } },
+      },
+    },
+    '/v1/sects': {
+      post: {
+        summary: '生成宗门名',
+        requestBody: {
+          required: false,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  count: { type: 'integer', minimum: 1, maximum: 10000 },
+                  seed: { oneOf: [{ type: 'number' }, { type: 'string' }] },
+                  alignment: { type: 'string', enum: ['正道', '魔道', '中立', 'any'] },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': { description: '宗门名数组' } },
+      },
+    },
     '/v1/artifact-parts': {
       get: {
         summary: '列出法宝修饰词与器型',

@@ -1,7 +1,16 @@
 import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
+import { generateSects } from './core/sect.ts';
 import { generate, generateBatch } from './core/generator.ts';
-import type { ArtifactName, CheckReport, PersonName, Profile, SeedPack } from './core/types.ts';
+import type {
+  ArtifactName,
+  CheckReport,
+  PersonName,
+  Profile,
+  SectName,
+  SectOptions,
+  SeedPack,
+} from './core/types.ts';
 
 export type * from './core/types.ts';
 
@@ -16,6 +25,7 @@ export interface BrowserGenerator {
   generateBatch(profile?: Profile): PersonName[];
   check(name: string): CheckReport;
   artifacts(options?: { count?: number; seed?: number | string }): ArtifactName[];
+  sects(options?: SectOptions): SectName[];
 }
 
 /** Browser SDK：不读文件、不发网络请求，只使用传入的 pack。 */
@@ -29,6 +39,7 @@ export function createGenerator(pack: SeedPack): BrowserGenerator {
     generateBatch: (profile = {}) => generateBatch(profile, pack),
     check: (name) => checkName(name, pack),
     artifacts: (options = {}) => generateArtifacts(options, pack),
+    sects: (options = {}) => generateSects(options, pack),
   };
 }
 
