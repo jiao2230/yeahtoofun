@@ -144,14 +144,13 @@ async function run(): Promise<void> {
     if (
       kindRaw !== undefined &&
       kindRaw !== 'any' &&
-      kindRaw !== '天地' &&
       kindRaw !== '突破' &&
       kindRaw !== '疗伤' &&
       kindRaw !== '淬体' &&
       kindRaw !== '神魂' &&
       kindRaw !== '通用'
     ) {
-      throw new Error('E_PILL_KIND: --kind 只支持 天地/突破/疗伤/淬体/神魂/通用/any');
+      throw new Error('E_PILL_KIND: --kind 只支持 突破/疗伤/淬体/神魂/通用/any');
     }
     if (suffixRaw !== undefined && !['丹', '膏', '散', '露'].includes(suffixRaw)) {
       throw new Error('E_PILL_SUFFIX: --suffix 只支持 丹/膏/散/露');
@@ -163,7 +162,7 @@ async function run(): Promise<void> {
       {
         count: numberFlag(flags, 'count') ?? 5,
         seed: seedFlag(flags),
-        kind: kindRaw as '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用' | 'any' | undefined,
+        kind: kindRaw as '突破' | '疗伤' | '淬体' | '神魂' | '通用' | 'any' | undefined,
         suffix: suffixRaw as '丹' | '膏' | '散' | '露' | undefined,
         mode: modeRaw as 'function' | 'high' | 'any' | undefined,
       },
@@ -450,7 +449,7 @@ function printHelp(): void {
   minglu generation list
   minglu sect gen [--count N] [--alignment 正道|魔道|中立|any] [--seed S] [--json]
   minglu sect list
-  minglu pill gen [--count N] [--mode function|high|any] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
+  minglu pill gen [--count N] [--mode function|high|any] [--kind 突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
   minglu pill list
   minglu technique gen [--count N] [--kind 意象|动作|程度] [--suffix 诀|功|真经|妙法|篇|典|剑章|真本|直指|灵书|要义|神册|录] [--seed S] [--json]
   minglu technique list

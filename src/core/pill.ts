@@ -19,6 +19,9 @@ export function generatePills(options: PillOptions = {}, pack: SeedPack): PillNa
   const count = Math.min(MAX_COUNT, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT)));
   if (count === 0) return [];
   const kind = options.kind ?? 'any';
+  if (kind === '天地') {
+    throw new Error('E_PILL_KIND: 天地是修饰词类别，不是功效；可选突破/疗伤/淬体/神魂/通用');
+  }
   const suffixText = options.suffix ?? 'any';
   const mode = options.mode ?? 'any';
   if (!['function', 'high', 'any'].includes(mode)) {

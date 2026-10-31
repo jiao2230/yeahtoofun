@@ -310,6 +310,9 @@ function generatePills(options = {}, pack) {
   const count = Math.min(MAX_COUNT2, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT2)));
   if (count === 0) return [];
   const kind = options.kind ?? "any";
+  if (kind === "\u5929\u5730") {
+    throw new Error("E_PILL_KIND: \u5929\u5730\u662F\u4FEE\u9970\u8BCD\u7C7B\u522B\uFF0C\u4E0D\u662F\u529F\u6548\uFF1B\u53EF\u9009\u7A81\u7834/\u7597\u4F24/\u6DEC\u4F53/\u795E\u9B42/\u901A\u7528");
+  }
   const suffixText = options.suffix ?? "any";
   const mode = options.mode ?? "any";
   if (!["function", "high", "any"].includes(mode)) {
