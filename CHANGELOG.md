@@ -24,7 +24,7 @@
 
 ### Verification
 
-- `npm test`：22 core ＋ 5 M3 = 27 项通过。
+- `npm test`：22 core ＋ 6 M3 = 28 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

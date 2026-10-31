@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { openapi } from '../src/openapi.ts';
+import { loadSeedPack } from '../src/core/data.ts';
+import { generateBatch } from '../src/core/generator.ts';
 
 function walk(node: unknown, visit: (value: Record<string, unknown>) => void): void {
   if (!node || typeof node !== 'object') return;
@@ -70,4 +72,22 @@ test('core generator has no runtime network calls', () => {
     assert.ok(!/from ['"]node:https?['"]/.test(source), `${file} imports http`);
     assert.ok(!/\bfetch\s*\(/.test(source), `${file} calls fetch`);
   }
+});
+
+test('AC-58: 100 names round-trip simplified/traditional at >= 99.5%', () => {
+  const st = new Map<string, string>();
+  for (const line of readFileSync('data/vendor/opencc/STCharacters.txt', 'utf8').split(/\r?\n/)) {
+    if (!line.trim() || line.startsWith('#')) continue;
+    const [source, targets] = line.split('\t');
+    if (source && targets) st.set(source, targets.split(/\s+/)[0]!);
+  }
+  const ts = JSON.parse(readFileSync('data/vendor/opencc/ts-inverted.json', 'utf8')) as Record<string, string>;
+  const toTrad = (text: string) => Array.from(text, (ch) => st.get(ch) ?? ch).join('');
+  const toSimp = (text: string) => Array.from(text, (ch) => ts[ch] ?? ch).join('');
+  const names = generateBatch({ count: 100, seed: 42 }, loadSeedPack());
+  const consistent = names.filter((p) => toSimp(toTrad(p.fullName)) === p.fullName).length;
+  assert.ok(
+    consistent / names.length >= 0.995,
+    `round-trip ${consistent}/${names.length} < 99.5%`,
+  );
 });

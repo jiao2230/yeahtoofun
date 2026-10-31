@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝生成器、CLI、HTTP、27 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝生成器、CLI、HTTP、28 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -46,7 +46,7 @@ node src/cli.ts artifact gen --count 6 --seed 42
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（22 core ＋ 5 M3）
+# 测试（22 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -392,7 +392,7 @@ minglu/
     node-shim.d.ts # 本地最小 Node 类型声明（无 @types/node 时用）
   test/
     core.test.ts   # 22 项核心断言
-    m3.test.ts     # 5 项 M3/OpenAPI 断言
+    m3.test.ts     # 6 项 M3/OpenAPI 断言
   scripts/
     typecheck.mjs  # 定位本地 tsc
     bundle-web.mjs # esbuild 浏览器 bundle
@@ -576,7 +576,7 @@ minglu/
 17. **core pack 偏现代**：CNC 是 120 万现代姓名分布，core 只是数据分层，不代表商用计划；历史风格请用 cbdb 包。
 18. **core pack 姓氏拼音**：只覆盖 seed 的 72 个同姓，其余姓氏拼音为空；名用字拼音来自拼音表。
 19. **M2 未完成项**：盲评未做；偏旁/笔画已从 Unihan 18.0 导入（102,999 字，pack 内全量覆盖）；楚辞/诗经/论语合并 23,217 个双字索引已接入，`文澜` 不在其中。softmax/top-K 与 MMR 已实现。
-20. **M3 剩余**：AC-58 的 OpenCC 往返未单独验证；Web UI 仍是最小内联页。CI 矩阵 6/6 全绿；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。
+20. **M3 状态**：CI 6/6 全绿；AC-58 OpenCC 往返 100/100；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。Web UI 仍是最小内联页。
 21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
 
 ---
@@ -603,9 +603,9 @@ minglu/
 | Web UI | ✅ `/` 最小表单页；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
 | 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
-| OpenAPI | ✅ 3.1；5 项结构/ref/路由/零网络测试 |
+| OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 27 项（22 core ＋ 5 M3；`npm test`） |
+| 测试 | ✅ 28 项（22 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |
@@ -613,7 +613,7 @@ minglu/
 | 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |
-| M3 验收 | 🟡 CI 6/6 全绿；AC-58 OpenCC 往返未单独验证；Web UI 仍是最小页 |
+| M3 验收 | ✅ CI 6/6 全绿；AC-58 往返 100/100；Web UI 仍是最小页 |
 
 ---
 
