@@ -32,4 +32,5 @@ jobs:
       - name: CLI smoke
         run: node src/cli.ts gen --count 1 --seed 1
       - name: SDK smoke
-        run: node --input-type=module -e "import { createGenerator } from './src/sdk.ts'; console.log(createGenerator().generate({ seed: 1 }).fullName)"
+        run: |
+          node --input-type=module -e "import { createGenerator } from './src/sdk.ts'; console.log(createGenerator().generate({ seed: 1 }).fullName)"
