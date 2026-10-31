@@ -281,6 +281,114 @@ function generateOne2(seed, pack, prefixes, suffixes) {
   };
 }
 
+// src/core/pill.ts
+var DEFAULT_COUNT2 = 5;
+var MAX_COUNT2 = 1e4;
+function generatePills(options = {}, pack) {
+  const count = Math.min(MAX_COUNT2, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT2)));
+  if (count === 0) return [];
+  const kind = options.kind ?? "any";
+  const suffixText = options.suffix ?? "any";
+  const modifiers = pack.pills.modifiers.filter(
+    (modifier) => kind === "any" || modifier.kind === kind
+  );
+  const cores = pack.pills.cores.filter((core) => kind === "any" || core.kind === kind);
+  const suffixes = pack.pills.suffixes.filter(
+    (suffix) => suffixText === "any" || suffix.text === suffixText
+  );
+  if (modifiers.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u4FEE\u9970\u8BCD`);
+  if (cores.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u6838\u5FC3`);
+  if (suffixes.length === 0) throw new Error(`E_PILL_SUFFIX: \u672A\u77E5\u540E\u7F00\u300C${suffixText}\u300D`);
+  const baseSeed = seedFrom(options.seed);
+  const pills = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (let i = 0; i < count; i++) {
+    let pill = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const seed = seedForItem(baseSeed, i + attempt * 1000003);
+      const candidate = generateOne3(seed, pack, modifiers, cores, suffixes);
+      if (pack.pills.blacklist.includes(candidate.fullName)) continue;
+      if (seen.has(candidate.fullName)) continue;
+      pill = candidate;
+      break;
+    }
+    if (!pill) {
+      const seed = seedForItem(baseSeed, i + 9000019);
+      pill = generateOne3(seed, pack, modifiers, cores, suffixes);
+      pill.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
+    }
+    seen.add(pill.fullName);
+    pills.push(pill);
+  }
+  return pills;
+}
+function generateOne3(seed, pack, modifiers, cores, suffixes) {
+  const rng = new Rng(seed);
+  const long = rng.next() < 0.55;
+  const modifier = pickWithLength(rng, modifiers, long ? 2 : 1);
+  const compatibleCores = cores.filter(
+    (core2) => modifier.kind === "\u5929\u5730" || core2.kind === modifier.kind || core2.kind === "\u901A\u7528"
+  );
+  const targetedCores = modifier.targets?.length ? compatibleCores.filter((core2) => modifier.targets.includes(core2.text)) : compatibleCores;
+  const core = pickWithLength(
+    rng,
+    targetedCores.length > 0 ? targetedCores : compatibleCores.length > 0 ? compatibleCores : cores,
+    long ? 2 : 1
+  );
+  if (modifier.text === core.text) {
+    return generateOne3(seed ^ 2654435769, pack, modifiers, cores, suffixes);
+  }
+  const compatibleSuffixes = suffixes.filter((item) => suffixAllowed(core.kind, item.text));
+  const suffix = rng.weightedPick(
+    compatibleSuffixes.length > 0 ? compatibleSuffixes : suffixes,
+    (item) => {
+      let weight = item.weight;
+      if (item.preferred.includes(modifier.kind)) weight += 2;
+      if (item.preferred.includes(core.kind)) weight += 2;
+      if (item.text === "\u4E39") weight += 1;
+      return weight;
+    }
+  );
+  const fullName = `${modifier.text}${core.text}${suffix.text}`;
+  const warnings = [];
+  if (pack.pills.blacklist.includes(fullName)) {
+    warnings.push({ code: "pill_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u4E39\u836F\u540D\u51B2\u7A81" });
+  }
+  const kindBonus = modifier.kind === core.kind ? 0.08 : 0;
+  const suffixBonus = suffix.preferred.includes(core.kind) ? 0.05 : 0;
+  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + kindBonus + suffixBonus).toFixed(4));
+  const tags = [.../* @__PURE__ */ new Set([modifier.kind, core.kind, suffix.text])];
+  return {
+    schemaVersion: "1.0",
+    fullName,
+    modifier: modifier.text,
+    core: core.text,
+    suffix: suffix.text,
+    kind: core.kind,
+    tags,
+    description: `\u4EE5\u300C${modifier.text}\u300D\u4E3A\u5F15\uFF0C\u4E3B\u300C${core.text}\u300D\uFF0C\u70BC\u4E3A${suffix.text}\u3002`,
+    score,
+    seed,
+    warnings,
+    pack: packManifest(pack),
+    license: pack.license
+  };
+}
+function pickWithLength(rng, items, length) {
+  const filtered = items.filter((item) => item.text.length === length);
+  if (filtered.length === 0) return rng.weightedPick(items, (item) => item.weight);
+  return rng.weightedPick(filtered, (item) => item.weight);
+}
+function suffixAllowed(kind, suffix) {
+  if (suffix === "\u4E39") return true;
+  if (kind === "\u901A\u7528") return true;
+  if (kind === "\u7A81\u7834") return suffix === "\u6563";
+  if (kind === "\u7597\u4F24") return suffix === "\u818F" || suffix === "\u6563";
+  if (kind === "\u6DEC\u4F53") return suffix === "\u818F";
+  if (kind === "\u795E\u9B42") return suffix === "\u6563";
+  return true;
+}
+
 // src/core/generator.ts
 var ERAS = ["preqin", "han", "weijin", "tang", "song", "ming", "qing", "xianxia"];
 var GENDERS = ["male", "female", "any"];
@@ -364,7 +472,7 @@ function resolveProfile(input = {}) {
     mode
   };
 }
-function generateOne3(input, pack, index = 0, seedOverride) {
+function generateOne4(input, pack, index = 0, seedOverride) {
   const profile = resolveProfile(input);
   const baseSeed = seedFrom(profile.seed);
   const seed = seedOverride ?? seedForItem(baseSeed, index);
@@ -421,7 +529,7 @@ function generateOne3(input, pack, index = 0, seedOverride) {
   };
 }
 function generate(input, pack) {
-  return generateOne3(input, pack, 0);
+  return generateOne4(input, pack, 0);
 }
 function generateBatch(input, pack) {
   const profile = resolveProfile(input);
@@ -440,7 +548,7 @@ function generateBatch(input, pack) {
     const mmrPool = [];
     for (let attempt = 0; attempt < 8; attempt++) {
       const salt = attempt === 0 ? i : i + attempt * 1000003;
-      const candidate = generateOne3(input, pack, salt);
+      const candidate = generateOne4(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
       if (profile.mode === "diverse" && count >= 20) {
         const s = candidate.surname.text;
@@ -462,7 +570,7 @@ function generateBatch(input, pack) {
       person = pickByMmr(mmrPool, results);
     }
     if (!person) {
-      person = generateOne3(input, pack, i + 9000019);
+      person = generateOne4(input, pack, i + 9000019);
       person.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
       if (profile.mode === "diverse" && count >= 20) {
         person.warnings.push({ code: "quota_relaxed", message: "\u914D\u989D\u91CD\u63B7 8 \u6B21\u4ECD\u672A\u6EE1\u8DB3\uFF0C\u5DF2\u653E\u5BBD" });
@@ -845,7 +953,8 @@ function createGenerator(pack) {
     generateBatch: (profile = {}) => generateBatch(profile, pack),
     check: (name) => checkName(name, pack),
     artifacts: (options = {}) => generateArtifacts(options, pack),
-    sects: (options = {}) => generateSects(options, pack)
+    sects: (options = {}) => generateSects(options, pack),
+    pills: (options = {}) => generatePills(options, pack)
   };
 }
 async function loadPack(url, headers = {}) {

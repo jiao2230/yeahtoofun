@@ -13,6 +13,7 @@
 - `--allusion chuci|shijing|lunyu|all`。
 - 僧道法名式：`道/法/僧 + 名`，35% 概率，仅 `class=僧道`。
 - 宗门 seed 原型：107 个双字前缀 + `宗/门/派/宫/教`，带正道/魔道/中立与气质标签。
+- 丹药 seed 原型：50 个修饰词 + 69 个核心 + `丹/膏/散/露`，支持 3 字/5 字。
 - 姓氏校验：只接受 1–4 个汉字，非法报 `E_SURNAME_INVALID`。
 - Unihan 18.0 偏旁/笔画：102,999 字。
 - softmax / top-K 采样、MMR、diverse 配额。
@@ -25,7 +26,7 @@
 
 ### Verification
 
-- `npm test`：26 core ＋ 6 M3 = 32 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：30 core ＋ 6 M3 = 36 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

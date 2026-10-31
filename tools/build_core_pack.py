@@ -212,6 +212,7 @@ def main() -> int:
     generations = copy("generations.json")
     artifacts = copy("artifacts.json")
     sects = copy("sects.json")
+    pills = copy("pills.json")
     blacklist = copy("blacklist.json")
     famous = copy("famous.json")
 
@@ -225,6 +226,7 @@ def main() -> int:
         "allusions.json": allusions,
         "artifacts.json": artifacts,
         "sects.json": sects,
+        "pills.json": pills,
         "blacklist.json": blacklist,
         "famous.json": famous,
     }

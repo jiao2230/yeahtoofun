@@ -37,6 +37,34 @@ export const openapi = {
         responses: { '200': { description: 'pack 对象' } },
       },
     },
+    '/v1/pill-parts': {
+      get: {
+        summary: '列出丹药修饰词/核心/后缀',
+        responses: { '200': { description: '丹药词表' } },
+      },
+    },
+    '/v1/pills': {
+      post: {
+        summary: '生成丹药名',
+        requestBody: {
+          required: false,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  count: { type: 'integer', minimum: 1, maximum: 10000 },
+                  seed: { oneOf: [{ type: 'number' }, { type: 'string' }] },
+                  kind: { type: 'string', enum: ['天地', '突破', '疗伤', '淬体', '神魂', '通用', 'any'] },
+                  suffix: { type: 'string', enum: ['丹', '膏', '散', '露', 'any'] },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': { description: '丹药名数组' } },
+      },
+    },
     '/v1/sect-parts': {
       get: {
         summary: '列出宗门前缀与后缀',

@@ -4,6 +4,7 @@ import { loadSeedPack } from './core/data.ts';
 import { checkName, summarizeWarnings } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects, sectParts } from './core/sect.ts';
+import { generatePills, pillParts } from './core/pill.ts';
 import { generate, generateBatch, resolveProfile } from './core/generator.ts';
 import type { PersonName, Profile } from './core/types.ts';
 
@@ -68,6 +69,59 @@ async function run(): Promise<void> {
       for (const warning of report.warnings) console.log(`  - [${warning.code}] ${warning.message}`);
       if (report.collisions.length > 0) console.log(`  重名：${report.collisions.join('、')}`);
     }
+    return;
+  }
+
+  if (command === 'pill' && positional[0] === 'gen') {
+    const kindRaw = stringFlag(flags, 'kind');
+    const suffixRaw = stringFlag(flags, 'suffix');
+    if (
+      kindRaw !== undefined &&
+      kindRaw !== 'any' &&
+      kindRaw !== '天地' &&
+      kindRaw !== '突破' &&
+      kindRaw !== '疗伤' &&
+      kindRaw !== '淬体' &&
+      kindRaw !== '神魂' &&
+      kindRaw !== '通用'
+    ) {
+      throw new Error('E_PILL_KIND: --kind 只支持 天地/突破/疗伤/淬体/神魂/通用/any');
+    }
+    if (suffixRaw !== undefined && !['丹', '膏', '散', '露'].includes(suffixRaw)) {
+      throw new Error('E_PILL_SUFFIX: --suffix 只支持 丹/膏/散/露');
+    }
+    const pills = generatePills(
+      {
+        count: numberFlag(flags, 'count') ?? 5,
+        seed: seedFlag(flags),
+        kind: kindRaw as '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用' | 'any' | undefined,
+        suffix: suffixRaw as '丹' | '膏' | '散' | '露' | undefined,
+      },
+      pack,
+    );
+    if (flags.json === true) {
+      console.log(JSON.stringify(pills.length === 1 ? pills[0] : pills, null, 2));
+    } else {
+      for (const pill of pills) {
+        const warning = pill.warnings.length > 0 ? `  ⚠ ${summarizeWarnings(pill.warnings)}` : '';
+        console.log(`${pill.fullName}  [${pill.kind} / ${pill.suffix}]  seed=${pill.seed}`);
+        console.log(`  ${pill.description}${warning}`);
+      }
+    }
+    return;
+  }
+
+  if (command === 'pill' && positional[0] === 'list') {
+    const parts = pillParts(pack);
+    console.log(`modifiers (${parts.modifiers.length}):`);
+    for (const modifier of parts.modifiers) {
+      console.log(`  ${modifier.text}\t${modifier.kind}\t${modifier.weight}`);
+    }
+    console.log(`cores (${parts.cores.length}):`);
+    for (const core of parts.cores) {
+      console.log(`  ${core.text}\t${core.kind}\t${core.weight}`);
+    }
+    console.log(`suffixes: ${parts.suffixes.map((suffix) => suffix.text).join(' ')}`);
     return;
   }
 
@@ -326,6 +380,8 @@ function printHelp(): void {
   minglu generation list
   minglu sect gen [--count N] [--alignment 正道|魔道|中立|any] [--seed S] [--json]
   minglu sect list
+  minglu pill gen [--count N] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
+  minglu pill list
   minglu artifact gen --count 6 --seed 42 --json
   minglu artifact list
   minglu data info
@@ -352,6 +408,7 @@ gen 选项：
   minglu gen --era song --gender male --class 士族 --seed 42 --json
   minglu gen --surname 沈 --generation ming-imperial --generation-index 8
   minglu sect gen --count 9 --seed 42
+  minglu pill gen --count 8 --seed 42
   minglu artifact gen --count 6 --seed 42 --json
   minglu batch --profile profiles/sect.json --count 20 --out out.csv --format csv
 

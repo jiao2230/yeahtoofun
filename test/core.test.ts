@@ -4,6 +4,7 @@ import { loadSeedPack } from '../src/core/data.ts';
 import { generate, generateBatch, phoneticIssues, resolveProfile } from '../src/core/generator.ts';
 import { generateArtifacts } from '../src/core/artifact.ts';
 import { generateSects } from '../src/core/sect.ts';
+import { generatePills } from '../src/core/pill.ts';
 import { checkName } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
 
@@ -219,6 +220,48 @@ test('sect examples are reproducible from seeds', () => {
   }
 });
 
+test('pill names are deterministic and follow modifier+core+suffix', () => {
+  const a = generatePills({ count: 12, seed: 42 }, pack);
+  const b = generatePills({ count: 12, seed: 42 }, pack);
+  assert.deepEqual(a, b);
+  for (const pill of a) {
+    assert.ok(pill.fullName.endsWith(pill.suffix));
+    assert.equal(pill.fullName, pill.modifier + pill.core + pill.suffix);
+    assert.ok(['丹', '膏', '散', '露'].includes(pill.suffix));
+    assert.ok([3, 5].includes(pill.fullName.length), pill.fullName);
+  }
+});
+
+test('pill kind and suffix filters are respected', () => {
+  const pills = generatePills({ count: 20, seed: 9, kind: '疗伤', suffix: '膏' }, pack);
+  assert.ok(pills.length > 0);
+  for (const pill of pills) {
+    assert.equal(pill.kind, '疗伤');
+    assert.equal(pill.suffix, '膏');
+  }
+});
+
+test('pill batch is unique', () => {
+  const pills = generatePills({ count: 60, seed: 7 }, pack);
+  assert.equal(new Set(pills.map((p) => p.fullName)).size, pills.length);
+});
+
+test('pill examples are reproducible from seeds', () => {
+  const examples: Array<[number, string]> = [
+    [2709, '恒阳固元丹'],
+    [5133, '玄玉续气膏'],
+    [841, '壮骨丹'],
+    [808, '渡厄丹'],
+    [383, '破障丹'],
+    [352, '宁神散'],
+    [11355, '太阴凝华露'],
+    [601, '幻月绝情散'],
+  ];
+  for (const [seed, expected] of examples) {
+    assert.equal(generatePills({ count: 1, seed }, pack)[0]?.fullName, expected);
+  }
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });
@@ -227,4 +270,5 @@ test('SDK createGenerator exposes the core API', () => {
   assert.equal(sdk.check('范统').valid, false);
   assert.ok(sdk.artifacts({ count: 1, seed: 1 })[0]?.name);
   assert.ok(sdk.sects({ count: 1, seed: 1 })[0]?.fullName);
+  assert.ok(sdk.pills({ count: 1, seed: 1 })[0]?.fullName);
 });

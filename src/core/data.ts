@@ -5,6 +5,7 @@ import type {
   CharEntry,
   GenerationPreset,
   GivenEntry,
+  PillPack,
   SectPack,
   SeedPack,
   SurnameEntry,
@@ -54,6 +55,7 @@ export function loadSeedPack(): SeedPack {
       : {},
     artifacts: readJson<ArtifactPack>('artifacts.json'),
     sects: readJson<SectPack>('sects.json'),
+    pills: readJson<PillPack>('pills.json'),
     blacklist: readJson<string[]>('blacklist.json'),
     famous: readJson<string[]>('famous.json'),
     collision: existsSync(new URL('collision.json', DATA_DIR))

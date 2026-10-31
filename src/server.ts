@@ -5,9 +5,10 @@ import { loadSeedPack } from './core/data.ts';
 import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects, sectParts } from './core/sect.ts';
+import { generatePills, pillParts } from './core/pill.ts';
 import { generateBatch } from './core/generator.ts';
 import { openapi } from './openapi.ts';
-import type { Profile } from './core/types.ts';
+import type { PillKind, PillSuffixText, Profile } from './core/types.ts';
 
 const ERAS = ['preqin', 'han', 'weijin', 'tang', 'song', 'ming', 'qing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'];
@@ -125,6 +126,31 @@ export function startServer(options: ServerOptions = {}): Server {
       }
       if (req.method === 'GET' && url.pathname === '/v1/sect-parts') {
         json(res, 200, { ok: true, data: sectParts(pack) });
+        return;
+      }
+      if (req.method === 'GET' && url.pathname === '/v1/pill-parts') {
+        json(res, 200, { ok: true, data: pillParts(pack) });
+        return;
+      }
+      if (req.method === 'POST' && url.pathname === '/v1/pills') {
+        const body = await readJson(req);
+        const count = clampCount(body.count, 1, 10_000);
+        const pills = generatePills(
+          {
+            count,
+            seed: valueSeed(body.seed),
+            kind: (body.kind === undefined ? 'any' : String(body.kind)) as PillKind | 'any',
+            suffix: (body.suffix === undefined
+              ? 'any'
+              : String(body.suffix)) as PillSuffixText | 'any',
+          },
+          pack,
+        );
+        json(res, 200, {
+          ok: true,
+          data: pills,
+          meta: metaFor(pack, count, pills.length, Date.now() - started),
+        });
         return;
       }
       if (req.method === 'POST' && url.pathname === '/v1/sects') {

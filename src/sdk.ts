@@ -2,11 +2,14 @@ import { loadSeedPack } from './core/data.ts';
 import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects } from './core/sect.ts';
+import { generatePills } from './core/pill.ts';
 import { generate, generateBatch } from './core/generator.ts';
 import type {
   ArtifactName,
   CheckReport,
   PersonName,
+  PillName,
+  PillOptions,
   Profile,
   SectName,
   SectOptions,
@@ -19,6 +22,7 @@ export { generate, generateBatch, resolveProfile } from './core/generator.ts';
 export { checkName } from './core/check.ts';
 export { generateArtifacts } from './core/artifact.ts';
 export { generateSects } from './core/sect.ts';
+export { generatePills } from './core/pill.ts';
 
 export interface CreateGeneratorOptions {
   /** 已加载的 pack；省略时读取 MINGLU_PACK（默认 seed）。 */
@@ -32,6 +36,7 @@ export interface Generator {
   check(name: string): CheckReport;
   artifacts(options?: { count?: number; seed?: number | string }): ArtifactName[];
   sects(options?: SectOptions): SectName[];
+  pills(options?: PillOptions): PillName[];
 }
 
 /**
@@ -49,5 +54,6 @@ export function createGenerator(options: CreateGeneratorOptions = {}): Generator
     check: (name) => checkName(name, pack),
     artifacts: (artifactOptions = {}) => generateArtifacts(artifactOptions, pack),
     sects: (sectOptions = {}) => generateSects(sectOptions, pack),
+    pills: (pillOptions = {}) => generatePills(pillOptions, pack),
   };
 }

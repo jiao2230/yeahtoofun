@@ -134,6 +134,58 @@ export interface SectOptions {
   alignment?: SectAlignment | 'any';
 }
 
+export type PillKind = '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用';
+export type PillSuffixText = '丹' | '膏' | '散' | '露';
+
+export interface PillModifier {
+  text: string;
+  kind: PillKind;
+  weight: number;
+  targets?: string[];
+}
+
+export interface PillCore {
+  text: string;
+  kind: PillKind;
+  weight: number;
+}
+
+export interface PillSuffix {
+  text: PillSuffixText;
+  weight: number;
+  preferred: PillKind[];
+}
+
+export interface PillPack {
+  modifiers: PillModifier[];
+  cores: PillCore[];
+  suffixes: PillSuffix[];
+  blacklist: string[];
+}
+
+export interface PillName {
+  schemaVersion: '1.0';
+  fullName: string;
+  modifier: string;
+  core: string;
+  suffix: PillSuffixText;
+  kind: PillKind;
+  tags: string[];
+  description: string;
+  score: number;
+  seed: number;
+  warnings: Warning[];
+  pack: Record<string, string>;
+  license: string;
+}
+
+export interface PillOptions {
+  count?: number;
+  seed?: number | string;
+  kind?: PillKind | 'any';
+  suffix?: PillSuffixText | 'any';
+}
+
 export interface SeedPack {
   id: string;
   version: string;
@@ -146,6 +198,7 @@ export interface SeedPack {
   allusions: Record<string, AllusionEntry[]>;
   artifacts: ArtifactPack;
   sects: SectPack;
+  pills: PillPack;
   blacklist: string[];
   famous: string[];
   collision: string[];
