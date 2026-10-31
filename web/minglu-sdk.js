@@ -1,0 +1,784 @@
+// src/core/check.ts
+var collisionCache = /* @__PURE__ */ new WeakMap();
+function collisionSet(pack) {
+  let set = collisionCache.get(pack);
+  if (!set) {
+    set = new Set(pack.collision);
+    collisionCache.set(pack, set);
+  }
+  return set;
+}
+function checkName(raw, pack) {
+  const name = raw.trim();
+  const warnings = [];
+  const collisions = [];
+  if (!name) {
+    return {
+      name,
+      valid: false,
+      warnings: [{ code: "empty", message: "\u540D\u5B57\u4E3A\u7A7A" }],
+      collisions
+    };
+  }
+  if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
+    warnings.push({ code: "non_han", message: "\u5305\u542B\u975E\u6C49\u5B57\u5B57\u7B26" });
+  }
+  if (name.length < 2 || name.length > 4) {
+    warnings.push({ code: "length", message: "\u59D3\u540D\u957F\u5EA6\u5E94\u4E3A 2\u20134 \u5B57" });
+  }
+  const surname = splitSurname(name, pack);
+  const given = name.slice(surname.length);
+  if (!given) warnings.push({ code: "no_given", message: "\u7F3A\u5C11\u540D" });
+  for (const char of name) {
+    if (!pack.chars.some((c) => c.char === char) && !pack.surnames.some((s) => s.text.includes(char))) {
+      warnings.push({
+        code: "char_outside_table",
+        message: `\u5B57\u7B26\u300C${char}\u300D\u4E0D\u5728\u79CD\u5B50\u5B57\u8868/\u59D3\u6C0F\u8868\u5185`
+      });
+    }
+  }
+  if (pack.blacklist.includes(name)) {
+    warnings.push({ code: "blacklist", message: "\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD" });
+    collisions.push(name);
+  }
+  if (pack.famous.includes(name)) {
+    warnings.push({ code: "famous_collision", message: "\u4E0E\u5185\u7F6E\u5386\u53F2\u540D\u4EBA\u91CD\u540D" });
+    collisions.push(name);
+  }
+  if (collisionSet(pack).has(name)) {
+    warnings.push({ code: "historical_collision", message: "\u4E0E CBDB \u5386\u53F2\u4EBA\u7269\u59D3\u540D\u5B8C\u5168\u76F8\u540C" });
+    collisions.push(name);
+  }
+  return {
+    name,
+    valid: !warnings.some(
+      (w) => ["empty", "non_han", "length", "blacklist"].includes(w.code)
+    ),
+    warnings,
+    collisions: [...new Set(collisions)]
+  };
+}
+function splitSurname(name, pack) {
+  const compounds = pack.surnames.filter((s) => s.compound).map((s) => s.text).sort((a, b) => b.length - a.length);
+  for (const compound of compounds) {
+    if (name.startsWith(compound)) return compound;
+  }
+  return name.slice(0, 1);
+}
+
+// src/core/manifest.ts
+function packManifest(pack) {
+  return { [pack.id]: pack.version };
+}
+
+// src/core/rng.ts
+var MASK64 = (1n << 64n) - 1n;
+var GOLDEN = 0x9e3779b97f4a7c15n;
+function hashString(input) {
+  let hash = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+function seedFrom(input) {
+  if (typeof input === "number" && Number.isFinite(input)) {
+    return Math.trunc(input) >>> 0;
+  }
+  if (typeof input === "string" && input.length > 0) {
+    return hashString(input);
+  }
+  return (Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0;
+}
+function seedForItem(seed, index) {
+  let x = (BigInt(seed >>> 0) ^ BigInt(index) * GOLDEN) & MASK64;
+  x = x + GOLDEN & MASK64;
+  let z = x;
+  z = (z ^ z >> 30n) * 0xbf58476d1ce4e5b9n & MASK64;
+  z = (z ^ z >> 27n) * 0x94d049bb133111ebn & MASK64;
+  z = z ^ z >> 31n;
+  return Number(z >> 32n & 0xffffffffn) >>> 0;
+}
+var Rng = class {
+  state;
+  constructor(seed) {
+    this.state = BigInt(seed >>> 0);
+  }
+  nextUint32() {
+    this.state = this.state + GOLDEN & MASK64;
+    let z = this.state;
+    z = (z ^ z >> 30n) * 0xbf58476d1ce4e5b9n & MASK64;
+    z = (z ^ z >> 27n) * 0x94d049bb133111ebn & MASK64;
+    z = z ^ z >> 31n;
+    return Number(z >> 32n & 0xffffffffn) >>> 0;
+  }
+  next() {
+    return this.nextUint32() / 4294967296;
+  }
+  int(maxExclusive) {
+    if (maxExclusive <= 0) return 0;
+    return Math.floor(this.next() * maxExclusive);
+  }
+  pick(items) {
+    if (items.length === 0) throw new Error("Rng.pick: empty array");
+    return items[this.int(items.length)];
+  }
+  weightedPick(items, weightOf) {
+    if (items.length === 0) throw new Error("Rng.weightedPick: empty array");
+    let total = 0;
+    for (const item of items) {
+      const w = weightOf(item);
+      if (Number.isFinite(w) && w > 0) total += w;
+    }
+    if (total <= 0) return this.pick(items);
+    let roll = this.next() * total;
+    for (const item of items) {
+      const w = weightOf(item);
+      if (!Number.isFinite(w) || w <= 0) continue;
+      roll -= w;
+      if (roll <= 0) return item;
+    }
+    return items[items.length - 1];
+  }
+};
+function canonicalJson(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) {
+    return `[${value.map((v) => canonicalJson(v)).join(",")}]`;
+  }
+  const record = value;
+  const keys = Object.keys(record).sort();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson(record[k])}`).join(",")}}`;
+}
+function profileHash(profile) {
+  return `fnv1a:${hashString(canonicalJson(profile)).toString(16).padStart(8, "0")}`;
+}
+
+// src/core/artifact.ts
+function generateArtifacts(options, pack) {
+  const count = Math.min(1e4, Math.max(0, Math.trunc(options.count ?? 1)));
+  const baseSeed = seedFrom(options.seed);
+  const artifacts = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (let i = 0; i < count; i++) {
+    let artifact = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const seed = seedForItem(baseSeed, i + attempt * 1000003);
+      const candidate = generateOne(seed, pack);
+      if (pack.artifacts.blacklist.includes(candidate.name)) continue;
+      if (seen.has(candidate.name)) continue;
+      artifact = candidate;
+      break;
+    }
+    if (!artifact) {
+      const seed = seedForItem(baseSeed, i + 9000019);
+      artifact = generateOne(seed, pack);
+      artifact.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
+    }
+    seen.add(artifact.name);
+    artifacts.push(artifact);
+  }
+  return artifacts;
+}
+function generateOne(seed, pack) {
+  const rng = new Rng(seed);
+  const { modifiers, forms } = pack.artifacts;
+  const modifier = rng.weightedPick(modifiers, (m) => m.weight);
+  const form = rng.weightedPick(forms, (f) => f.weight);
+  let name = `${modifier.text}${form.text}`;
+  const warnings = [];
+  if (pack.artifacts.blacklist.includes(name)) {
+    warnings.push({ code: "artifact_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u6CD5\u5B9D\u540D\u51B2\u7A81" });
+  }
+  return {
+    schemaVersion: "1.0",
+    name,
+    modifier: modifier.text,
+    modifierKind: modifier.kind,
+    form: form.text,
+    tags: [modifier.kind, form.text],
+    score: Number((0.6 + rng.next() * 0.3).toFixed(4)),
+    seed,
+    warnings,
+    pack: packManifest(pack),
+    license: pack.license
+  };
+}
+
+// src/core/generator.ts
+var ERAS = ["preqin", "han", "weijin", "tang", "song", "ming", "qing", "xianxia"];
+var GENDERS = ["male", "female", "any"];
+var STYLES = ["\u96C5\u6B63", "\u6E05\u51B7", "\u96C4\u6D51", "\u4ED9\u9038", "\u8D28\u6734", "\u7EEE\u4E3D"];
+var CLASSES = ["\u58EB\u65CF", "\u5BD2\u95E8", "\u50E7\u9053", "\u6C5F\u6E56", "\u5BAB\u95F1", "\u4ED9\u95E8"];
+var INITIALS = [
+  "zh",
+  "ch",
+  "sh",
+  "b",
+  "p",
+  "m",
+  "f",
+  "d",
+  "t",
+  "n",
+  "l",
+  "g",
+  "k",
+  "h",
+  "j",
+  "q",
+  "x",
+  "r",
+  "z",
+  "c",
+  "s",
+  "y",
+  "w"
+];
+var RELIGIOUS_PREFIXES = ["\u9053", "\u6CD5", "\u50E7"];
+var RELIGIOUS_PATTERN_CHANCE = 0.35;
+var ALLUSION_STOP_CHARS = new Set(
+  "\u4E4B\u516E\u800C\u5176\u6240\u4EE5\u4E0D\u65E0\u6709\u4E3A\u4E0E\u5219\u4E43\u4E8E\u4E4E\u54C9\u592B\u4F55\u7136\u8005\u4E5F\u77E3\u53EF\u80FD\u5C06\u6B32\u65E2\u4EA6\u7686\u5404\u81EA\u76F8\u89C1\u4F7F\u4EE4\u4ECE\u6765\u4E0A\u53BB\u4E2D\u5916\u51FA\u524D\u540E\u5DE6\u53F3\u5927\u5C0F\u591A\u5C11\u957F\u77ED\u9AD8\u4F4E\u6211\u5C14\u6C5D\u5973\u66F0\u8C13\u4E91\u662F\u4EBA\u5341\u767E\u5343\u4E07"
+);
+var SINGLE_RATE = {
+  preqin: 0.64,
+  han: 0.83,
+  weijin: 0.58,
+  tang: 0.53,
+  song: 0.45,
+  ming: 0.53,
+  qing: 0.18,
+  xianxia: 0.3
+};
+var DEFAULT_PROFILE = {
+  era: "song",
+  gender: "any",
+  style: [],
+  class: "\u5BD2\u95E8",
+  givenLength: "auto",
+  generation: null,
+  restraint: 0.7,
+  seed: 0,
+  count: 1,
+  mode: "stable"
+};
+function resolveProfile(input = {}) {
+  const era = input.era && ERAS.includes(input.era) ? input.era : DEFAULT_PROFILE.era;
+  const gender = input.gender && GENDERS.includes(input.gender) ? input.gender : DEFAULT_PROFILE.gender;
+  const style = (input.style ?? []).filter((s) => STYLES.includes(s));
+  const socialClass = input.class && CLASSES.includes(input.class) ? input.class : DEFAULT_PROFILE.class;
+  const givenLength = input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : "auto";
+  const mode = input.mode === "diverse" ? "diverse" : "stable";
+  const surname = typeof input.surname === "string" ? input.surname.trim() : void 0;
+  if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
+    throw new Error("E_SURNAME_INVALID: \u59D3\u6C0F\u53EA\u80FD\u586B 1\u20134 \u4E2A\u6C49\u5B57\uFF0C\u4E0D\u80FD\u542B\u6570\u5B57/\u5B57\u6BCD/\u7B26\u53F7");
+  }
+  return {
+    era,
+    gender,
+    style,
+    class: socialClass,
+    surname: surname || void 0,
+    givenLength,
+    allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "all" ? input.allusion : void 0,
+    generation: input.generation ?? null,
+    restraint: clamp(input.restraint ?? DEFAULT_PROFILE.restraint, 0, 1),
+    seed: input.seed ?? (Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0,
+    count: normalizeCount(input.count),
+    mode
+  };
+}
+function generateOne2(input, pack, index = 0, seedOverride) {
+  const profile = resolveProfile(input);
+  const baseSeed = seedFrom(profile.seed);
+  const seed = seedOverride ?? seedForItem(baseSeed, index);
+  const rng = new Rng(seed);
+  const warnings = [];
+  const generation = resolveGeneration(profile, pack, warnings);
+  const generationChar = generation?.char;
+  const surname = pickSurname(profile, pack, rng, generationChar);
+  if (generation && surname.text.includes(generation.char)) {
+    throw new Error("E_GENERATION_CONFLICT: \u5B57\u8F88\u5B57\u4E0E\u59D3\u6C0F\u51B2\u7A81\uFF0C\u8BF7\u6362\u59D3\u6216\u6362\u5B57\u8F88");
+  }
+  const given = pickGiven(profile, pack, rng, generation, warnings, surname);
+  const givenText = given.map((c) => c.text).join("");
+  const fullName = surname.text + givenText;
+  const allusion = pack.allusions[givenText]?.[0];
+  if (pack.blacklist.includes(fullName)) {
+    warnings.push({ code: "blacklist", message: "\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD\uFF1B\u5EFA\u8BAE\u91CD\u65B0\u751F\u6210" });
+  }
+  if (pack.famous.includes(fullName)) {
+    warnings.push({ code: "famous_collision", message: "\u4E0E\u5185\u7F6E\u5386\u53F2\u540D\u4EBA\u91CD\u540D" });
+  }
+  const styleTags = Array.from(new Set(given.flatMap((c) => findChar(pack, c.text)?.styles ?? [])));
+  const pattern = profile.class === "\u50E7\u9053" && given.length === 2 && RELIGIOUS_PREFIXES.includes(given[0].text) ? "religious-prefix" : void 0;
+  const score = scoreName(pack, given, rng, surname, profile);
+  return {
+    schemaVersion: "1.0",
+    fullName,
+    surname,
+    given,
+    generation,
+    pattern,
+    allusion,
+    styleTags,
+    era: profile.era,
+    gender: profile.gender,
+    class: profile.class,
+    score,
+    warnings,
+    seed,
+    profileHash: profileHash({
+      era: profile.era,
+      gender: profile.gender,
+      style: profile.style,
+      class: profile.class,
+      surname: profile.surname,
+      givenLength: profile.givenLength,
+      allusion: profile.allusion,
+      generation: profile.generation,
+      restraint: profile.restraint
+    }),
+    pack: packManifest(pack),
+    license: pack.license,
+    provenance: [`${pack.id}@${pack.version}`]
+  };
+}
+function generate(input, pack) {
+  return generateOne2(input, pack, 0);
+}
+function generateBatch(input, pack) {
+  const profile = resolveProfile(input);
+  const count = profile.count;
+  const baseSeed = seedFrom(profile.seed);
+  const results = [];
+  const seen = /* @__PURE__ */ new Set();
+  const surnameCount = /* @__PURE__ */ new Map();
+  const firstCount = /* @__PURE__ */ new Map();
+  const lastCount = /* @__PURE__ */ new Map();
+  const maxSurname = Math.max(2, Math.floor(count * 0.12));
+  const maxFirst = Math.max(2, Math.floor(count * 0.1));
+  const maxLast = Math.max(2, Math.floor(count * 0.08));
+  for (let i = 0; i < count; i++) {
+    let person = null;
+    const mmrPool = [];
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const salt = attempt === 0 ? i : i + attempt * 1000003;
+      const candidate = generateOne2(input, pack, salt);
+      if (seen.has(candidate.fullName)) continue;
+      if (profile.mode === "diverse" && count >= 20) {
+        const s = candidate.surname.text;
+        const f2 = candidate.given[0]?.text ?? "";
+        const l2 = candidate.given[candidate.given.length - 1]?.text ?? "";
+        const genFirst = candidate.generation?.position === "first";
+        const genLast = candidate.generation?.position === "second";
+        if ((surnameCount.get(s) ?? 0) >= maxSurname) continue;
+        if (!genFirst && (firstCount.get(f2) ?? 0) >= maxFirst) continue;
+        if (!genLast && (lastCount.get(l2) ?? 0) >= maxLast) continue;
+        mmrPool.push(candidate);
+        if (mmrPool.length >= 4) break;
+        continue;
+      }
+      person = candidate;
+      break;
+    }
+    if (!person && mmrPool.length > 0) {
+      person = pickByMmr(mmrPool, results);
+    }
+    if (!person) {
+      person = generateOne2(input, pack, i + 9000019);
+      person.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
+      if (profile.mode === "diverse" && count >= 20) {
+        person.warnings.push({ code: "quota_relaxed", message: "\u914D\u989D\u91CD\u63B7 8 \u6B21\u4ECD\u672A\u6EE1\u8DB3\uFF0C\u5DF2\u653E\u5BBD" });
+      }
+    }
+    seen.add(person.fullName);
+    surnameCount.set(person.surname.text, (surnameCount.get(person.surname.text) ?? 0) + 1);
+    const f = person.given[0]?.text ?? "";
+    const l = person.given[person.given.length - 1]?.text ?? "";
+    if (person.generation?.position !== "first") {
+      firstCount.set(f, (firstCount.get(f) ?? 0) + 1);
+    }
+    if (person.generation?.position !== "second") {
+      lastCount.set(l, (lastCount.get(l) ?? 0) + 1);
+    }
+    results.push(person);
+  }
+  return results;
+}
+function pickByMmr(candidates, selected) {
+  let best = candidates[0];
+  let bestScore = -Infinity;
+  for (const candidate of candidates) {
+    const maxSimilarity = selected.reduce(
+      (max, existing) => Math.max(max, similarity(candidate, existing)),
+      0
+    );
+    const score = candidate.score - 0.15 * maxSimilarity;
+    if (score > bestScore) {
+      best = candidate;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+function similarity(a, b) {
+  const ac = new Set(Array.from(a.given.map((c) => c.text).join("")));
+  const bc = new Set(Array.from(b.given.map((c) => c.text).join("")));
+  const union = /* @__PURE__ */ new Set([...ac, ...bc]);
+  let overlap = 0;
+  for (const ch of ac) if (bc.has(ch)) overlap++;
+  const jaccard = union.size === 0 ? 0 : overlap / union.size;
+  const sameSurname = a.surname.text === b.surname.text ? 0.3 : 0;
+  const sameFirst = a.given[0]?.text === b.given[0]?.text ? 0.2 : 0;
+  const sameLast = a.given[a.given.length - 1]?.text === b.given[b.given.length - 1]?.text ? 0.2 : 0;
+  const sameTone = a.given.map((c) => c.tone).join("") === b.given.map((c) => c.tone).join("") ? 0.1 : 0;
+  return jaccard * 0.2 + sameSurname + sameFirst + sameLast + sameTone;
+}
+function resolveGeneration(profile, pack, warnings) {
+  const config = profile.generation;
+  if (!config) return null;
+  if (config.applyTo && config.applyTo !== "all" && config.applyTo !== profile.gender) {
+    return null;
+  }
+  const preset = config.preset ? pack.generations.find((g) => g.id === config.preset) : void 0;
+  if (config.preset && !preset) {
+    throw new Error(`E_GENERATION_INVALID: unknown preset "${config.preset}"`);
+  }
+  const poem = normalizePoem(config.poem ?? preset?.chars ?? "");
+  if (poem.length < 2 || poem.length > 40) {
+    throw new Error("E_GENERATION_INVALID: \u5B57\u8F88\u8BD7\u9700\u4E3A 2\u201340 \u4E2A\u6C49\u5B57");
+  }
+  const index = config.index ?? 1;
+  if (!Number.isInteger(index) || index < 1 || index > poem.length) {
+    throw new Error(`E_GENERATION_INDEX: index ${index} \u8D8A\u754C\uFF081..${poem.length}\uFF09`);
+  }
+  if (profile.givenLength === 1) {
+    throw new Error("E_GENERATION_CONFLICT: \u5B57\u8F88\u6A21\u5F0F\u5F3A\u5236\u53CC\u5B57\u540D");
+  }
+  const position = config.position ?? preset?.position ?? "first";
+  const char = poem[index - 1];
+  if (!pack.chars.some((c) => c.char === char)) {
+    warnings.push({
+      code: "generation_char_outside_table",
+      message: `\u5B57\u8F88\u5B57\u300C${char}\u300D\u4E0D\u5728\u79CD\u5B50\u5B57\u8868\u5185\uFF0C\u6309\u7528\u6237\u8F93\u5165\u653E\u884C`
+    });
+  }
+  if (preset?.id === "ming-imperial" && profile.gender === "female") {
+    warnings.push({
+      code: "historical_gender_mismatch",
+      message: "\u660E\u7687\u5BA4\u5B57\u8F88\u901A\u5E38\u7528\u4E8E\u7537\u6027\uFF1B\u9700\u8981\u4E25\u683C\u5386\u53F2\u7528\u6CD5\u65F6\u8BBE applyTo=male"
+    });
+  }
+  if (preset?.id === "ming-imperial" && profile.era !== "ming" && profile.era !== "xianxia") {
+    warnings.push({
+      code: "era_mismatch",
+      message: "\u660E\u7687\u5BA4\u5B57\u8F88\u4E0E\u6240\u9009\u65F6\u4EE3\u4E0D\u4E00\u81F4\uFF1B\u4EC5\u63D0\u793A\uFF0C\u4E0D\u963B\u65AD"
+    });
+  }
+  return {
+    char,
+    index,
+    preset: preset?.id,
+    poem: config.poem ? poem : void 0,
+    position
+  };
+}
+function normalizePoem(raw) {
+  return raw.replace(/[^\u4e00-\u9fa5]/g, "");
+}
+function pickSurname(profile, pack, rng, generationChar) {
+  if (profile.surname) {
+    const known = pack.surnames.find((s) => s.text === profile.surname);
+    return {
+      text: profile.surname,
+      pinyin: known?.pinyin ?? "",
+      tone: 0,
+      sources: ["user"]
+    };
+  }
+  let candidates = pack.surnames;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const picked2 = rng.weightedPick(candidates, (s) => s.weight);
+    if (!generationChar || !picked2.text.includes(generationChar)) {
+      return { text: picked2.text, pinyin: picked2.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
+    }
+  }
+  const fallback = pack.surnames.find((s) => !generationChar || !s.text.includes(generationChar));
+  const picked = fallback ?? pack.surnames[0];
+  return { text: picked.text, pinyin: picked.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
+}
+function pickGiven(profile, pack, rng, generation, warnings, surname) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const chars = pickGivenOnce(profile, pack, rng, generation, warnings, surname);
+    const issues = phoneticIssues(surname, chars);
+    if (issues.length === 0 || attempt === 3) {
+      if (issues.length > 0) {
+        warnings.push({
+          code: "phonetic_relaxed",
+          message: `\u97F3\u5F62\u51B2\u7A81\uFF08${issues.join("/")}\uFF09\u91CD\u63B7 4 \u6B21\u4ECD\u5B58\u5728\uFF0C\u5DF2\u653E\u5BBD`
+        });
+      }
+      return chars;
+    }
+  }
+  return pickGivenOnce(profile, pack, rng, generation, warnings, surname);
+}
+function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
+  const surnameText = surname.text;
+  const surnameChars = new Set(Array.from(surnameText));
+  const wantSingle = profile.givenLength === 1 || profile.givenLength === "auto" && rng.next() < SINGLE_RATE[profile.era];
+  if (generation) {
+    const pair = findPairWithGeneration(pack, generation, profile, rng, surname);
+    if (pair && !Array.from(pair).some((c) => surnameChars.has(c))) {
+      return pair.split("").map((c) => toNameChar(pack, c, warnings));
+    }
+    const other = pickOtherChar(pack, profile, rng, surname, generation.char, surnameChars);
+    const chars = generation.position === "first" ? [generation.char, other] : [other, generation.char];
+    return chars.map((c) => toNameChar(pack, c, warnings));
+  }
+  if (profile.allusion && profile.givenLength !== 1) {
+    let pool2 = pack.givenNames.filter((entry) => {
+      if (entry.text.length !== 2) return false;
+      const hits = pack.allusions[entry.text];
+      if (!hits?.length) return false;
+      if (profile.allusion !== "all" && !hits.some((hit) => hit.corpus === profile.allusion)) {
+        return false;
+      }
+      if (entry.text[0] === entry.text[1]) return false;
+      if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
+      if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+      if (profile.gender === "any") return true;
+      return entry.text.split("").every((c) => {
+        const meta = findChar(pack, c);
+        return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
+      });
+    });
+    if (profile.style.length > 0) {
+      const styled = pool2.filter(
+        (entry) => Array.from(entry.text).some(
+          (c) => findChar(pack, c)?.styles.some((s) => profile.style.includes(s))
+        )
+      );
+      if (styled.length > 0) pool2 = styled;
+    }
+    if (pool2.length > 0) {
+      const sampled = sampleSubset(pool2, rng, 128);
+      const scored = sampled.map((entry) => ({
+        item: entry.text,
+        score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+      }));
+      return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
+    }
+  }
+  if (profile.class === "\u50E7\u9053" && profile.givenLength !== 1 && rng.next() < RELIGIOUS_PATTERN_CHANCE) {
+    const prefixes = RELIGIOUS_PREFIXES.filter((ch) => Boolean(findChar(pack, ch)));
+    if (prefixes.length > 0) {
+      const prefix = rng.pick(prefixes);
+      const other = pickOtherChar(pack, profile, rng, surname, prefix, surnameChars);
+      return [prefix, other].map((c) => toNameChar(pack, c, warnings));
+    }
+  }
+  if (wantSingle) {
+    const char = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars);
+    return [toNameChar(pack, char, warnings)];
+  }
+  let pool = pack.givenNames.filter((entry) => {
+    if (entry.text[0] === entry.text[1]) return false;
+    if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+    if (profile.gender === "any") return true;
+    return entry.text.split("").every((c) => {
+      const meta = findChar(pack, c);
+      return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
+    });
+  });
+  if (profile.style.length > 0) {
+    const styled = pool.filter(
+      (entry) => Array.from(entry.text).some(
+        (c) => findChar(pack, c)?.styles.some((s) => profile.style.includes(s))
+      )
+    );
+    if (styled.length > 0) pool = styled;
+  }
+  if (pool.length > 0) {
+    const sampled = sampleSubset(pool, rng, 128);
+    const scored = sampled.map((entry) => ({
+      item: entry.text,
+      score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+    }));
+    return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
+  }
+  const a = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars);
+  const b = pickOtherChar(pack, profile, rng, surname, a, surnameChars);
+  return [a, b].map((c) => toNameChar(pack, c, warnings));
+}
+function findPairWithGeneration(pack, generation, profile, rng, surname) {
+  const pos = generation.position === "first" ? 0 : 1;
+  const pool = pack.givenNames.filter((entry) => {
+    if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
+    if (profile.gender === "any") return true;
+    const meta = findChar(pack, entry.text[1 - pos]);
+    return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
+  });
+  if (pool.length === 0) return void 0;
+  const sampled = sampleSubset(pool, rng, 128);
+  const scored = sampled.map((entry) => ({
+    item: entry.text,
+    score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+  }));
+  return sampleTopK(scored, rng, 24);
+}
+function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set()) {
+  const pool = pack.chars.filter((c) => {
+    if (c.char === avoid) return false;
+    if (surnameChars.has(c.char)) return false;
+    if (profile.gender !== "any" && c.gender !== "neutral" && c.gender !== profile.gender) return false;
+    if (profile.style.length > 0 && c.styles.some((s) => profile.style.includes(s))) return true;
+    return profile.style.length === 0;
+  });
+  const fallback = pack.chars.filter((c) => c.char !== avoid && !surnameChars.has(c.char));
+  const source = pool.length > 0 ? pool : fallback;
+  const sampled = sampleSubset(source, rng, 96);
+  const scored = sampled.map((c) => ({
+    item: c.char,
+    score: scoreGiven(pack, surname, plainChars(pack, c.char), profile)
+  }));
+  return sampleTopK(scored, rng, 24);
+}
+function toNameChar(pack, char, warnings) {
+  const meta = findChar(pack, char);
+  if (!meta) {
+    warnings.push({
+      code: "char_outside_table",
+      message: `\u5B57\u7B26\u300C${char}\u300D\u4E0D\u5728\u79CD\u5B50\u5B57\u8868\u5185`
+    });
+    return { text: char, pinyin: "", tone: 0 };
+  }
+  return {
+    text: meta.char,
+    pinyin: meta.pinyin,
+    tone: meta.tone,
+    meaning: meta.meaning,
+    sources: [`${pack.id}:char`]
+  };
+}
+var charIndexCache = /* @__PURE__ */ new WeakMap();
+function findChar(pack, char) {
+  let index = charIndexCache.get(pack);
+  if (!index) {
+    index = new Map(pack.chars.map((c) => [c.char, c]));
+    charIndexCache.set(pack, index);
+  }
+  return index.get(char);
+}
+function splitPinyin(pinyin) {
+  const text = pinyin.toLowerCase().replace(/[^a-zü]/g, "").replace(/ü/g, "v");
+  if (!text) return null;
+  const initial = INITIALS.find((candidate) => text.startsWith(candidate)) ?? "";
+  return { initial, final: text.slice(initial.length) };
+}
+function phoneticIssues(surname, given) {
+  const issues = [];
+  if (given.length === 2) {
+    const [a, b] = given;
+    if (a.tone === 3 && b.tone === 3) issues.push("double_third");
+    if (a.tone > 0 && a.tone === b.tone) issues.push("same_tone");
+    const pa = splitPinyin(a.pinyin);
+    const pb = splitPinyin(b.pinyin);
+    if (pa && pb) {
+      if (pa.initial && pa.initial === pb.initial) issues.push("same_initial");
+      if (pa.final && pa.final === pb.final) issues.push("same_final");
+    }
+  }
+  const first = given[0];
+  if (!first) return Array.from(new Set(issues));
+  const ps = splitPinyin(surname.pinyin);
+  const pf = splitPinyin(first.pinyin);
+  if (ps && pf) {
+    if (ps.initial && ps.initial === pf.initial) issues.push("surname_same_initial");
+    if (ps.final && ps.final === pf.final) issues.push("surname_same_final");
+  }
+  return Array.from(new Set(issues));
+}
+function plainChars(pack, text) {
+  return Array.from(text).map((ch) => {
+    const meta = findChar(pack, ch);
+    return meta ? { text: meta.char, pinyin: meta.pinyin, tone: meta.tone, meaning: meta.meaning } : { text: ch, pinyin: "", tone: 0 };
+  });
+}
+function scoreGiven(pack, surname, given, profile) {
+  const metas = given.map((c) => findChar(pack, c.text)).filter((c) => Boolean(c));
+  const weight = metas.reduce((sum, c) => sum + c.weight, 0);
+  const base = 0.55 + Math.min(0.3, weight / 300);
+  const styleHits = metas.reduce(
+    (sum, c) => sum + (c.styles.some((tag) => profile.style.includes(tag)) ? 1 : 0),
+    0
+  );
+  const genderHits = profile.gender === "any" ? 0 : metas.filter((c) => c.gender === "neutral" || c.gender === profile.gender).length / Math.max(1, metas.length);
+  const issues = phoneticIssues(surname, given).length;
+  const strokes = metas.reduce((sum, c) => sum + (c.strokes ?? 0), 0);
+  const givenText = given.map((c) => c.text).join("");
+  const allusionBonus = pack.allusions[givenText]?.length ? 0.05 : 0;
+  const strokePenalty = strokes > 40 ? 0.1 : 0;
+  const radicalKey = (value) => value?.split(".")[0]?.replace(/'/g, "");
+  const radicalPenalty = metas.length === 2 && radicalKey(metas[0].radical) && radicalKey(metas[0].radical) === radicalKey(metas[1].radical) ? 0.08 : 0;
+  return Number(
+    (base + styleHits * 0.02 + genderHits * 0.01 + allusionBonus - issues * 0.03 - strokePenalty - radicalPenalty).toFixed(4)
+  );
+}
+function sampleSubset(items, rng, limit) {
+  if (items.length <= limit) return items;
+  const copy = items.slice();
+  for (let i = 0; i < limit; i++) {
+    const j = i + Math.floor(rng.next() * (copy.length - i));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, limit);
+}
+function sampleTopK(scored, rng, k, temperature = 0.8) {
+  const top = scored.slice().sort((a, b) => b.score - a.score).slice(0, k);
+  const max = top[0].score;
+  const weights = top.map((entry) => Math.exp((entry.score - max) / temperature));
+  const total = weights.reduce((sum, value) => sum + value, 0);
+  let cursor = rng.next() * total;
+  for (let i = 0; i < top.length; i++) {
+    cursor -= weights[i];
+    if (cursor <= 0) return top[i].item;
+  }
+  return top[top.length - 1].item;
+}
+function scoreName(pack, given, rng, surname, profile) {
+  return Number((scoreGiven(pack, surname, given, profile) + rng.next() * 0.05).toFixed(4));
+}
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+function normalizeCount(value) {
+  if (!Number.isFinite(value)) return 1;
+  return Math.min(1e5, Math.max(0, Math.trunc(value)));
+}
+
+// src/browser.ts
+function createGenerator(pack) {
+  if (!pack || !pack.id || !Array.isArray(pack.chars)) {
+    throw new Error("E_PACK_INVALID: \u9700\u8981\u4F20\u5165\u5DF2\u52A0\u8F7D\u7684 pack \u5BF9\u8C61");
+  }
+  return {
+    pack,
+    generate: (profile = {}) => generate(profile, pack),
+    generateBatch: (profile = {}) => generateBatch(profile, pack),
+    check: (name) => checkName(name, pack),
+    artifacts: (options = {}) => generateArtifacts(options, pack)
+  };
+}
+async function loadPack(url, headers = {}) {
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new Error(`E_PACK_FETCH: HTTP ${response.status}`);
+  const payload = await response.json();
+  return payload.data ?? payload;
+}
+export {
+  createGenerator,
+  loadPack
+};

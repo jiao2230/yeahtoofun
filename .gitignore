@@ -1,0 +1,17 @@
+node_modules/
+dist/
+out/
+out-*
+tmp-*
+tmp/
+/vendor/
+__pycache__/
+*.pyc
+cbdb_20261024/
+Chinese-Names-Corpus-master/
+chinese-poetry*/
+data/packs/cbdb/
+reports/data-audit.json
+reports/audit-summary.txt
+data/vendor/unihan/Unihan.zip
+*.log

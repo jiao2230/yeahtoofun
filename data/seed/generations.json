@@ -1,0 +1,23 @@
+[
+  {
+    "id": "ming-imperial",
+    "name": "明朝皇室（燕王系）",
+    "chars": "高瞻祁见祐厚载翊常由慈和怡伯仲简靖迪先猷",
+    "position": "first",
+    "note": "20 字；其他藩系另有字辈；祐为示字旁"
+  },
+  {
+    "id": "generic-a",
+    "name": "通用 A",
+    "chars": "文德承先世诗书启后贤忠孝传家远清和继泽长",
+    "position": "first",
+    "note": "项目自建，不对应真实宗族"
+  },
+  {
+    "id": "generic-b",
+    "name": "通用 B",
+    "chars": "永绍祖泽克振家声守正崇学光启文明诗礼传家",
+    "position": "first",
+    "note": "项目自建，不对应真实宗族"
+  }
+]

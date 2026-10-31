@@ -1,0 +1,9 @@
+{
+  "era": "xianxia",
+  "class": "仙门",
+  "style": ["仙逸", "清冷"],
+  "restraint": 0.6,
+  "generation": { "preset": "generic-a", "index": 3, "position": "first" },
+  "mode": "diverse",
+  "seed": 20261031
+}

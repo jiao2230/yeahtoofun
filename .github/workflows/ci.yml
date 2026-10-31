@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [22, 24]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install build tools
+        run: npm install --no-save typescript esbuild
+      - name: Core tests
+        run: node test/core.test.ts
+      - name: M3 tests
+        run: node test/m3.test.ts
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Browser bundle
+        run: npm run bundle:web
+      - name: CLI smoke
+        run: node src/cli.ts gen --count 1 --seed 1
+      - name: SDK smoke
+        run: node --input-type=module -e "import { createGenerator } from './src/sdk.ts'; console.log(createGenerator().generate({ seed: 1 }).fullName)"

@@ -1,0 +1,25 @@
+{
+  "name": "minglu",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "description": "名箓 · 本地古典取名器（M1/M2/M3 原型）",
+  "exports": {
+    ".": "./src/sdk.ts",
+    "./browser": "./src/browser.ts",
+    "./core": "./src/core/generator.ts",
+    "./types": "./src/core/types.ts"
+  },
+  "scripts": {
+    "gen": "node src/cli.ts gen",
+    "serve": "node src/cli.ts serve",
+    "test": "node test/core.test.ts && node test/m3.test.ts",
+    "test:m3": "node test/m3.test.ts",
+    "typecheck": "node scripts/typecheck.mjs",
+    "bundle:web": "node scripts/bundle-web.mjs",
+    "cli": "node src/cli.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

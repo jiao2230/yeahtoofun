@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>名箓 · 古典取名器</title>
+  <style>
+    :root { color-scheme: dark; --bg:#11130f; --panel:#1b1e17; --ink:#e8e3d3; --muted:#9b9788; --line:#34382d; --accent:#c9a86a; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.6 "Noto Serif SC", "Songti SC", serif; background:var(--bg); color:var(--ink); }
+    main { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { margin:0 0 6px; font-size:28px; letter-spacing:.08em; color:var(--accent); }
+    p.lead { margin:0 0 24px; color:var(--muted); }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+    label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    select, input { width:100%; padding:7px 8px; border:1px solid var(--line); border-radius:6px; background:#12140f; color:var(--ink); font:inherit; }
+    button { margin-top:14px; padding:9px 20px; border:1px solid var(--accent); border-radius:6px; background:transparent; color:var(--accent); font:inherit; cursor:pointer; }
+    button:hover { background:rgba(201,168,106,.12); }
+    #status { margin:14px 0; color:var(--muted); min-height:1.6em; }
+    #names { display:grid; gap:10px; margin-top:8px; }
+    .name { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:#151710; }
+    .name b { font-size:22px; letter-spacing:.06em; color:var(--accent); margin-right:10px; }
+    .tag { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:1px 8px; font-size:11px; color:var(--muted); margin-left:6px; }
+    .chars { margin-top:8px; color:var(--muted); font-size:13px; }
+    .warn { color:#d8a15a; font-size:12px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>名箓</h1>
+  <p class="lead">本地古典取名器 · 姓 + 名（+ 字辈）· 不联网 · 同 seed 可复现</p>
+
+  <form id="form" class="panel">
+    <div class="grid">
+      <div><label for="era">时代</label><select id="era">
+        <option value="song">宋</option><option value="tang">唐</option><option value="ming">明</option>
+        <option value="qing">清</option><option value="weijin">魏晋</option><option value="han">汉</option>
+        <option value="preqin">先秦</option><option value="xianxia">仙侠</option>
+      </select></div>
+      <div><label for="gender">性别</label><select id="gender">
+        <option value="any">不限</option><option value="male">男</option><option value="female">女</option>
+      </select></div>
+      <div><label for="style">风格</label><select id="style">
+        <option value="">不限</option><option value="雅正">雅正</option><option value="清冷">清冷</option>
+        <option value="雄浑">雄浑</option><option value="仙逸">仙逸</option><option value="质朴">质朴</option>
+        <option value="绮丽">绮丽</option>
+      </select></div>
+      <div><label for="klass">阶层</label><select id="klass">
+        <option value="寒门">寒门</option><option value="士族">士族</option><option value="仙门">仙门</option>
+        <option value="江湖">江湖</option><option value="宫闱">宫闱</option><option value="僧道">僧道</option>
+      </select></div>
+      <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="4" pattern="[一-龥]{1,4}" title="只允许 1–4 个汉字" placeholder="如 沈"></div>
+      <div><label for="count">数量 1–20</label><input id="count" type="number" min="1" max="20" value="5"></div>
+      <div><label for="seed">种子（可空）</label><input id="seed" placeholder="如 42"></div>
+      <div><label for="preset">字辈</label><select id="preset">
+        <option value="">不启用</option><option value="ming-imperial">明皇室</option>
+        <option value="generic-a">通用 A</option><option value="generic-b">通用 B</option>
+      </select></div>
+      <div><label for="index">字辈序号</label><input id="index" type="number" min="1" value="1"></div>
+      <div><label for="token">Token（局域网时）</label><input id="token" placeholder="可空"></div>
+    </div>
+    <button type="submit">生成</button>
+    <div id="status"></div>
+    <div id="names"></div>
+  </form>
+</main>
+<script type="module">
+import { createGenerator, loadPack } from '/minglu-sdk.js';
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const surnameInput = $('surname');
+function validateSurname() {
+  const value = surnameInput.value.trim();
+  const ok = value === '' || /^[\u4e00-\u9fa5]{1,4}$/.test(value);
+  surnameInput.setCustomValidity(ok ? '' : '姓氏只允许 1–4 个汉字');
+}
+surnameInput.addEventListener('input', validateSurname);
+validateSurname();
+
+let gen = null;
+async function ensureGenerator(token, status) {
+  if (gen) return gen;
+  status.textContent = '首次生成：加载本地 pack…';
+  const headers = token ? { authorization: 'Bearer ' + token } : {};
+  const pack = await loadPack('/v1/pack', headers);
+  gen = createGenerator(pack);
+  return gen;
+}
+
+$('form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = $('status');
+  const names = $('names');
+  status.textContent = '生成中…'; names.innerHTML = '';
+  const style = $('style').value;
+  const surname = surnameInput.value.trim();
+  if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
+    status.textContent = '姓氏只能填 1–4 个汉字，不能含数字/字母/符号';
+    return;
+  }
+  const profile = {
+    era: $('era').value,
+    gender: $('gender').value,
+    class: $('klass').value,
+    ...(style ? { style: [style] } : {}),
+    ...(surname ? { surname } : {}),
+    ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
+  };
+  const seed = $('seed').value.trim();
+  const token = $('token').value.trim();
+  try {
+    const generator = await ensureGenerator(token, status);
+    const people = generator.generateBatch({
+      ...profile,
+      count: Number($('count').value) || 5,
+      ...(seed ? { seed: /^\d+$/.test(seed) ? Number(seed) : seed } : {}),
+    });
+    status.textContent = `已生成 ${people.length} 个 · pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
+    names.innerHTML = people.map((p) => {
+      const tags = (p.styleTags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+      const chars = p.given.map((c) => `${esc(c.text)} ${esc(c.pinyin || '')}${c.tone ? ' ' + c.tone : ''}`).join(' · ');
+      const genTag = p.generation ? `<span class="tag">字辈 ${esc(p.generation.char)}</span>` : '';
+      const allusion = p.allusion ? `<div class="chars">典：${esc(p.allusion.source)}「${esc(p.allusion.line)}」</div>` : '';
+      const warnings = (p.warnings || []).map((w) => `<div class="warn">${esc(w.message)}</div>`).join('');
+      return `<div class="name"><b>${esc(p.fullName)}</b>${genTag}${tags}<div class="chars">${chars}</div>${allusion}${warnings}</div>`;
+    }).join('');
+  } catch (error) {
+    status.textContent = '失败：' + error.message;
+  }
+});
+</script>
+</body>
+</html>
