@@ -126,6 +126,7 @@ async function run(): Promise<void> {
   if (command === 'pill' && positional[0] === 'gen') {
     const kindRaw = stringFlag(flags, 'kind');
     const suffixRaw = stringFlag(flags, 'suffix');
+    const modeRaw = stringFlag(flags, 'mode');
     if (
       kindRaw !== undefined &&
       kindRaw !== 'any' &&
@@ -141,12 +142,16 @@ async function run(): Promise<void> {
     if (suffixRaw !== undefined && !['丹', '膏', '散', '露'].includes(suffixRaw)) {
       throw new Error('E_PILL_SUFFIX: --suffix 只支持 丹/膏/散/露');
     }
+    if (modeRaw !== undefined && !['function', 'high', 'any'].includes(modeRaw)) {
+      throw new Error('E_PILL_MODE: --mode 只支持 function/high/any');
+    }
     const pills = generatePills(
       {
         count: numberFlag(flags, 'count') ?? 5,
         seed: seedFlag(flags),
         kind: kindRaw as '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用' | 'any' | undefined,
         suffix: suffixRaw as '丹' | '膏' | '散' | '露' | undefined,
+        mode: modeRaw as 'function' | 'high' | 'any' | undefined,
       },
       pack,
     );
@@ -155,7 +160,7 @@ async function run(): Promise<void> {
     } else {
       for (const pill of pills) {
         const warning = pill.warnings.length > 0 ? `  ⚠ ${summarizeWarnings(pill.warnings)}` : '';
-        console.log(`${pill.fullName}  [${pill.kind} / ${pill.suffix}]  seed=${pill.seed}`);
+        console.log(`${pill.fullName}  [${pill.tier}/${pill.mode} / ${pill.kind} / ${pill.suffix}]  seed=${pill.seed}`);
         console.log(`  ${pill.description}${warning}`);
       }
     }
@@ -431,7 +436,7 @@ function printHelp(): void {
   minglu generation list
   minglu sect gen [--count N] [--alignment 正道|魔道|中立|any] [--seed S] [--json]
   minglu sect list
-  minglu pill gen [--count N] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
+  minglu pill gen [--count N] [--mode function|high|any] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
   minglu pill list
   minglu technique gen [--count N] [--kind 意象|动作|程度] [--suffix 诀|功|真经|妙法|篇|典|章] [--seed S] [--json]
   minglu technique list

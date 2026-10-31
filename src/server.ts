@@ -175,6 +175,9 @@ export function startServer(options: ServerOptions = {}): Server {
             suffix: (body.suffix === undefined
               ? 'any'
               : String(body.suffix)) as PillSuffixText | 'any',
+            mode: (body.mode === undefined
+              ? 'any'
+              : String(body.mode)) as 'function' | 'high' | 'any',
           },
           pack,
         );

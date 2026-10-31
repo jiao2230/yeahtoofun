@@ -1,7 +1,6 @@
 import { packManifest } from './manifest.ts';
 import { Rng, seedForItem, seedFrom } from './rng.ts';
 import type {
-  PillCore,
   PillKind,
   PillModifier,
   PillName,
@@ -13,23 +12,29 @@ import type {
 
 const DEFAULT_COUNT = 5;
 const MAX_COUNT = 10_000;
+const HIGH_GRADE_CHANCE = 0.3;
 
 export function generatePills(options: PillOptions = {}, pack: SeedPack): PillName[] {
   const count = Math.min(MAX_COUNT, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT)));
   if (count === 0) return [];
   const kind = options.kind ?? 'any';
   const suffixText = options.suffix ?? 'any';
+  const mode = options.mode ?? 'any';
+  if (!['function', 'high', 'any'].includes(mode)) {
+    throw new Error('E_PILL_MODE: --mode 只支持 function/high/any');
+  }
+  const effectiveMode = mode === 'any' && kind !== 'any' ? 'function' : mode;
 
-  const modifiers = pack.pills.modifiers.filter(
-    (modifier) => kind === 'any' || modifier.kind === kind,
-  );
+  const modifiers = pack.pills.modifiers;
   const cores = pack.pills.cores.filter((core) => kind === 'any' || core.kind === kind);
   const suffixes = pack.pills.suffixes.filter(
     (suffix) => suffixText === 'any' || suffix.text === suffixText,
   );
-  if (modifiers.length === 0) throw new Error(`E_PILL_KIND: 没有「${kind}」修饰词`);
-  if (cores.length === 0) throw new Error(`E_PILL_KIND: 没有「${kind}」核心`);
+  const highModifiers = pack.pills.highModifiers;
+  if (modifiers.length === 0) throw new Error('E_PILL_PACK: 修饰词为空');
+  if (cores.length === 0) throw new Error(`E_PILL_KIND: 没有「${kind}」功效`);
   if (suffixes.length === 0) throw new Error(`E_PILL_SUFFIX: 未知后缀「${suffixText}」`);
+  if (highModifiers.length === 0) throw new Error('E_PILL_PACK: 高级修饰词为空');
 
   const baseSeed = seedFrom(options.seed);
   const pills: PillName[] = [];
@@ -39,7 +44,7 @@ export function generatePills(options: PillOptions = {}, pack: SeedPack): PillNa
     let pill: PillName | null = null;
     for (let attempt = 0; attempt < 10; attempt++) {
       const seed = seedForItem(baseSeed, i + attempt * 1_000_003);
-      const candidate = generateOne(seed, pack, modifiers, cores, suffixes);
+      const candidate = generateOne(seed, pack, modifiers, cores, highModifiers, suffixes, effectiveMode);
       if (pack.pills.blacklist.includes(candidate.fullName)) continue;
       if (seen.has(candidate.fullName)) continue;
       pill = candidate;
@@ -47,7 +52,7 @@ export function generatePills(options: PillOptions = {}, pack: SeedPack): PillNa
     }
     if (!pill) {
       const seed = seedForItem(baseSeed, i + 9_000_019);
-      pill = generateOne(seed, pack, modifiers, cores, suffixes);
+      pill = generateOne(seed, pack, modifiers, cores, highModifiers, suffixes, effectiveMode);
       pill.warnings.push({ code: 'duplicate_relaxed', message: '多次重掷仍重复，已放宽' });
     }
     seen.add(pill.fullName);
@@ -61,88 +66,136 @@ function generateOne(
   pack: SeedPack,
   modifiers: PillPack['modifiers'],
   cores: PillPack['cores'],
+  highModifiers: PillPack['highModifiers'],
   suffixes: PillPack['suffixes'],
+  requestedMode: 'function' | 'high' | 'any',
 ): PillName {
   const rng = new Rng(seed);
-  const long = rng.next() < 0.55;
-  const modifier = pickWithLength(rng, modifiers, long ? 2 : 1);
-  const compatibleCores = cores.filter(
-    (core) =>
-      modifier.kind === '天地' || core.kind === modifier.kind || core.kind === '通用',
-  );
-  const targetedCores = modifier.targets?.length
-    ? compatibleCores.filter((core) => modifier.targets!.includes(core.text))
-    : compatibleCores;
-  let core = pickWithLength(
-    rng,
-    targetedCores.length > 0 ? targetedCores : compatibleCores.length > 0 ? compatibleCores : cores,
-    long ? 2 : 1,
-  );
+  const high = requestedMode === 'high' || (requestedMode === 'any' && rng.next() < HIGH_GRADE_CHANCE);
+  return high
+    ? generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes)
+    : generateFunction(seed, pack, rng, modifiers, cores, suffixes);
+}
+
+function generateFunction(
+  seed: number,
+  pack: SeedPack,
+  rng: Rng,
+  modifiers: PillPack['modifiers'],
+  cores: PillPack['cores'],
+  suffixes: PillPack['suffixes'],
+): PillName {
+  // 普通丹药：修饰词可以没有；功效必须是核心，不能再拿功能词当前缀。
+  // 修饰词只取双字天地意象，避免“玄 + 坚髓”这类单字硬拼。
+  const modifierPool = modifiers.filter((item) => item.text.length === 2);
+  const modifier: PillModifier =
+    rng.next() < 0.65
+      ? rng.weightedPick(
+          modifierPool.length > 0 ? modifierPool : modifiers,
+          (item) => item.weight,
+        )
+      : { text: '', kind: '天地', weight: 1 };
+  let core = rng.weightedPick(cores, (item) => item.weight);
   if (modifier.text === core.text) {
-    const alternatives = (targetedCores.length > 0 ? targetedCores : compatibleCores).filter(
-      (item) => item.text !== modifier.text,
-    );
-    if (alternatives.length === 0) {
-      throw new Error('E_PILL_SLOT_DUPLICATE: 修饰词与核心不能同词');
-    }
-    core = pickWithLength(rng, alternatives, long ? 2 : 1);
+    const alternatives = cores.filter((item) => item.text !== modifier.text);
+    if (alternatives.length === 0) throw new Error('E_PILL_SLOT_DUPLICATE: 修饰词与功效不能同词');
+    core = rng.weightedPick(alternatives, (item) => item.weight);
   }
   const forbidden = new Set([modifier.text, core.text]);
-  const compatibleSuffixes = suffixes.filter(
+  const suffixPool = suffixes.filter(
     (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text),
   );
-  if (compatibleSuffixes.length === 0) {
-    throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用后缀（前缀/核心不能与后缀同词）');
+  if (suffixPool.length === 0) {
+    throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用后缀（修饰词/功效不能与后缀同词）');
   }
-  const suffix = rng.weightedPick(compatibleSuffixes, (item) => {
-      let weight = item.weight;
-      if (item.preferred.includes(modifier.kind)) weight += 2;
-      if (item.preferred.includes(core.kind)) weight += 2;
-      if (item.text === '丹') weight += 1;
-      return weight;
-    },
-  );
+  const suffix = rng.weightedPick(suffixPool, (item) => weightedSuffix(item, modifier.kind, core.kind));
   const fullName = `${modifier.text}${core.text}${suffix.text}`;
-  const warnings: PillName['warnings'] = [];
-  if (pack.pills.blacklist.includes(fullName)) {
-    warnings.push({ code: 'pill_blacklist', message: '与内置真实/专有丹药名冲突' });
-  }
-  const kindBonus = modifier.kind === core.kind ? 0.08 : 0;
-  const suffixBonus = suffix.preferred.includes(core.kind) ? 0.05 : 0;
-  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + kindBonus + suffixBonus).toFixed(4));
-  const tags = [...new Set([modifier.kind, core.kind, suffix.text])];
+  const tags = [core.kind, modifier.text ? '修饰' : '无修饰', suffix.text];
   return {
     schemaVersion: '1.0',
     fullName,
+    mode: 'function',
+    tier: '普通',
     modifier: modifier.text,
     core: core.text,
     suffix: suffix.text,
     kind: core.kind,
     tags,
-    description: `以「${modifier.text}」为引，主「${core.text}」，炼为${suffix.text}。`,
-    score,
+    description: modifier.text
+      ? `以「${modifier.text}」为引，主「${core.text}」，炼为${suffix.text}。`
+      : `以「${core.text}」为主，炼为${suffix.text}。`,
+    score: Number((0.55 + rng.next() * 0.3 + compatibilityBonus(modifier.kind, core.kind)).toFixed(4)),
     seed,
-    warnings,
+    warnings: [],
     pack: packManifest(pack),
     license: pack.license,
   };
 }
 
-function pickWithLength<T extends { text: string; weight: number }>(
+function generateHighGrade(
+  seed: number,
+  pack: SeedPack,
   rng: Rng,
-  items: T[],
-  length: number,
-): T {
-  const filtered = items.filter((item) => item.text.length === length);
-  if (filtered.length === 0) return rng.weightedPick(items, (item) => item.weight);
-  return rng.weightedPick(filtered, (item) => item.weight);
+  modifiers: PillPack['modifiers'],
+  highModifiers: PillPack['highModifiers'],
+  suffixes: PillPack['suffixes'],
+): PillName {
+  // 高级通用丹药：意象修饰 + 意象修饰 + 丹药类型；不绑定功效。
+  const firstPool = modifiers.filter((item) => item.text.length === 2);
+  const first = rng.weightedPick(firstPool.length > 0 ? firstPool : modifiers, (item) => item.weight);
+  const secondPool = highModifiers.filter((item) => item.text !== first.text);
+  if (secondPool.length === 0) {
+    throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用的高级修饰词');
+  }
+  const second = rng.weightedPick(secondPool, (item) => item.weight);
+  if (first.text === second.text) {
+    throw new Error('E_PILL_SLOT_DUPLICATE: 两个修饰词不能同词');
+  }
+  const forbidden = new Set([first.text, second.text]);
+  const suffixPool = suffixes.filter((item) => !forbidden.has(item.text));
+  if (suffixPool.length === 0) throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用后缀');
+  const suffix = rng.weightedPick(suffixPool, (item) => item.weight + (item.text === '丹' ? 4 : 0));
+  const fullName = `${first.text}${second.text}${suffix.text}`;
+  return {
+    schemaVersion: '1.0',
+    fullName,
+    mode: 'high',
+    tier: '高级',
+    modifier: first.text,
+    core: second.text,
+    suffix: suffix.text,
+    kind: '通用',
+    tags: ['高级', '双修饰', suffix.text],
+    description: `以「${first.text}」为基，合「${second.text}」，炼为高级${suffix.text}。`,
+    score: Number((0.78 + rng.next() * 0.18).toFixed(4)),
+    seed,
+    warnings: [],
+    pack: packManifest(pack),
+    license: pack.license,
+  };
+}
+
+function weightedSuffix(
+  item: PillPack['suffixes'][number],
+  modifierKind: PillKind,
+  coreKind: PillKind,
+): number {
+  let weight = item.weight;
+  if (item.preferred.includes(modifierKind)) weight += 2;
+  if (item.preferred.includes(coreKind)) weight += 2;
+  if (item.text === '丹') weight += 1;
+  return weight;
+}
+
+function compatibilityBonus(modifierKind: PillKind, coreKind: PillKind): number {
+  return modifierKind === coreKind ? 0.08 : 0;
 }
 
 function suffixAllowed(kind: PillKind, suffix: PillSuffixText): boolean {
   if (suffix === '丹') return true;
-  if (kind === '通用') return true;
+  if (kind === '通用') return suffix === '膏' || suffix === '散' || suffix === '露';
   if (kind === '突破') return suffix === '散';
-  if (kind === '疗伤') return suffix === '膏' || suffix === '散';
+  if (kind === '疗伤') return suffix === '膏' || suffix === '散' || suffix === '露';
   if (kind === '淬体') return suffix === '膏';
   if (kind === '神魂') return suffix === '散';
   return true;

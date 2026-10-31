@@ -284,21 +284,27 @@ function generateOne2(seed, pack, prefixes, suffixes) {
 // src/core/pill.ts
 var DEFAULT_COUNT2 = 5;
 var MAX_COUNT2 = 1e4;
+var HIGH_GRADE_CHANCE = 0.3;
 function generatePills(options = {}, pack) {
   const count = Math.min(MAX_COUNT2, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT2)));
   if (count === 0) return [];
   const kind = options.kind ?? "any";
   const suffixText = options.suffix ?? "any";
-  const modifiers = pack.pills.modifiers.filter(
-    (modifier) => kind === "any" || modifier.kind === kind
-  );
+  const mode = options.mode ?? "any";
+  if (!["function", "high", "any"].includes(mode)) {
+    throw new Error("E_PILL_MODE: --mode \u53EA\u652F\u6301 function/high/any");
+  }
+  const effectiveMode = mode === "any" && kind !== "any" ? "function" : mode;
+  const modifiers = pack.pills.modifiers;
   const cores = pack.pills.cores.filter((core) => kind === "any" || core.kind === kind);
   const suffixes = pack.pills.suffixes.filter(
     (suffix) => suffixText === "any" || suffix.text === suffixText
   );
-  if (modifiers.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u4FEE\u9970\u8BCD`);
-  if (cores.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u6838\u5FC3`);
+  const highModifiers = pack.pills.highModifiers;
+  if (modifiers.length === 0) throw new Error("E_PILL_PACK: \u4FEE\u9970\u8BCD\u4E3A\u7A7A");
+  if (cores.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u529F\u6548`);
   if (suffixes.length === 0) throw new Error(`E_PILL_SUFFIX: \u672A\u77E5\u540E\u7F00\u300C${suffixText}\u300D`);
+  if (highModifiers.length === 0) throw new Error("E_PILL_PACK: \u9AD8\u7EA7\u4FEE\u9970\u8BCD\u4E3A\u7A7A");
   const baseSeed = seedFrom(options.seed);
   const pills = [];
   const seen = /* @__PURE__ */ new Set();
@@ -306,7 +312,7 @@ function generatePills(options = {}, pack) {
     let pill = null;
     for (let attempt = 0; attempt < 10; attempt++) {
       const seed = seedForItem(baseSeed, i + attempt * 1000003);
-      const candidate = generateOne3(seed, pack, modifiers, cores, suffixes);
+      const candidate = generateOne3(seed, pack, modifiers, cores, highModifiers, suffixes, effectiveMode);
       if (pack.pills.blacklist.includes(candidate.fullName)) continue;
       if (seen.has(candidate.fullName)) continue;
       pill = candidate;
@@ -314,7 +320,7 @@ function generatePills(options = {}, pack) {
     }
     if (!pill) {
       const seed = seedForItem(baseSeed, i + 9000019);
-      pill = generateOne3(seed, pack, modifiers, cores, suffixes);
+      pill = generateOne3(seed, pack, modifiers, cores, highModifiers, suffixes, effectiveMode);
       pill.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
     }
     seen.add(pill.fullName);
@@ -322,80 +328,100 @@ function generatePills(options = {}, pack) {
   }
   return pills;
 }
-function generateOne3(seed, pack, modifiers, cores, suffixes) {
+function generateOne3(seed, pack, modifiers, cores, highModifiers, suffixes, requestedMode) {
   const rng = new Rng(seed);
-  const long = rng.next() < 0.55;
-  const modifier = pickWithLength(rng, modifiers, long ? 2 : 1);
-  const compatibleCores = cores.filter(
-    (core2) => modifier.kind === "\u5929\u5730" || core2.kind === modifier.kind || core2.kind === "\u901A\u7528"
-  );
-  const targetedCores = modifier.targets?.length ? compatibleCores.filter((core2) => modifier.targets.includes(core2.text)) : compatibleCores;
-  let core = pickWithLength(
-    rng,
-    targetedCores.length > 0 ? targetedCores : compatibleCores.length > 0 ? compatibleCores : cores,
-    long ? 2 : 1
-  );
+  const high = requestedMode === "high" || requestedMode === "any" && rng.next() < HIGH_GRADE_CHANCE;
+  return high ? generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes) : generateFunction(seed, pack, rng, modifiers, cores, suffixes);
+}
+function generateFunction(seed, pack, rng, modifiers, cores, suffixes) {
+  const modifierPool = modifiers.filter((item) => item.text.length === 2);
+  const modifier = rng.next() < 0.65 ? rng.weightedPick(
+    modifierPool.length > 0 ? modifierPool : modifiers,
+    (item) => item.weight
+  ) : { text: "", kind: "\u5929\u5730", weight: 1 };
+  let core = rng.weightedPick(cores, (item) => item.weight);
   if (modifier.text === core.text) {
-    const alternatives = (targetedCores.length > 0 ? targetedCores : compatibleCores).filter(
-      (item) => item.text !== modifier.text
-    );
-    if (alternatives.length === 0) {
-      throw new Error("E_PILL_SLOT_DUPLICATE: \u4FEE\u9970\u8BCD\u4E0E\u6838\u5FC3\u4E0D\u80FD\u540C\u8BCD");
-    }
-    core = pickWithLength(rng, alternatives, long ? 2 : 1);
+    const alternatives = cores.filter((item) => item.text !== modifier.text);
+    if (alternatives.length === 0) throw new Error("E_PILL_SLOT_DUPLICATE: \u4FEE\u9970\u8BCD\u4E0E\u529F\u6548\u4E0D\u80FD\u540C\u8BCD");
+    core = rng.weightedPick(alternatives, (item) => item.weight);
   }
   const forbidden = /* @__PURE__ */ new Set([modifier.text, core.text]);
-  const compatibleSuffixes = suffixes.filter(
+  const suffixPool = suffixes.filter(
     (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text)
   );
-  if (compatibleSuffixes.length === 0) {
-    throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00\uFF08\u524D\u7F00/\u6838\u5FC3\u4E0D\u80FD\u4E0E\u540E\u7F00\u540C\u8BCD\uFF09");
+  if (suffixPool.length === 0) {
+    throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00\uFF08\u4FEE\u9970\u8BCD/\u529F\u6548\u4E0D\u80FD\u4E0E\u540E\u7F00\u540C\u8BCD\uFF09");
   }
-  const suffix = rng.weightedPick(
-    compatibleSuffixes,
-    (item) => {
-      let weight = item.weight;
-      if (item.preferred.includes(modifier.kind)) weight += 2;
-      if (item.preferred.includes(core.kind)) weight += 2;
-      if (item.text === "\u4E39") weight += 1;
-      return weight;
-    }
-  );
+  const suffix = rng.weightedPick(suffixPool, (item) => weightedSuffix(item, modifier.kind, core.kind));
   const fullName = `${modifier.text}${core.text}${suffix.text}`;
-  const warnings = [];
-  if (pack.pills.blacklist.includes(fullName)) {
-    warnings.push({ code: "pill_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u4E39\u836F\u540D\u51B2\u7A81" });
-  }
-  const kindBonus = modifier.kind === core.kind ? 0.08 : 0;
-  const suffixBonus = suffix.preferred.includes(core.kind) ? 0.05 : 0;
-  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + kindBonus + suffixBonus).toFixed(4));
-  const tags = [.../* @__PURE__ */ new Set([modifier.kind, core.kind, suffix.text])];
+  const tags = [core.kind, modifier.text ? "\u4FEE\u9970" : "\u65E0\u4FEE\u9970", suffix.text];
   return {
     schemaVersion: "1.0",
     fullName,
+    mode: "function",
+    tier: "\u666E\u901A",
     modifier: modifier.text,
     core: core.text,
     suffix: suffix.text,
     kind: core.kind,
     tags,
-    description: `\u4EE5\u300C${modifier.text}\u300D\u4E3A\u5F15\uFF0C\u4E3B\u300C${core.text}\u300D\uFF0C\u70BC\u4E3A${suffix.text}\u3002`,
-    score,
+    description: modifier.text ? `\u4EE5\u300C${modifier.text}\u300D\u4E3A\u5F15\uFF0C\u4E3B\u300C${core.text}\u300D\uFF0C\u70BC\u4E3A${suffix.text}\u3002` : `\u4EE5\u300C${core.text}\u300D\u4E3A\u4E3B\uFF0C\u70BC\u4E3A${suffix.text}\u3002`,
+    score: Number((0.55 + rng.next() * 0.3 + compatibilityBonus(modifier.kind, core.kind)).toFixed(4)),
     seed,
-    warnings,
+    warnings: [],
     pack: packManifest(pack),
     license: pack.license
   };
 }
-function pickWithLength(rng, items, length) {
-  const filtered = items.filter((item) => item.text.length === length);
-  if (filtered.length === 0) return rng.weightedPick(items, (item) => item.weight);
-  return rng.weightedPick(filtered, (item) => item.weight);
+function generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes) {
+  const firstPool = modifiers.filter((item) => item.text.length === 2);
+  const first = rng.weightedPick(firstPool.length > 0 ? firstPool : modifiers, (item) => item.weight);
+  const secondPool = highModifiers.filter((item) => item.text !== first.text);
+  if (secondPool.length === 0) {
+    throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u7684\u9AD8\u7EA7\u4FEE\u9970\u8BCD");
+  }
+  const second = rng.weightedPick(secondPool, (item) => item.weight);
+  if (first.text === second.text) {
+    throw new Error("E_PILL_SLOT_DUPLICATE: \u4E24\u4E2A\u4FEE\u9970\u8BCD\u4E0D\u80FD\u540C\u8BCD");
+  }
+  const forbidden = /* @__PURE__ */ new Set([first.text, second.text]);
+  const suffixPool = suffixes.filter((item) => !forbidden.has(item.text));
+  if (suffixPool.length === 0) throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00");
+  const suffix = rng.weightedPick(suffixPool, (item) => item.weight + (item.text === "\u4E39" ? 4 : 0));
+  const fullName = `${first.text}${second.text}${suffix.text}`;
+  return {
+    schemaVersion: "1.0",
+    fullName,
+    mode: "high",
+    tier: "\u9AD8\u7EA7",
+    modifier: first.text,
+    core: second.text,
+    suffix: suffix.text,
+    kind: "\u901A\u7528",
+    tags: ["\u9AD8\u7EA7", "\u53CC\u4FEE\u9970", suffix.text],
+    description: `\u4EE5\u300C${first.text}\u300D\u4E3A\u57FA\uFF0C\u5408\u300C${second.text}\u300D\uFF0C\u70BC\u4E3A\u9AD8\u7EA7${suffix.text}\u3002`,
+    score: Number((0.78 + rng.next() * 0.18).toFixed(4)),
+    seed,
+    warnings: [],
+    pack: packManifest(pack),
+    license: pack.license
+  };
+}
+function weightedSuffix(item, modifierKind, coreKind) {
+  let weight = item.weight;
+  if (item.preferred.includes(modifierKind)) weight += 2;
+  if (item.preferred.includes(coreKind)) weight += 2;
+  if (item.text === "\u4E39") weight += 1;
+  return weight;
+}
+function compatibilityBonus(modifierKind, coreKind) {
+  return modifierKind === coreKind ? 0.08 : 0;
 }
 function suffixAllowed(kind, suffix) {
   if (suffix === "\u4E39") return true;
-  if (kind === "\u901A\u7528") return true;
+  if (kind === "\u901A\u7528") return suffix === "\u818F" || suffix === "\u6563" || suffix === "\u9732";
   if (kind === "\u7A81\u7834") return suffix === "\u6563";
-  if (kind === "\u7597\u4F24") return suffix === "\u818F" || suffix === "\u6563";
+  if (kind === "\u7597\u4F24") return suffix === "\u818F" || suffix === "\u6563" || suffix === "\u9732";
   if (kind === "\u6DEC\u4F53") return suffix === "\u818F";
   if (kind === "\u795E\u9B42") return suffix === "\u6563";
   return true;
@@ -486,11 +512,11 @@ function generateOne4(seed, pack, heads, suffixes) {
     headPool = heads;
     headLength = 2;
   }
-  const head = pickWithLength2(rng, headPool, headLength, headLength === 2 ? 1 : 2);
+  const head = pickWithLength(rng, headPool, headLength, headLength === 2 ? 1 : 2);
   const degreeSet = head.kind === "\u7A0B\u5EA6" ? head.text.length === 1 ? DEGREE_ONE_MIDDLES : DEGREE_MIDDLES : null;
   const middlePool = degreeSet === null ? pack.techniques.middles : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
   const middleCandidates = middlePool.filter((item) => item.text !== head.text);
-  const middle = long || mid ? pickWithLength2(
+  const middle = long || mid ? pickWithLength(
     rng,
     middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles,
     2,
@@ -539,7 +565,7 @@ function generateOne4(seed, pack, heads, suffixes) {
     license: pack.license
   };
 }
-function pickWithLength2(rng, items, length, fallbackLength) {
+function pickWithLength(rng, items, length, fallbackLength) {
   const exact = items.filter((item) => item.text.length === length);
   if (exact.length > 0) return rng.weightedPick(exact, (item) => item.weight);
   const fallback = items.filter((item) => item.text.length === fallbackLength);

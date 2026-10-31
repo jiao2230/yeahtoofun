@@ -104,6 +104,9 @@
     <form id="form-pill">
       <div class="grid">
         <div><label for="count-pill">数量 1–30</label><input id="count-pill" type="number" min="1" max="30" value="8"></div>
+        <div><label for="mode-pill">类型</label><select id="mode-pill">
+          <option value="any">不限</option><option value="function">普通功效丹</option><option value="high">高级通用丹</option>
+        </select></div>
         <div><label for="kind-pill">功效</label><select id="kind-pill">
           <option value="any">不限</option><option value="天地">天地</option><option value="突破">突破</option>
           <option value="疗伤">疗伤</option><option value="淬体">淬体</option><option value="神魂">神魂</option>
@@ -260,16 +263,18 @@ $('form-pill').addEventListener('submit', async (event) => {
     const generator = await ensureGenerator(status);
     const kind = $('kind-pill').value;
     const suffix = $('suffix-pill').value;
+    const mode = $('mode-pill').value;
     const pills = generator.pills({
       count: Number($('count-pill').value) || 8,
       kind,
       suffix,
+      mode,
       ...(seedOf('seed-pill') !== undefined ? { seed: seedOf('seed-pill') } : {}),
     });
     status.textContent = `已生成 ${pills.length} 个丹药 · ${packLine(generator)}`;
     results.innerHTML = pills.map((pill) => {
       const tags = (pill.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-      return `<div class="name"><b>${esc(pill.fullName)}</b>${tags}<div class="chars">${esc(pill.description)}</div></div>`;
+      return `<div class="name"><b>${esc(pill.fullName)}</b><span class="tag">${esc(pill.tier)}</span>${tags}<div class="chars">${esc(pill.description)}</div></div>`;
     }).join('');
   } catch (error) {
     status.textContent = '失败：' + error.message;

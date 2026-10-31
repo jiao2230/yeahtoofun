@@ -156,9 +156,15 @@ export interface PillSuffix {
   preferred: PillKind[];
 }
 
+export interface PillHighModifier {
+  text: string;
+  weight: number;
+}
+
 export interface PillPack {
   modifiers: PillModifier[];
   cores: PillCore[];
+  highModifiers: PillHighModifier[];
   suffixes: PillSuffix[];
   blacklist: string[];
 }
@@ -166,6 +172,8 @@ export interface PillPack {
 export interface PillName {
   schemaVersion: '1.0';
   fullName: string;
+  mode: 'function' | 'high';
+  tier: '普通' | '高级';
   modifier: string;
   core: string;
   suffix: PillSuffixText;
@@ -184,6 +192,7 @@ export interface PillOptions {
   seed?: number | string;
   kind?: PillKind | 'any';
   suffix?: PillSuffixText | 'any';
+  mode?: 'function' | 'high' | 'any';
 }
 
 export type TechniqueKind = '意象' | '动作' | '程度';

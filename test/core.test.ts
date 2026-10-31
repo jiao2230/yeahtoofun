@@ -233,12 +233,32 @@ test('pill names are deterministic and follow modifier+core+suffix', () => {
   }
 });
 
+test('high-grade pills use two modifiers and are marked 高级', () => {
+  const pills = generatePills({ count: 12, seed: 42, mode: 'high' }, pack);
+  assert.equal(pills.length, 12);
+  for (const pill of pills) {
+    assert.equal(pill.mode, 'high');
+    assert.equal(pill.tier, '高级');
+    assert.equal(pill.fullName.length, 5);
+    assert.ok(pill.tags.includes('高级'));
+  }
+});
+
 test('pill kind and suffix filters are respected', () => {
   const pills = generatePills({ count: 20, seed: 9, kind: '疗伤', suffix: '膏' }, pack);
   assert.ok(pills.length > 0);
   for (const pill of pills) {
     assert.equal(pill.kind, '疗伤');
     assert.equal(pill.suffix, '膏');
+  }
+});
+
+test('pill function mode does not stack functional modifiers', () => {
+  const pills = generatePills({ count: 500, seed: 3, mode: 'function' }, pack);
+  for (const pill of pills) {
+    assert.ok(!(pill.modifier === '凝气' && pill.core === '聚气'), pill.fullName);
+    assert.ok(!(pill.modifier === '宁神' && pill.core === '安神'), pill.fullName);
+    assert.ok(!(pill.modifier === '凝' && pill.core === '破障'), pill.fullName);
   }
 });
 
@@ -249,14 +269,28 @@ test('pill batch is unique', () => {
 
 test('pill examples are reproducible from seeds', () => {
   const examples: Array<[number, string]> = [
-    [2709, '恒阳固元丹'],
-    [5133, '玄玉续气膏'],
-    [841, '壮骨丹'],
-    [808, '渡厄丹'],
-    [383, '破障丹'],
-    [352, '宁神散'],
-    [11355, '太阴凝华露'],
-    [601, '幻月绝情散'],
+    [219, '续命丹'],
+    [1721, '延寿丹'],
+    [197, '回春丹'],
+    [384, '驻颜露'],
+    [558, '益气丹'],
+    [32, '破妄丹'],
+    [502, '护脉膏'],
+    [165, '洗髓丹'],
+    [824, '聚气丹'],
+    [1461, '归元丹'],
+    [108, '通脉散'],
+    [6, '祛邪丹'],
+    [622, '复生丹'],
+    [531, '回阳丹'],
+    [20, '定魂丹'],
+    [6096, '恒阳固元丹'],
+    [1827, '玄玉续气膏'],
+    [8060, '太阴凝华露'],
+    [15165, '幻月绝情散'],
+    [6757, '青木生机丹'],
+    [2357, '玄霄龙象丹'],
+    [4764, '九天造化丹'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generatePills({ count: 1, seed }, pack)[0]?.fullName, expected);
@@ -306,6 +340,7 @@ test('pill and technique never repeat a slot word as suffix', () => {
   const pillPack = JSON.parse(JSON.stringify(pack)) as typeof pack;
   pillPack.pills.modifiers.push({ text: '丹', kind: '通用', weight: 1000 });
   pillPack.pills.cores.push({ text: '丹', kind: '通用', weight: 1000 });
+  pillPack.pills.highModifiers.push({ text: '丹', weight: 1000 });
   for (const pill of generatePills({ count: 300, seed: 1 }, pillPack)) {
     assert.notEqual(pill.modifier, pill.suffix);
     assert.notEqual(pill.core, pill.suffix);

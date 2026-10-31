@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、42 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、44 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -45,8 +45,9 @@ node src/cli.ts artifact gen --count 6 --seed 42
 # 宗门：双字前缀 + 宗/门/派/宫/教
 node src/cli.ts sect gen --count 9 --seed 42
 
-# 丹药：修饰词 + 核心 + 丹/膏/散/露
+# 丹药：普通功效丹 / 高级通用丹
 node src/cli.ts pill gen --count 8 --seed 42
+node src/cli.ts pill gen --count 8 --mode high --seed 42
 
 # 功法：A + B + C；B 可以是空槽 ∅
 node src/cli.ts technique gen --count 8 --seed 42
@@ -55,7 +56,7 @@ node src/cli.ts technique gen --count 8 --seed 42
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（36 core ＋ 6 M3）
+# 测试（38 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -277,7 +278,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 43.7 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 45.6 KB）
 ```
 
 ```js
@@ -377,7 +378,10 @@ Chinese-Names-Corpus 里有大量**真实现代姓名**。名箓只取聚合统�
 - **功法构词式**：`[意象/元素/动作/程度] + [动名词/空] + [诀/功/真经/妙法/篇/典/章]`。例：青木＋归元＋真经；大＋镇山＋诀；吐纳＋∅＋功（即吐纳功）。`∅` 表示中间不生成字，不是字「无」。（输入的「决」按「诀」处理）
 - **法宝构词式**：`[材质/意象/功能] + [器型：剑/刀/鼎/钟/塔/印/珠/幡/镜]`。例：神意珠、铁剑、赤焰刀、万魂幡、翻天印、澄明镜。2–5 字为主，**不带品阶**。
 - **宗门构词式**：`[双字前缀] + [宗/门/派/宫/教]`。例：绝意门、青林宗、栖霞门、问剑宗、衔山派、赤阳派、东极宫、天魔宫、虺心教。前缀带正道/魔道/中立与气质标签。
-- **丹药构词式**：`[修饰词] + [核心功效/主灵材] + [丹/膏/散/露]`。例：恒阳固元丹、玄玉续气膏、壮骨丹、渡厄丹、破障丹、宁神散、太阴凝华露、幻月绝情散。3 字短名 / 5 字长名。
+- **丹药构词式**：
+  - 普通功效丹：`[修饰词（可无）] + [功效] + [丹/膏/散/露]`。例：壮骨丹、渡厄丹、破障丹、宁神散、恒阳固元丹、玄玉续气膏、太阴凝华露、幻月绝情散。
+  - 高级通用丹：`[天地意象] + [高级意象] + [丹/膏/散/露]`。例：青木生机丹、玄霄龙象丹、九天造化丹。高级丹单独 `tier=高级`，不绑定功效。
+  - 不允许“功能词修饰 + 功能功效”叠加，如 `凝+破障`、`宁神+安神`、`凝气+聚气`。
 - **优先级**：M5；先法宝，再做宗门/丹药，最后功法（语义搭配最难）。地名、洞府不做。
 
 ---
@@ -402,14 +406,14 @@ minglu/
   types/
     node-shim.d.ts # 本地最小 Node 类型声明（无 @types/node 时用）
   test/
-    core.test.ts   # 36 项核心断言
+    core.test.ts   # 38 项核心断言
     m3.test.ts     # 6 项 M3/OpenAPI 断言
   scripts/
     typecheck.mjs  # 定位本地 tsc
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 43.7 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 45.6 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -449,7 +453,7 @@ minglu/
 | `minglu generation list` | 列出内置字辈模板 |
 | `minglu sect gen` | 生成宗门名（双字前缀 + 宗/门/派/宫/教） |
 | `minglu sect list` | 列出宗门前缀/后缀 |
-| `minglu pill gen` | 生成丹药名（修饰词 + 核心 + 丹/膏/散/露） |
+| `minglu pill gen` | 生成丹药名（普通功效丹 / 高级通用丹） |
 | `minglu pill list` | 列出丹药词表 |
 | `minglu technique gen` | 生成功法名（三槽，B 槽可为空） |
 | `minglu technique list` | 列出功法词表 |
@@ -603,9 +607,9 @@ minglu/
 20. **M3 状态**：CI 6/6 全绿；AC-58 OpenCC 往返 100/100；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。Web UI 已扩展为姓名/宗门/丹药/功法四标签页。
 21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
 22. **宗门 seed 原型**：107 个双字前缀、5 个后缀；只做“前缀 + 宗/门/派/宫/教”，没有四字前缀、驻地、传承、职阶体系。正道/魔道/中立是手工标签，不是语义模型判断。
-23. **丹药 seed 原型**：50 个修饰词、69 个核心、4 个后缀；只做 3 字/5 字，核心与修饰词的搭配靠 targets 手工约束，不做完整药性/丹方体系。
+23. **丹药 seed 原型**：29 个天地修饰词、48 个功效、30 个高级意象、4 个后缀；普通丹 3/5 字，高级丹 5 字；不做完整药性/丹方体系。
 24. **功法 seed 原型**：68 个起手词、34 个中段、7 个后缀；只做 A+B+C / A+∅+C，没有品阶、修炼阶段、威力数值。B 槽为空时输出中 `middle` 为 `null`，不会写成「无」。
-25. **专名黑名单**：法宝 31、宗门 48、丹药 28、功法 44；只覆盖常见真实/知名专名，不是完整法律检索，扩表时需继续补。
+25. **专名黑名单**：法宝 31、宗门 48、丹药 26、功法 44；只覆盖常见真实/知名专名，不是完整法律检索，扩表时需继续补。
 
 ---
 
@@ -620,7 +624,7 @@ minglu/
 | **M4** | CBDB pack、碰撞索引 | AC-01~10、74~79 |
 | **M5** | 法宝/宗门/丹药/功法 | 单独 AC |
 
-> M5 的 16 条验收标准见 [需求拆解与验收标准](docs/名箓-需求拆解与验收标准.md) 9.2 节；其中 M5-09 规定丹药/功法的前缀/核心/中段不得与后缀同词，M5-16 黑名单为法宝 31 / 宗门 48 / 丹药 28 / 功法 44。词表扩展候选见 [来源审计](reports/lexicon-source-audit-20261101.md)。
+> M5 的 16 条验收标准见 [需求拆解与验收标准](docs/名箓-需求拆解与验收标准.md) 9.2 节；其中 M5-09 规定丹药/功法的前缀/核心/中段不得与后缀同词，M5-16 黑名单为法宝 31 / 宗门 48 / 丹药 26 / 功法 44。词表扩展候选见 [来源审计](reports/lexicon-source-audit-20261101.md)。
 
 ## 实现状态（M1/M2/M3 原型：seed + core + cbdb）
 
@@ -632,22 +636,22 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 43.7 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 45.6 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 42 项（36 core ＋ 6 M3；`npm test`） |
+| 测试 | ✅ 44 项（38 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |
 | 法宝 seed 原型 | 🟡 材质/意象/功能 + 器型；无品阶 |
 | 宗门 seed 原型 | 🟡 107 个双字前缀 + 5 个后缀；正道/魔道/中立 + 气质标签 |
-| 丹药 seed 原型 | 🟡 50 个修饰词 + 69 个核心 + 4 个后缀；3 字/5 字 |
+| 丹药 seed 原型 | 🟡 29 天地修饰 + 48 功效 + 30 高级意象 + 4 后缀；普通/高级双模式 |
 | 功法 seed 原型 | 🟡 68 个起手词 + 34 个中段 + 7 个后缀；B 槽可为空 |
 | 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |
 | M3 验收 | ✅ CI 6/6 全绿；AC-58 往返 100/100；Web UI 四标签页 |
-| M5 验收 | ✅ 16/16；黑名单：法宝 31 / 宗门 48 / 丹药 28 / 功法 44 |
+| M5 验收 | ✅ 16/16；黑名单：法宝 31 / 宗门 48 / 丹药 26 / 功法 44 |
 
 ---
 
