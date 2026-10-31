@@ -1,5 +1,7 @@
 # 名箓 · Minglu
 
+[![CI](https://github.com/jiao2230/yeahtoofun/actions/workflows/ci.yml/badge.svg)](https://github.com/jiao2230/yeahtoofun/actions/workflows/ci.yml)
+
 > 从六十万人物的姓名史里，取一个像那个时代的名字。
 >
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
@@ -574,7 +576,7 @@ minglu/
 17. **core pack 偏现代**：CNC 是 120 万现代姓名分布，core 只是数据分层，不代表商用计划；历史风格请用 cbdb 包。
 18. **core pack 姓氏拼音**：只覆盖 seed 的 72 个同姓，其余姓氏拼音为空；名用字拼音来自拼音表。
 19. **M2 未完成项**：盲评未做；偏旁/笔画已从 Unihan 18.0 导入（102,999 字，pack 内全量覆盖）；楚辞/诗经/论语合并 23,217 个双字索引已接入，`文澜` 不在其中。softmax/top-K 与 MMR 已实现。
-20. **M3 未完成项**：CI 配置已写但未在 GitHub 实跑；Web UI 仍是最小内联页。静态 pack 已通过 `/v1/pack` 接进浏览器 SDK；RSS/泄漏基准、OpenAPI 校验、`tsc --noEmit`、浏览器 bundle 已完成，见 [reports/m3-bench-20261031.md](reports/m3-bench-20261031.md)。
+20. **M3 剩余**：AC-58 的 OpenCC 往返未单独验证；Web UI 仍是最小内联页。CI 矩阵 6/6 全绿；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。
 21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
 
 ---
@@ -602,7 +604,7 @@ minglu/
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
 | 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
 | OpenAPI | ✅ 3.1；5 项结构/ref/路由/零网络测试 |
-| CI | 🟡 `.github/workflows/ci.yml` 已写；未在 GitHub 实跑 |
+| CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
 | 测试 | ✅ 27 项（22 core ＋ 5 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
@@ -611,7 +613,7 @@ minglu/
 | 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |
-| M3 验收 | 🟡 HTTP/Web/SDK/OpenAPI/typecheck/bundle/perf 已过；CI 未实跑 |
+| M3 验收 | 🟡 CI 6/6 全绿；AC-58 OpenCC 往返未单独验证；Web UI 仍是最小页 |
 
 ---
 
