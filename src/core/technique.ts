@@ -1,5 +1,6 @@
 import { packManifest } from './manifest.ts';
 import { Rng, seedForItem, seedFrom } from './rng.ts';
+import { isBlockedConflict, slotConflict, slotPenalty } from './slot.ts';
 import type {
   TechniqueHead,
   TechniqueKind,
@@ -14,15 +15,12 @@ const DEFAULT_COUNT = 5;
 const MAX_COUNT = 10_000;
 
 const DEGREE_MIDDLES = new Set([
-  '镇山', '归元', '凝神', '养气', '淬体', '通脉', '洗髓', '长生', '守一',
-  '还虚', '合道', '周天', '玄关', '紫府', '结丹', '化婴', '雷法', '剑意',
-  '聚灵', '养魂', '炼魄',
+  '镇山', '归元', '凝神', '养气', '淬体', '通脉', '守一',
+  '还虚', '合道', '周天', '玄关', '紫府', '结丹', '化婴',
+  '雷法', '剑意', '聚灵', '养魂', '炼魄',
 ]);
 
-const DEGREE_ONE_MIDDLES = new Set([
-  '镇山', '归元', '凝神', '养气', '淬体', '通脉', '洗髓',
-  '周天', '玄关', '紫府', '雷法', '剑意',
-]);
+const DEGREE_ONE_MIDDLES = new Set(['镇山', '周天', '玄关', '紫府', '雷法', '剑意']);
 
 export function generateTechniques(
   options: TechniqueOptions = {},
@@ -91,16 +89,23 @@ function generateOne(
     degreeSet === null
       ? pack.techniques.middles
       : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
-  const middleCandidates = middlePool.filter((item) => item.text !== head.text);
+  const middleCandidates = middlePool.filter(
+    (item) => !isBlockedConflict(slotConflict(head.text, item.text)),
+  );
   const middle =
     long || mid
       ? pickWithLength(
           rng,
-          middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles,
+          middleCandidates.length > 0
+            ? middleCandidates
+            : pack.techniques.middles.filter(
+                (item) => !isBlockedConflict(slotConflict(head.text, item.text)),
+              ),
           2,
           2,
         ).text
       : null;
+  const middleConflict = slotConflict(head.text, middle);
   const forbidden = new Set([head.text, ...(middle ? [middle] : [])]);
   const suffixPool = suffixes.filter((item) => {
     if (forbidden.has(item.text)) return false;
@@ -125,7 +130,9 @@ function generateOne(
     warnings.push({ code: 'technique_blacklist', message: '与内置真实/专有功名冲突' });
   }
   const emptyBonus = middle === null && suffix.text === '功' ? 0.05 : 0;
-  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + emptyBonus).toFixed(4));
+  const score = Number(
+    Math.max(0, 0.55 + rng.next() * 0.3 + emptyBonus - slotPenalty(middleConflict)).toFixed(4),
+  );
   const tags = [head.kind, middle === null ? '空槽' : '双段', suffix.text];
   const middleText = middle ? `中段「${middle}」` : '中段为空（不生成「无」）';
   return {

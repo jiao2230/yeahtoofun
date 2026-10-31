@@ -281,6 +281,24 @@ function generateOne2(seed, pack, prefixes, suffixes) {
   };
 }
 
+// src/core/slot.ts
+function slotConflict(a, b) {
+  if (!a || !b) return null;
+  if (a === b) return "exact";
+  if (a[0] === b[0]) return "prefix";
+  const left = new Set(Array.from(a));
+  return Array.from(b).some((char) => left.has(char)) ? "overlap" : null;
+}
+function slotPenalty(conflict) {
+  if (conflict === "exact") return 0.2;
+  if (conflict === "prefix") return 0.15;
+  if (conflict === "overlap") return 0.06;
+  return 0;
+}
+function isBlockedConflict(conflict) {
+  return conflict === "exact" || conflict === "prefix";
+}
+
 // src/core/pill.ts
 var DEFAULT_COUNT2 = 5;
 var MAX_COUNT2 = 1e4;
@@ -340,11 +358,15 @@ function generateFunction(seed, pack, rng, modifiers, cores, suffixes) {
     (item) => item.weight
   ) : { text: "", kind: "\u5929\u5730", weight: 1 };
   let core = rng.weightedPick(cores, (item) => item.weight);
-  if (modifier.text === core.text) {
-    const alternatives = cores.filter((item) => item.text !== modifier.text);
-    if (alternatives.length === 0) throw new Error("E_PILL_SLOT_DUPLICATE: \u4FEE\u9970\u8BCD\u4E0E\u529F\u6548\u4E0D\u80FD\u540C\u8BCD");
+  const coreConflict = slotConflict(modifier.text, core.text);
+  if (isBlockedConflict(coreConflict)) {
+    const alternatives = cores.filter((item) => !isBlockedConflict(slotConflict(modifier.text, item.text)));
+    if (alternatives.length === 0) {
+      throw new Error("E_PILL_SLOT_DUPLICATE: \u4FEE\u9970\u8BCD\u4E0E\u529F\u6548\u4E0D\u80FD\u540C\u8BCD\u6216\u540C\u9996\u5B57");
+    }
     core = rng.weightedPick(alternatives, (item) => item.weight);
   }
+  const finalCoreConflict = slotConflict(modifier.text, core.text);
   const forbidden = /* @__PURE__ */ new Set([modifier.text, core.text]);
   const suffixPool = suffixes.filter(
     (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text)
@@ -366,7 +388,12 @@ function generateFunction(seed, pack, rng, modifiers, cores, suffixes) {
     kind: core.kind,
     tags,
     description: modifier.text ? `\u4EE5\u300C${modifier.text}\u300D\u4E3A\u5F15\uFF0C\u4E3B\u300C${core.text}\u300D\uFF0C\u70BC\u4E3A${suffix.text}\u3002` : `\u4EE5\u300C${core.text}\u300D\u4E3A\u4E3B\uFF0C\u70BC\u4E3A${suffix.text}\u3002`,
-    score: Number((0.55 + rng.next() * 0.3 + compatibilityBonus(modifier.kind, core.kind)).toFixed(4)),
+    score: Number(
+      Math.max(
+        0,
+        0.55 + rng.next() * 0.3 + compatibilityBonus(modifier.kind, core.kind) - slotPenalty(finalCoreConflict)
+      ).toFixed(4)
+    ),
     seed,
     warnings: [],
     pack: packManifest(pack),
@@ -376,14 +403,14 @@ function generateFunction(seed, pack, rng, modifiers, cores, suffixes) {
 function generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes) {
   const firstPool = modifiers.filter((item) => item.text.length === 2);
   const first = rng.weightedPick(firstPool.length > 0 ? firstPool : modifiers, (item) => item.weight);
-  const secondPool = highModifiers.filter((item) => item.text !== first.text);
+  const secondPool = highModifiers.filter(
+    (item) => !isBlockedConflict(slotConflict(first.text, item.text))
+  );
   if (secondPool.length === 0) {
     throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u7684\u9AD8\u7EA7\u4FEE\u9970\u8BCD");
   }
   const second = rng.weightedPick(secondPool, (item) => item.weight);
-  if (first.text === second.text) {
-    throw new Error("E_PILL_SLOT_DUPLICATE: \u4E24\u4E2A\u4FEE\u9970\u8BCD\u4E0D\u80FD\u540C\u8BCD");
-  }
+  const modifierConflict = slotConflict(first.text, second.text);
   const forbidden = /* @__PURE__ */ new Set([first.text, second.text]);
   const suffixPool = suffixes.filter((item) => !forbidden.has(item.text));
   if (suffixPool.length === 0) throw new Error("E_PILL_SLOT_DUPLICATE: \u6CA1\u6709\u53EF\u7528\u540E\u7F00");
@@ -400,7 +427,9 @@ function generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes) 
     kind: "\u901A\u7528",
     tags: ["\u9AD8\u7EA7", "\u53CC\u4FEE\u9970", suffix.text],
     description: `\u4EE5\u300C${first.text}\u300D\u4E3A\u57FA\uFF0C\u5408\u300C${second.text}\u300D\uFF0C\u70BC\u4E3A\u9AD8\u7EA7${suffix.text}\u3002`,
-    score: Number((0.78 + rng.next() * 0.18).toFixed(4)),
+    score: Number(
+      Math.max(0, 0.78 + rng.next() * 0.18 - slotPenalty(modifierConflict)).toFixed(4)
+    ),
     seed,
     warnings: [],
     pack: packManifest(pack),
@@ -437,8 +466,6 @@ var DEGREE_MIDDLES = /* @__PURE__ */ new Set([
   "\u517B\u6C14",
   "\u6DEC\u4F53",
   "\u901A\u8109",
-  "\u6D17\u9AD3",
-  "\u957F\u751F",
   "\u5B88\u4E00",
   "\u8FD8\u865A",
   "\u5408\u9053",
@@ -453,20 +480,7 @@ var DEGREE_MIDDLES = /* @__PURE__ */ new Set([
   "\u517B\u9B42",
   "\u70BC\u9B44"
 ]);
-var DEGREE_ONE_MIDDLES = /* @__PURE__ */ new Set([
-  "\u9547\u5C71",
-  "\u5F52\u5143",
-  "\u51DD\u795E",
-  "\u517B\u6C14",
-  "\u6DEC\u4F53",
-  "\u901A\u8109",
-  "\u6D17\u9AD3",
-  "\u5468\u5929",
-  "\u7384\u5173",
-  "\u7D2B\u5E9C",
-  "\u96F7\u6CD5",
-  "\u5251\u610F"
-]);
+var DEGREE_ONE_MIDDLES = /* @__PURE__ */ new Set(["\u9547\u5C71", "\u5468\u5929", "\u7384\u5173", "\u7D2B\u5E9C", "\u96F7\u6CD5", "\u5251\u610F"]);
 function generateTechniques(options = {}, pack) {
   const count = Math.min(MAX_COUNT3, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT3)));
   if (count === 0) return [];
@@ -515,13 +529,18 @@ function generateOne4(seed, pack, heads, suffixes) {
   const head = pickWithLength(rng, headPool, headLength, headLength === 2 ? 1 : 2);
   const degreeSet = head.kind === "\u7A0B\u5EA6" ? head.text.length === 1 ? DEGREE_ONE_MIDDLES : DEGREE_MIDDLES : null;
   const middlePool = degreeSet === null ? pack.techniques.middles : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
-  const middleCandidates = middlePool.filter((item) => item.text !== head.text);
+  const middleCandidates = middlePool.filter(
+    (item) => !isBlockedConflict(slotConflict(head.text, item.text))
+  );
   const middle = long || mid ? pickWithLength(
     rng,
-    middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles,
+    middleCandidates.length > 0 ? middleCandidates : pack.techniques.middles.filter(
+      (item) => !isBlockedConflict(slotConflict(head.text, item.text))
+    ),
     2,
     2
   ).text : null;
+  const middleConflict = slotConflict(head.text, middle);
   const forbidden = /* @__PURE__ */ new Set([head.text, ...middle ? [middle] : []]);
   const suffixPool = suffixes.filter((item) => {
     if (forbidden.has(item.text)) return false;
@@ -546,7 +565,9 @@ function generateOne4(seed, pack, heads, suffixes) {
     warnings.push({ code: "technique_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u529F\u540D\u51B2\u7A81" });
   }
   const emptyBonus = middle === null && suffix.text === "\u529F" ? 0.05 : 0;
-  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + emptyBonus).toFixed(4));
+  const score = Number(
+    Math.max(0, 0.55 + rng.next() * 0.3 + emptyBonus - slotPenalty(middleConflict)).toFixed(4)
+  );
   const tags = [head.kind, middle === null ? "\u7A7A\u69FD" : "\u53CC\u6BB5", suffix.text];
   const middleText = middle ? `\u4E2D\u6BB5\u300C${middle}\u300D` : "\u4E2D\u6BB5\u4E3A\u7A7A\uFF08\u4E0D\u751F\u6210\u300C\u65E0\u300D\uFF09";
   return {

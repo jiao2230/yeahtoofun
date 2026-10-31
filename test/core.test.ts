@@ -6,6 +6,7 @@ import { generateArtifacts } from '../src/core/artifact.ts';
 import { generateSects } from '../src/core/sect.ts';
 import { generatePills } from '../src/core/pill.ts';
 import { generateTechniques } from '../src/core/technique.ts';
+import { slotConflict } from '../src/core/slot.ts';
 import { checkName } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
 
@@ -333,6 +334,31 @@ test('technique examples are reproducible from seeds', () => {
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generateTechniques({ count: 1, seed }, pack)[0]?.fullName, expected);
+  }
+});
+
+test('slot similarity catches shared leading chars', () => {
+  assert.equal(slotConflict('紫极', '紫霄'), 'prefix');
+  assert.equal(slotConflict('太上', '太初'), 'prefix');
+  assert.equal(slotConflict('玄阴', '玄关'), 'prefix');
+  assert.equal(slotConflict('青木', '木灵'), 'overlap');
+  assert.equal(slotConflict('青木', '生机'), null);
+});
+
+test('high-grade pills avoid shared-leading modifier pairs', () => {
+  const highPack = JSON.parse(JSON.stringify(pack)) as typeof pack;
+  highPack.pills.modifiers.push({ text: '紫极', kind: '天地', weight: 1000 });
+  highPack.pills.highModifiers.push({ text: '紫霄', weight: 1000 });
+  for (const pill of generatePills({ count: 300, seed: 1, mode: 'high' }, highPack)) {
+    assert.notEqual(slotConflict(pill.modifier, pill.core), 'prefix');
+  }
+});
+
+test('degree techniques do not pair 极/至/大 with 洗髓', () => {
+  const techniques = generateTechniques({ count: 300, seed: 3, kind: '程度' }, pack);
+  for (const technique of techniques) {
+    assert.notEqual(technique.middle, '洗髓');
+    assert.ok(!['极', '至'].includes(technique.head));
   }
 });
 

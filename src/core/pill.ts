@@ -1,5 +1,6 @@
 import { packManifest } from './manifest.ts';
 import { Rng, seedForItem, seedFrom } from './rng.ts';
+import { isBlockedConflict, slotConflict, slotPenalty } from './slot.ts';
 import type {
   PillKind,
   PillModifier,
@@ -96,11 +97,15 @@ function generateFunction(
         )
       : { text: '', kind: '天地', weight: 1 };
   let core = rng.weightedPick(cores, (item) => item.weight);
-  if (modifier.text === core.text) {
-    const alternatives = cores.filter((item) => item.text !== modifier.text);
-    if (alternatives.length === 0) throw new Error('E_PILL_SLOT_DUPLICATE: 修饰词与功效不能同词');
+  const coreConflict = slotConflict(modifier.text, core.text);
+  if (isBlockedConflict(coreConflict)) {
+    const alternatives = cores.filter((item) => !isBlockedConflict(slotConflict(modifier.text, item.text)));
+    if (alternatives.length === 0) {
+      throw new Error('E_PILL_SLOT_DUPLICATE: 修饰词与功效不能同词或同首字');
+    }
     core = rng.weightedPick(alternatives, (item) => item.weight);
   }
+  const finalCoreConflict = slotConflict(modifier.text, core.text);
   const forbidden = new Set([modifier.text, core.text]);
   const suffixPool = suffixes.filter(
     (item) => !forbidden.has(item.text) && suffixAllowed(core.kind, item.text),
@@ -124,7 +129,15 @@ function generateFunction(
     description: modifier.text
       ? `以「${modifier.text}」为引，主「${core.text}」，炼为${suffix.text}。`
       : `以「${core.text}」为主，炼为${suffix.text}。`,
-    score: Number((0.55 + rng.next() * 0.3 + compatibilityBonus(modifier.kind, core.kind)).toFixed(4)),
+    score: Number(
+      Math.max(
+        0,
+        0.55 +
+          rng.next() * 0.3 +
+          compatibilityBonus(modifier.kind, core.kind) -
+          slotPenalty(finalCoreConflict),
+      ).toFixed(4),
+    ),
     seed,
     warnings: [],
     pack: packManifest(pack),
@@ -143,14 +156,14 @@ function generateHighGrade(
   // 高级通用丹药：意象修饰 + 意象修饰 + 丹药类型；不绑定功效。
   const firstPool = modifiers.filter((item) => item.text.length === 2);
   const first = rng.weightedPick(firstPool.length > 0 ? firstPool : modifiers, (item) => item.weight);
-  const secondPool = highModifiers.filter((item) => item.text !== first.text);
+  const secondPool = highModifiers.filter(
+    (item) => !isBlockedConflict(slotConflict(first.text, item.text)),
+  );
   if (secondPool.length === 0) {
     throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用的高级修饰词');
   }
   const second = rng.weightedPick(secondPool, (item) => item.weight);
-  if (first.text === second.text) {
-    throw new Error('E_PILL_SLOT_DUPLICATE: 两个修饰词不能同词');
-  }
+  const modifierConflict = slotConflict(first.text, second.text);
   const forbidden = new Set([first.text, second.text]);
   const suffixPool = suffixes.filter((item) => !forbidden.has(item.text));
   if (suffixPool.length === 0) throw new Error('E_PILL_SLOT_DUPLICATE: 没有可用后缀');
@@ -167,7 +180,9 @@ function generateHighGrade(
     kind: '通用',
     tags: ['高级', '双修饰', suffix.text],
     description: `以「${first.text}」为基，合「${second.text}」，炼为高级${suffix.text}。`,
-    score: Number((0.78 + rng.next() * 0.18).toFixed(4)),
+    score: Number(
+      Math.max(0, 0.78 + rng.next() * 0.18 - slotPenalty(modifierConflict)).toFixed(4),
+    ),
     seed,
     warnings: [],
     pack: packManifest(pack),
