@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门生成器、CLI、HTTP、31 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门生成器、CLI、HTTP、32 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -49,7 +49,7 @@ node src/cli.ts sect gen --count 9 --seed 42
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（25 core ＋ 6 M3）
+# 测试（26 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -395,7 +395,7 @@ minglu/
   types/
     node-shim.d.ts # 本地最小 Node 类型声明（无 @types/node 时用）
   test/
-    core.test.ts   # 25 项核心断言
+    core.test.ts   # 26 项核心断言
     m3.test.ts     # 6 项 M3/OpenAPI 断言
   scripts/
     typecheck.mjs  # 定位本地 tsc
@@ -614,7 +614,7 @@ minglu/
 | 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 31 项（25 core ＋ 6 M3；`npm test`） |
+| 测试 | ✅ 32 项（26 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |

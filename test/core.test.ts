@@ -202,6 +202,23 @@ test('sect batch is unique', () => {
   assert.equal(new Set(sects.map((s) => s.fullName)).size, sects.length);
 });
 
+test('sect examples are reproducible from seeds', () => {
+  const examples: Array<[number, string]> = [
+    [69, '青林宗'],
+    [2373, '绝意门'],
+    [883, '栖霞门'],
+    [263, '问剑宗'],
+    [187, '衔山派'],
+    [347, '赤阳派'],
+    [1510, '东极宫'],
+    [365, '天魔宫'],
+    [1414, '虺心教'],
+  ];
+  for (const [seed, expected] of examples) {
+    assert.equal(generateSects({ count: 1, seed }, pack)[0]?.fullName, expected);
+  }
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });
