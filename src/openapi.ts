@@ -37,6 +37,37 @@ export const openapi = {
         responses: { '200': { description: 'pack 对象' } },
       },
     },
+    '/v1/technique-parts': {
+      get: {
+        summary: '列出功法起手/中段/后缀',
+        responses: { '200': { description: '功法词表' } },
+      },
+    },
+    '/v1/techniques': {
+      post: {
+        summary: '生成功法名（三槽，B 槽可为空）',
+        requestBody: {
+          required: false,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  count: { type: 'integer', minimum: 1, maximum: 10000 },
+                  seed: { oneOf: [{ type: 'number' }, { type: 'string' }] },
+                  kind: { type: 'string', enum: ['意象', '动作', '程度', 'any'] },
+                  suffix: {
+                    type: 'string',
+                    enum: ['诀', '功', '真经', '妙法', '篇', '典', '章', 'any'],
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': { description: '功法名数组' } },
+      },
+    },
     '/v1/pill-parts': {
       get: {
         summary: '列出丹药修饰词/核心/后缀',

@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药生成器、CLI、HTTP、36 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、40 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -48,11 +48,14 @@ node src/cli.ts sect gen --count 9 --seed 42
 # 丹药：修饰词 + 核心 + 丹/膏/散/露
 node src/cli.ts pill gen --count 8 --seed 42
 
+# 功法：A + B + C；B 可以是空槽 ∅
+node src/cli.ts technique gen --count 8 --seed 42
+
 # 本地 HTTP ＋ Web UI
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（30 core ＋ 6 M3）
+# 测试（34 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -346,7 +349,7 @@ Chinese-Names-Corpus 里有大量**真实现代姓名**。名箓只取聚合统�
 
 - ⬜ 地域/郡望加权
 - ⬜ 元、民国档案
-- ⬜ 宗门、功法、法宝、丹药等扩展命名（M5；宗门/丹药/法宝 seed 原型已可跑；法宝/功法不加品阶，单独 AC）
+- ⬜ 宗门、功法、法宝、丹药等扩展命名（M5；宗门/丹药/法宝/功法 seed 原型已可跑；法宝/功法不加品阶，单独 AC）
 - ⬜ Web 试玩页
 - ⬜ 单文件 HTML 试玩版（core pack 内嵌，双击即用）
 - ⬜ 单文件可执行（Node SEA / Bun compile）
@@ -391,7 +394,7 @@ minglu/
     browser.ts     # 浏览器 SDK（无 node:fs）
     openapi.ts     # OpenAPI 3.1
   data/
-    seed/          # 手工种子包：surnames / chars / given-names / generations / artifacts / sects / pills / blacklist / famous
+    seed/          # 手工种子包：surnames / chars / given-names / generations / artifacts / sects / pills / techniques / blacklist / famous
     packs/core/    # CNC+seed，Apache-2.0，可分发
     packs/cbdb/    # 真实 CBDB pack（CC BY-NC-SA，不提交、不分享）
     lexicons/      # 风格字表、负面字表（构建用）
@@ -399,7 +402,7 @@ minglu/
   types/
     node-shim.d.ts # 本地最小 Node 类型声明（无 @types/node 时用）
   test/
-    core.test.ts   # 30 项核心断言
+    core.test.ts   # 34 项核心断言
     m3.test.ts     # 6 项 M3/OpenAPI 断言
   scripts/
     typecheck.mjs  # 定位本地 tsc
@@ -447,6 +450,8 @@ minglu/
 | `minglu sect list` | 列出宗门前缀/后缀 |
 | `minglu pill gen` | 生成丹药名（修饰词 + 核心 + 丹/膏/散/露） |
 | `minglu pill list` | 列出丹药词表 |
+| `minglu technique gen` | 生成功法名（三槽，B 槽可为空） |
+| `minglu technique list` | 列出功法词表 |
 | `minglu artifact gen` | 生成法宝名（材质/意象/功能 + 器型） |
 | `minglu artifact list` | 列出法宝词表 |
 | `minglu serve` | 启动本地 HTTP 服务 |
@@ -455,7 +460,7 @@ minglu/
 | `minglu data verify` | 校验包完整性与 SHA-256 |
 | `minglu data purge` | 删除本地构建的指定包 |
 
-> 原型已实现 `gen / sect / pill / artifact / batch / check / generation list / data info / serve`；`data build/verify/purge` 仍是后续目标。
+> 原型已实现 `gen / sect / pill / technique / artifact / batch / check / generation list / data info / serve`；`data build/verify/purge` 仍是后续目标。
 
 ### HTTP
 
@@ -472,6 +477,8 @@ minglu/
 | POST | `/v1/sects` | 生成宗门 |
 | GET | `/v1/pill-parts` | 列丹药词表 |
 | POST | `/v1/pills` | 生成丹药 |
+| GET | `/v1/technique-parts` | 列功法词表 |
+| POST | `/v1/techniques` | 生成功法 |
 | GET | `/v1/packs` | 列出已加载数据包 |
 | GET | `/v1/pack` | 返回完整 pack JSON（浏览器 SDK 用） |
 | POST | `/v1/names` | 生成 1–1000 个名字 |
@@ -596,6 +603,7 @@ minglu/
 21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
 22. **宗门 seed 原型**：107 个双字前缀、5 个后缀；只做“前缀 + 宗/门/派/宫/教”，没有四字前缀、驻地、传承、职阶体系。正道/魔道/中立是手工标签，不是语义模型判断。
 23. **丹药 seed 原型**：50 个修饰词、69 个核心、4 个后缀；只做 3 字/5 字，核心与修饰词的搭配靠 targets 手工约束，不做完整药性/丹方体系。
+24. **功法 seed 原型**：68 个起手词、34 个中段、7 个后缀；只做 A+B+C / A+∅+C，没有品阶、修炼阶段、威力数值。B 槽为空时输出中 `middle` 为 `null`，不会写成「无」。
 
 ---
 
@@ -617,19 +625,20 @@ minglu/
 | 规格 | ✅ v0.6 |
 | 核心生成器 | 🟡 姓 / 名 / 字辈；无字、无号；seed / core / cbdb 三包 |
 | CLI | 🟡 `gen` / `artifact` / `batch` / `check` / `generation list` / `data info` / `serve` |
-| 本地 HTTP | ✅ 15 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
+| 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 最小表单页；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
 | 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 36 项（30 core ＋ 6 M3；`npm test`） |
+| 测试 | ✅ 40 项（34 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 323/1,781 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |
 | 法宝 seed 原型 | 🟡 材质/意象/功能 + 器型；无品阶 |
 | 宗门 seed 原型 | 🟡 107 个双字前缀 + 5 个后缀；正道/魔道/中立 + 气质标签 |
 | 丹药 seed 原型 | 🟡 50 个修饰词 + 69 个核心 + 4 个后缀；3 字/5 字 |
+| 功法 seed 原型 | 🟡 68 个起手词 + 34 个中段 + 7 个后缀；B 槽可为空 |
 | 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |

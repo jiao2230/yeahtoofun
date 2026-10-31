@@ -122,6 +122,7 @@ def main() -> int:
     artifacts = copy("artifacts.json")
     sects = copy("sects.json")
     pills = copy("pills.json")
+    techniques = copy("techniques.json")
     blacklist = copy("blacklist.json")
     famous = copy("famous.json")
 
@@ -133,6 +134,7 @@ def main() -> int:
     write(args.out / "artifacts.json", artifacts)
     write(args.out / "sects.json", sects)
     write(args.out / "pills.json", pills)
+    write(args.out / "techniques.json", techniques)
     write(args.out / "blacklist.json", blacklist)
     write(args.out / "famous.json", famous)
     write(args.out / "collision.json", collision)

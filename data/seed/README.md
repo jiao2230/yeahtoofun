@@ -11,6 +11,7 @@
 | `artifacts.json` | 法宝修饰词 + 器型 | 38 + 20 |
 | `sects.json` | 宗门前缀 + 后缀 | 107 + 5 |
 | `pills.json` | 丹药修饰词 + 核心 + 后缀 | 50 + 69 + 4 |
+| `techniques.json` | 功法起手 + 中段 + 后缀 | 68 + 34 + 7 |
 | `blacklist.json` | 不雅谐音/黑名单 | 7 |
 | `famous.json` | 历史名人碰撞示例 | 10 |
 

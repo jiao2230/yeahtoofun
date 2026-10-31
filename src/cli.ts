@@ -5,6 +5,7 @@ import { checkName, summarizeWarnings } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects, sectParts } from './core/sect.ts';
 import { generatePills, pillParts } from './core/pill.ts';
+import { generateTechniques, techniqueParts } from './core/technique.ts';
 import { generate, generateBatch, resolveProfile } from './core/generator.ts';
 import type { PersonName, Profile } from './core/types.ts';
 
@@ -69,6 +70,56 @@ async function run(): Promise<void> {
       for (const warning of report.warnings) console.log(`  - [${warning.code}] ${warning.message}`);
       if (report.collisions.length > 0) console.log(`  重名：${report.collisions.join('、')}`);
     }
+    return;
+  }
+
+  if (command === 'technique' && positional[0] === 'gen') {
+    const kindRaw = stringFlag(flags, 'kind');
+    const suffixRaw = stringFlag(flags, 'suffix');
+    if (
+      kindRaw !== undefined &&
+      kindRaw !== 'any' &&
+      kindRaw !== '意象' &&
+      kindRaw !== '动作' &&
+      kindRaw !== '程度'
+    ) {
+      throw new Error('E_TECHNIQUE_KIND: --kind 只支持 意象/动作/程度/any');
+    }
+    if (
+      suffixRaw !== undefined &&
+      !['诀', '功', '真经', '妙法', '篇', '典', '章'].includes(suffixRaw)
+    ) {
+      throw new Error('E_TECHNIQUE_SUFFIX: --suffix 只支持 诀/功/真经/妙法/篇/典/章');
+    }
+    const techniques = generateTechniques(
+      {
+        count: numberFlag(flags, 'count') ?? 5,
+        seed: seedFlag(flags),
+        kind: kindRaw as '意象' | '动作' | '程度' | 'any' | undefined,
+        suffix: suffixRaw as '诀' | '功' | '真经' | '妙法' | '篇' | '典' | '章' | undefined,
+      },
+      pack,
+    );
+    if (flags.json === true) {
+      console.log(JSON.stringify(techniques.length === 1 ? techniques[0] : techniques, null, 2));
+    } else {
+      for (const technique of techniques) {
+        const warning =
+          technique.warnings.length > 0 ? `  ⚠ ${summarizeWarnings(technique.warnings)}` : '';
+        const middle = technique.middle ?? '∅';
+        console.log(`${technique.fullName}  [${technique.kind} / ${technique.head}+${middle}+${technique.suffix}]  seed=${technique.seed}`);
+        console.log(`  ${technique.description}${warning}`);
+      }
+    }
+    return;
+  }
+
+  if (command === 'technique' && positional[0] === 'list') {
+    const parts = techniqueParts(pack);
+    console.log(`heads (${parts.heads.length}):`);
+    for (const head of parts.heads) console.log(`  ${head.text}\t${head.kind}\t${head.weight}`);
+    console.log(`middles (${parts.middles.length}): ${parts.middles.map((m) => m.text).join(' ')}`);
+    console.log(`suffixes: ${parts.suffixes.map((s) => s.text).join(' ')}`);
     return;
   }
 
@@ -382,6 +433,8 @@ function printHelp(): void {
   minglu sect list
   minglu pill gen [--count N] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
   minglu pill list
+  minglu technique gen [--count N] [--kind 意象|动作|程度] [--suffix 诀|功|真经|妙法|篇|典|章] [--seed S] [--json]
+  minglu technique list
   minglu artifact gen --count 6 --seed 42 --json
   minglu artifact list
   minglu data info
@@ -409,6 +462,7 @@ gen 选项：
   minglu gen --surname 沈 --generation ming-imperial --generation-index 8
   minglu sect gen --count 9 --seed 42
   minglu pill gen --count 8 --seed 42
+  minglu technique gen --count 8 --seed 42
   minglu artifact gen --count 6 --seed 42 --json
   minglu batch --profile profiles/sect.json --count 20 --out out.csv --format csv
 

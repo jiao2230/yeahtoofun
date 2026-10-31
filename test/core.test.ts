@@ -5,6 +5,7 @@ import { generate, generateBatch, phoneticIssues, resolveProfile } from '../src/
 import { generateArtifacts } from '../src/core/artifact.ts';
 import { generateSects } from '../src/core/sect.ts';
 import { generatePills } from '../src/core/pill.ts';
+import { generateTechniques } from '../src/core/technique.ts';
 import { checkName } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
 
@@ -262,6 +263,45 @@ test('pill examples are reproducible from seeds', () => {
   }
 });
 
+test('technique names are deterministic and B-slot empty is not 无', () => {
+  const a = generateTechniques({ count: 15, seed: 42 }, pack);
+  const b = generateTechniques({ count: 15, seed: 42 }, pack);
+  assert.deepEqual(a, b);
+  for (const technique of a) {
+    assert.equal(technique.fullName, technique.head + (technique.middle ?? '') + technique.suffix);
+    if (technique.middle === null) {
+      assert.equal(technique.fullName, technique.head + technique.suffix);
+      assert.ok(!technique.fullName.includes('无'));
+    }
+    assert.ok(['诀', '功', '真经', '妙法', '篇', '典', '章'].includes(technique.suffix));
+  }
+});
+
+test('technique kind and suffix filters are respected', () => {
+  const techniques = generateTechniques({ count: 20, seed: 9, kind: '动作', suffix: '功' }, pack);
+  assert.ok(techniques.length > 0);
+  for (const technique of techniques) {
+    assert.equal(technique.kind, '动作');
+    assert.equal(technique.suffix, '功');
+  }
+});
+
+test('technique batch is unique', () => {
+  const techniques = generateTechniques({ count: 60, seed: 7 }, pack);
+  assert.equal(new Set(techniques.map((t) => t.fullName)).size, techniques.length);
+});
+
+test('technique examples are reproducible from seeds', () => {
+  const examples: Array<[number, string]> = [
+    [4658, '青木归元真经'],
+    [641, '大镇山诀'],
+    [143, '吐纳功'],
+  ];
+  for (const [seed, expected] of examples) {
+    assert.equal(generateTechniques({ count: 1, seed }, pack)[0]?.fullName, expected);
+  }
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });
@@ -271,4 +311,5 @@ test('SDK createGenerator exposes the core API', () => {
   assert.ok(sdk.artifacts({ count: 1, seed: 1 })[0]?.name);
   assert.ok(sdk.sects({ count: 1, seed: 1 })[0]?.fullName);
   assert.ok(sdk.pills({ count: 1, seed: 1 })[0]?.fullName);
+  assert.ok(sdk.techniques({ count: 1, seed: 1 })[0]?.fullName);
 });

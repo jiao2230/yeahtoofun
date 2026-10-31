@@ -2,6 +2,7 @@ import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects } from './core/sect.ts';
 import { generatePills } from './core/pill.ts';
+import { generateTechniques } from './core/technique.ts';
 import { generate, generateBatch } from './core/generator.ts';
 import type {
   ArtifactName,
@@ -13,6 +14,8 @@ import type {
   SectName,
   SectOptions,
   SeedPack,
+  TechniqueName,
+  TechniqueOptions,
 } from './core/types.ts';
 
 export type * from './core/types.ts';
@@ -30,6 +33,7 @@ export interface BrowserGenerator {
   artifacts(options?: { count?: number; seed?: number | string }): ArtifactName[];
   sects(options?: SectOptions): SectName[];
   pills(options?: PillOptions): PillName[];
+  techniques(options?: TechniqueOptions): TechniqueName[];
 }
 
 /** Browser SDK：不读文件、不发网络请求，只使用传入的 pack。 */
@@ -45,6 +49,7 @@ export function createGenerator(pack: SeedPack): BrowserGenerator {
     artifacts: (options = {}) => generateArtifacts(options, pack),
     sects: (options = {}) => generateSects(options, pack),
     pills: (options = {}) => generatePills(options, pack),
+    techniques: (options = {}) => generateTechniques(options, pack),
   };
 }
 

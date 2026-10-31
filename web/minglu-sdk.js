@@ -389,6 +389,140 @@ function suffixAllowed(kind, suffix) {
   return true;
 }
 
+// src/core/technique.ts
+var DEFAULT_COUNT3 = 5;
+var MAX_COUNT3 = 1e4;
+var DEGREE_MIDDLES = /* @__PURE__ */ new Set([
+  "\u9547\u5C71",
+  "\u5F52\u5143",
+  "\u51DD\u795E",
+  "\u517B\u6C14",
+  "\u6DEC\u4F53",
+  "\u901A\u8109",
+  "\u6D17\u9AD3",
+  "\u957F\u751F",
+  "\u5B88\u4E00",
+  "\u8FD8\u865A",
+  "\u5408\u9053",
+  "\u5468\u5929",
+  "\u7384\u5173",
+  "\u7D2B\u5E9C",
+  "\u7ED3\u4E39",
+  "\u5316\u5A74",
+  "\u96F7\u6CD5",
+  "\u5251\u610F",
+  "\u805A\u7075",
+  "\u517B\u9B42",
+  "\u70BC\u9B44"
+]);
+var DEGREE_ONE_MIDDLES = /* @__PURE__ */ new Set([
+  "\u9547\u5C71",
+  "\u5F52\u5143",
+  "\u51DD\u795E",
+  "\u517B\u6C14",
+  "\u6DEC\u4F53",
+  "\u901A\u8109",
+  "\u6D17\u9AD3",
+  "\u5468\u5929",
+  "\u7384\u5173",
+  "\u7D2B\u5E9C",
+  "\u96F7\u6CD5",
+  "\u5251\u610F"
+]);
+function generateTechniques(options = {}, pack) {
+  const count = Math.min(MAX_COUNT3, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT3)));
+  if (count === 0) return [];
+  const kind = options.kind ?? "any";
+  const suffixText = options.suffix ?? "any";
+  const heads = pack.techniques.heads.filter((head) => kind === "any" || head.kind === kind);
+  const suffixes = pack.techniques.suffixes.filter(
+    (suffix) => suffixText === "any" || suffix.text === suffixText
+  );
+  if (heads.length === 0) throw new Error(`E_TECHNIQUE_KIND: \u6CA1\u6709\u300C${kind}\u300D\u8D77\u624B\u8BCD`);
+  if (suffixes.length === 0) throw new Error(`E_TECHNIQUE_SUFFIX: \u672A\u77E5\u540E\u7F00\u300C${suffixText}\u300D`);
+  const baseSeed = seedFrom(options.seed);
+  const techniques = [];
+  const seen = /* @__PURE__ */ new Set();
+  for (let i = 0; i < count; i++) {
+    let technique = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const seed = seedForItem(baseSeed, i + attempt * 1000003);
+      const candidate = generateOne4(seed, pack, heads, suffixes);
+      if (pack.techniques.blacklist.includes(candidate.fullName)) continue;
+      if (seen.has(candidate.fullName)) continue;
+      technique = candidate;
+      break;
+    }
+    if (!technique) {
+      const seed = seedForItem(baseSeed, i + 9000019);
+      technique = generateOne4(seed, pack, heads, suffixes);
+      technique.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
+    }
+    seen.add(technique.fullName);
+    techniques.push(technique);
+  }
+  return techniques;
+}
+function generateOne4(seed, pack, heads, suffixes) {
+  const rng = new Rng(seed);
+  const template = rng.next();
+  const long = template < 0.4;
+  const mid = !long && template < 0.7;
+  let headLength = mid ? 1 : 2;
+  let headPool = mid ? heads.filter((head2) => head2.kind === "\u7A0B\u5EA6") : heads;
+  if (headPool.length === 0) {
+    headPool = heads;
+    headLength = 2;
+  }
+  const head = pickWithLength2(rng, headPool, headLength, headLength === 2 ? 1 : 2);
+  const degreeSet = head.kind === "\u7A0B\u5EA6" ? head.text.length === 1 ? DEGREE_ONE_MIDDLES : DEGREE_MIDDLES : null;
+  const middlePool = degreeSet === null ? pack.techniques.middles : pack.techniques.middles.filter((item) => degreeSet.has(item.text));
+  const middle = long || mid ? pickWithLength2(rng, middlePool.length > 0 ? middlePool : pack.techniques.middles, 2, 2).text : null;
+  const suffixPool = suffixes.filter((item) => {
+    if (head.kind === "\u7A0B\u5EA6" && head.text.length === 1) {
+      return item.text === "\u8BC0" || item.text === "\u529F" || item.text === "\u771F\u7ECF";
+    }
+    return true;
+  });
+  const suffix = rng.weightedPick(suffixPool.length > 0 ? suffixPool : suffixes, (item) => {
+    let weight = item.weight;
+    if (middle === null) weight += item.text === "\u529F" || item.text === "\u8BC0" ? 4 : 0;
+    if (head.kind === "\u7A0B\u5EA6") weight += item.text === "\u8BC0" || item.text === "\u529F" ? 2 : 0;
+    if (middle !== null) weight += 1;
+    return weight;
+  });
+  const fullName = `${head.text}${middle ?? ""}${suffix.text}`;
+  const warnings = [];
+  if (pack.techniques.blacklist.includes(fullName)) {
+    warnings.push({ code: "technique_blacklist", message: "\u4E0E\u5185\u7F6E\u771F\u5B9E/\u4E13\u6709\u529F\u540D\u51B2\u7A81" });
+  }
+  const emptyBonus = middle === null && suffix.text === "\u529F" ? 0.05 : 0;
+  const score = Number(Math.min(1, 0.55 + rng.next() * 0.3 + emptyBonus).toFixed(4));
+  const tags = [head.kind, middle === null ? "\u7A7A\u69FD" : "\u53CC\u6BB5", suffix.text];
+  const middleText = middle ? `\u4E2D\u6BB5\u300C${middle}\u300D` : "\u4E2D\u6BB5\u4E3A\u7A7A\uFF08\u4E0D\u751F\u6210\u300C\u65E0\u300D\uFF09";
+  return {
+    schemaVersion: "1.0",
+    fullName,
+    head: head.text,
+    middle,
+    suffix: suffix.text,
+    kind: head.kind,
+    tags,
+    description: `\u4EE5\u300C${head.text}\u300D\u8D77\u624B\uFF0C${middleText}\uFF0C\u6536\u4E8E\u300C${suffix.text}\u300D\u3002`,
+    score,
+    seed,
+    warnings,
+    pack: packManifest(pack),
+    license: pack.license
+  };
+}
+function pickWithLength2(rng, items, length, fallbackLength) {
+  const exact = items.filter((item) => item.text.length === length);
+  if (exact.length > 0) return rng.weightedPick(exact, (item) => item.weight);
+  const fallback = items.filter((item) => item.text.length === fallbackLength);
+  return rng.weightedPick(fallback.length > 0 ? fallback : items, (item) => item.weight);
+}
+
 // src/core/generator.ts
 var ERAS = ["preqin", "han", "weijin", "tang", "song", "ming", "qing", "xianxia"];
 var GENDERS = ["male", "female", "any"];
@@ -472,7 +606,7 @@ function resolveProfile(input = {}) {
     mode
   };
 }
-function generateOne4(input, pack, index = 0, seedOverride) {
+function generateOne5(input, pack, index = 0, seedOverride) {
   const profile = resolveProfile(input);
   const baseSeed = seedFrom(profile.seed);
   const seed = seedOverride ?? seedForItem(baseSeed, index);
@@ -529,7 +663,7 @@ function generateOne4(input, pack, index = 0, seedOverride) {
   };
 }
 function generate(input, pack) {
-  return generateOne4(input, pack, 0);
+  return generateOne5(input, pack, 0);
 }
 function generateBatch(input, pack) {
   const profile = resolveProfile(input);
@@ -548,7 +682,7 @@ function generateBatch(input, pack) {
     const mmrPool = [];
     for (let attempt = 0; attempt < 8; attempt++) {
       const salt = attempt === 0 ? i : i + attempt * 1000003;
-      const candidate = generateOne4(input, pack, salt);
+      const candidate = generateOne5(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
       if (profile.mode === "diverse" && count >= 20) {
         const s = candidate.surname.text;
@@ -570,7 +704,7 @@ function generateBatch(input, pack) {
       person = pickByMmr(mmrPool, results);
     }
     if (!person) {
-      person = generateOne4(input, pack, i + 9000019);
+      person = generateOne5(input, pack, i + 9000019);
       person.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
       if (profile.mode === "diverse" && count >= 20) {
         person.warnings.push({ code: "quota_relaxed", message: "\u914D\u989D\u91CD\u63B7 8 \u6B21\u4ECD\u672A\u6EE1\u8DB3\uFF0C\u5DF2\u653E\u5BBD" });
@@ -954,7 +1088,8 @@ function createGenerator(pack) {
     check: (name) => checkName(name, pack),
     artifacts: (options = {}) => generateArtifacts(options, pack),
     sects: (options = {}) => generateSects(options, pack),
-    pills: (options = {}) => generatePills(options, pack)
+    pills: (options = {}) => generatePills(options, pack),
+    techniques: (options = {}) => generateTechniques(options, pack)
   };
 }
 async function loadPack(url, headers = {}) {

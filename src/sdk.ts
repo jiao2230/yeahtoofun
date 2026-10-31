@@ -3,6 +3,7 @@ import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects } from './core/sect.ts';
 import { generatePills } from './core/pill.ts';
+import { generateTechniques } from './core/technique.ts';
 import { generate, generateBatch } from './core/generator.ts';
 import type {
   ArtifactName,
@@ -14,6 +15,8 @@ import type {
   SectName,
   SectOptions,
   SeedPack,
+  TechniqueName,
+  TechniqueOptions,
 } from './core/types.ts';
 
 export type * from './core/types.ts';
@@ -23,6 +26,7 @@ export { checkName } from './core/check.ts';
 export { generateArtifacts } from './core/artifact.ts';
 export { generateSects } from './core/sect.ts';
 export { generatePills } from './core/pill.ts';
+export { generateTechniques } from './core/technique.ts';
 
 export interface CreateGeneratorOptions {
   /** 已加载的 pack；省略时读取 MINGLU_PACK（默认 seed）。 */
@@ -37,6 +41,7 @@ export interface Generator {
   artifacts(options?: { count?: number; seed?: number | string }): ArtifactName[];
   sects(options?: SectOptions): SectName[];
   pills(options?: PillOptions): PillName[];
+  techniques(options?: TechniqueOptions): TechniqueName[];
 }
 
 /**
@@ -55,5 +60,6 @@ export function createGenerator(options: CreateGeneratorOptions = {}): Generator
     artifacts: (artifactOptions = {}) => generateArtifacts(artifactOptions, pack),
     sects: (sectOptions = {}) => generateSects(sectOptions, pack),
     pills: (pillOptions = {}) => generatePills(pillOptions, pack),
+    techniques: (techniqueOptions = {}) => generateTechniques(techniqueOptions, pack),
   };
 }

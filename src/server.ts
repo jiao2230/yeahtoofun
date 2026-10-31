@@ -6,9 +6,16 @@ import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects, sectParts } from './core/sect.ts';
 import { generatePills, pillParts } from './core/pill.ts';
+import { generateTechniques, techniqueParts } from './core/technique.ts';
 import { generateBatch } from './core/generator.ts';
 import { openapi } from './openapi.ts';
-import type { PillKind, PillSuffixText, Profile } from './core/types.ts';
+import type {
+  PillKind,
+  PillSuffixText,
+  Profile,
+  TechniqueKind,
+  TechniqueSuffixText,
+} from './core/types.ts';
 
 const ERAS = ['preqin', 'han', 'weijin', 'tang', 'song', 'ming', 'qing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'];
@@ -130,6 +137,31 @@ export function startServer(options: ServerOptions = {}): Server {
       }
       if (req.method === 'GET' && url.pathname === '/v1/pill-parts') {
         json(res, 200, { ok: true, data: pillParts(pack) });
+        return;
+      }
+      if (req.method === 'GET' && url.pathname === '/v1/technique-parts') {
+        json(res, 200, { ok: true, data: techniqueParts(pack) });
+        return;
+      }
+      if (req.method === 'POST' && url.pathname === '/v1/techniques') {
+        const body = await readJson(req);
+        const count = clampCount(body.count, 1, 10_000);
+        const techniques = generateTechniques(
+          {
+            count,
+            seed: valueSeed(body.seed),
+            kind: (body.kind === undefined ? 'any' : String(body.kind)) as TechniqueKind | 'any',
+            suffix: (body.suffix === undefined
+              ? 'any'
+              : String(body.suffix)) as TechniqueSuffixText | 'any',
+          },
+          pack,
+        );
+        json(res, 200, {
+          ok: true,
+          data: techniques,
+          meta: metaFor(pack, count, techniques.length, Date.now() - started),
+        });
         return;
       }
       if (req.method === 'POST' && url.pathname === '/v1/pills') {

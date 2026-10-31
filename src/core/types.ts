@@ -186,6 +186,55 @@ export interface PillOptions {
   suffix?: PillSuffixText | 'any';
 }
 
+export type TechniqueKind = '意象' | '动作' | '程度';
+export type TechniqueSuffixText = '诀' | '功' | '真经' | '妙法' | '篇' | '典' | '章';
+
+export interface TechniqueHead {
+  text: string;
+  kind: TechniqueKind;
+  weight: number;
+}
+
+export interface TechniqueMiddle {
+  text: string;
+  weight: number;
+}
+
+export interface TechniqueSuffix {
+  text: TechniqueSuffixText;
+  weight: number;
+}
+
+export interface TechniquePack {
+  heads: TechniqueHead[];
+  middles: TechniqueMiddle[];
+  suffixes: TechniqueSuffix[];
+  blacklist: string[];
+}
+
+export interface TechniqueName {
+  schemaVersion: '1.0';
+  fullName: string;
+  head: string;
+  middle: string | null;
+  suffix: TechniqueSuffixText;
+  kind: TechniqueKind;
+  tags: string[];
+  description: string;
+  score: number;
+  seed: number;
+  warnings: Warning[];
+  pack: Record<string, string>;
+  license: string;
+}
+
+export interface TechniqueOptions {
+  count?: number;
+  seed?: number | string;
+  kind?: TechniqueKind | 'any';
+  suffix?: TechniqueSuffixText | 'any';
+}
+
 export interface SeedPack {
   id: string;
   version: string;
@@ -199,6 +248,7 @@ export interface SeedPack {
   artifacts: ArtifactPack;
   sects: SectPack;
   pills: PillPack;
+  techniques: TechniquePack;
   blacklist: string[];
   famous: string[];
   collision: string[];
