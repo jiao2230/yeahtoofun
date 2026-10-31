@@ -516,14 +516,6 @@
       "weight": 7
     },
     {
-      "text": "雷法",
-      "weight": 7
-    },
-    {
-      "text": "剑意",
-      "weight": 7
-    },
-    {
       "text": "河车",
       "weight": 7
     },
@@ -586,6 +578,18 @@
     {
       "text": "泥丸",
       "weight": 7
+    },
+    {
+      "text": "敕雷",
+      "weight": 7
+    },
+    {
+      "text": "御霆",
+      "weight": 7
+    },
+    {
+      "text": "无相",
+      "weight": 7
     }
   ],
   "suffixes": [
@@ -614,7 +618,31 @@
       "weight": 3
     },
     {
-      "text": "章",
+      "text": "剑章",
+      "weight": 4
+    },
+    {
+      "text": "真本",
+      "weight": 4
+    },
+    {
+      "text": "直指",
+      "weight": 3
+    },
+    {
+      "text": "灵书",
+      "weight": 3
+    },
+    {
+      "text": "要义",
+      "weight": 3
+    },
+    {
+      "text": "神册",
+      "weight": 2
+    },
+    {
+      "text": "录",
       "weight": 3
     }
   ],

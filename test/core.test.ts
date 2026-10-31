@@ -311,7 +311,11 @@ test('technique names are deterministic and B-slot empty is not 无', () => {
       assert.equal(technique.fullName, technique.head + technique.suffix);
       assert.ok(!technique.fullName.includes('无'));
     }
-    assert.ok(['诀', '功', '真经', '妙法', '篇', '典', '章'].includes(technique.suffix));
+    assert.ok(
+      ['诀', '功', '真经', '妙法', '篇', '典', '剑章', '真本', '直指', '灵书', '要义', '神册', '录'].includes(
+        technique.suffix,
+      ),
+    );
   }
 });
 
@@ -331,13 +335,24 @@ test('technique batch is unique', () => {
 
 test('technique examples are reproducible from seeds', () => {
   const examples: Array<[number, string]> = [
-    [14796, '青木归元真经'],
+    [35966, '青木归元真经'],
     [16, '大镇山诀'],
     [514, '吐纳功'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generateTechniques({ count: 1, seed }, pack)[0]?.fullName, expected);
   }
+});
+
+test('technique suffixes and middles follow the new vocabulary rules', () => {
+  const suffixes = pack.techniques.suffixes.map((item) => item.text);
+  for (const suffix of ['剑章', '真本', '直指', '灵书', '要义', '神册', '录']) {
+    assert.ok(suffixes.includes(suffix as (typeof suffixes)[number]));
+  }
+  assert.ok(!suffixes.includes('章' as (typeof suffixes)[number]));
+  const middles = pack.techniques.middles.map((item) => item.text);
+  for (const middle of ['敕雷', '御霆', '归元', '无相']) assert.ok(middles.includes(middle));
+  for (const middle of ['雷法', '剑意']) assert.ok(!middles.includes(middle));
 });
 
 test('slot similarity catches shared leading chars', () => {

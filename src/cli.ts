@@ -87,16 +87,30 @@ async function run(): Promise<void> {
     }
     if (
       suffixRaw !== undefined &&
-      !['诀', '功', '真经', '妙法', '篇', '典', '章'].includes(suffixRaw)
+      !['诀', '功', '真经', '妙法', '篇', '典', '剑章', '真本', '直指', '灵书', '要义', '神册', '录'].includes(suffixRaw)
     ) {
-      throw new Error('E_TECHNIQUE_SUFFIX: --suffix 只支持 诀/功/真经/妙法/篇/典/章');
+      throw new Error('E_TECHNIQUE_SUFFIX: --suffix 只支持 诀/功/真经/妙法/篇/典/剑章/真本/直指/灵书/要义/神册/录');
     }
     const techniques = generateTechniques(
       {
         count: numberFlag(flags, 'count') ?? 5,
         seed: seedFlag(flags),
         kind: kindRaw as '意象' | '动作' | '程度' | 'any' | undefined,
-        suffix: suffixRaw as '诀' | '功' | '真经' | '妙法' | '篇' | '典' | '章' | undefined,
+        suffix: suffixRaw as
+          | '诀'
+          | '功'
+          | '真经'
+          | '妙法'
+          | '篇'
+          | '典'
+          | '剑章'
+          | '真本'
+          | '直指'
+          | '灵书'
+          | '要义'
+          | '神册'
+          | '录'
+          | undefined,
       },
       pack,
     );
@@ -438,7 +452,7 @@ function printHelp(): void {
   minglu sect list
   minglu pill gen [--count N] [--mode function|high|any] [--kind 天地|突破|疗伤|淬体|神魂|通用] [--suffix 丹|膏|散|露] [--seed S] [--json]
   minglu pill list
-  minglu technique gen [--count N] [--kind 意象|动作|程度] [--suffix 诀|功|真经|妙法|篇|典|章] [--seed S] [--json]
+  minglu technique gen [--count N] [--kind 意象|动作|程度] [--suffix 诀|功|真经|妙法|篇|典|剑章|真本|直指|灵书|要义|神册|录] [--seed S] [--json]
   minglu technique list
   minglu artifact gen --count 6 --seed 42 --json
   minglu artifact list

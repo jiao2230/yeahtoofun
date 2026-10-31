@@ -17,10 +17,12 @@ const MAX_COUNT = 10_000;
 const DEGREE_MIDDLES = new Set([
   '镇山', '归元', '凝神', '养气', '淬体', '通脉', '守一',
   '还虚', '合道', '周天', '玄关', '紫府', '结丹', '化婴',
-  '雷法', '剑意', '聚灵', '养魂', '炼魄',
+  '敕雷', '御霆', '聚灵', '养魂', '炼魄', '无相',
 ]);
 
-const DEGREE_ONE_MIDDLES = new Set(['镇山', '周天', '玄关', '紫府', '雷法', '剑意']);
+const DEGREE_ONE_MIDDLES = new Set([
+  '镇山', '周天', '玄关', '紫府', '敕雷', '御霆', '归元', '无相',
+]);
 
 export function generateTechniques(
   options: TechniqueOptions = {},

@@ -477,13 +477,23 @@ var DEGREE_MIDDLES = /* @__PURE__ */ new Set([
   "\u7D2B\u5E9C",
   "\u7ED3\u4E39",
   "\u5316\u5A74",
-  "\u96F7\u6CD5",
-  "\u5251\u610F",
+  "\u6555\u96F7",
+  "\u5FA1\u9706",
   "\u805A\u7075",
   "\u517B\u9B42",
-  "\u70BC\u9B44"
+  "\u70BC\u9B44",
+  "\u65E0\u76F8"
 ]);
-var DEGREE_ONE_MIDDLES = /* @__PURE__ */ new Set(["\u9547\u5C71", "\u5468\u5929", "\u7384\u5173", "\u7D2B\u5E9C", "\u96F7\u6CD5", "\u5251\u610F"]);
+var DEGREE_ONE_MIDDLES = /* @__PURE__ */ new Set([
+  "\u9547\u5C71",
+  "\u5468\u5929",
+  "\u7384\u5173",
+  "\u7D2B\u5E9C",
+  "\u6555\u96F7",
+  "\u5FA1\u9706",
+  "\u5F52\u5143",
+  "\u65E0\u76F8"
+]);
 function generateTechniques(options = {}, pack) {
   const count = Math.min(MAX_COUNT3, Math.max(0, Math.trunc(options.count ?? DEFAULT_COUNT3)));
   if (count === 0) return [];

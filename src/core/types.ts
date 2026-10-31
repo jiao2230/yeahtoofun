@@ -196,7 +196,20 @@ export interface PillOptions {
 }
 
 export type TechniqueKind = '意象' | '动作' | '程度';
-export type TechniqueSuffixText = '诀' | '功' | '真经' | '妙法' | '篇' | '典' | '章';
+export type TechniqueSuffixText =
+  | '诀'
+  | '功'
+  | '真经'
+  | '妙法'
+  | '篇'
+  | '典'
+  | '剑章'
+  | '真本'
+  | '直指'
+  | '灵书'
+  | '要义'
+  | '神册'
+  | '录';
 
 export interface TechniqueHead {
   text: string;
