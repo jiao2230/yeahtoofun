@@ -319,6 +319,26 @@ test('pill and technique never repeat a slot word as suffix', () => {
   }
 });
 
+test('extension blacklists are populated and enforced', () => {
+  assert.ok(pack.artifacts.blacklist.length >= 30);
+  assert.ok(pack.sects.blacklist.length >= 40);
+  assert.ok(pack.pills.blacklist.length >= 20);
+  assert.ok(pack.techniques.blacklist.length >= 40);
+
+  for (const artifact of generateArtifacts({ count: 60, seed: 1 }, pack)) {
+    assert.ok(!pack.artifacts.blacklist.includes(artifact.name), artifact.name);
+  }
+  for (const sect of generateSects({ count: 60, seed: 1 }, pack)) {
+    assert.ok(!pack.sects.blacklist.includes(sect.fullName), sect.fullName);
+  }
+  for (const pill of generatePills({ count: 60, seed: 1 }, pack)) {
+    assert.ok(!pack.pills.blacklist.includes(pill.fullName), pill.fullName);
+  }
+  for (const technique of generateTechniques({ count: 60, seed: 1 }, pack)) {
+    assert.ok(!pack.techniques.blacklist.includes(technique.fullName), technique.fullName);
+  }
+});
+
 test('SDK createGenerator exposes the core API', () => {
   const sdk = createGenerator({ pack });
   const person = sdk.generate({ seed: 42 });

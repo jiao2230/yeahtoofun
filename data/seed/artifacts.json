@@ -1,65 +1,277 @@
 {
   "modifiers": [
-    { "text": "神意", "kind": "意象", "weight": 6 },
-    { "text": "铁", "kind": "材质", "weight": 10 },
-    { "text": "赤焰", "kind": "意象", "weight": 8 },
-    { "text": "万魂", "kind": "功能", "weight": 5 },
-    { "text": "翻天", "kind": "功能", "weight": 6 },
-    { "text": "澄明", "kind": "意象", "weight": 6 },
-    { "text": "玄铁", "kind": "材质", "weight": 8 },
-    { "text": "青蛟", "kind": "意象", "weight": 7 },
-    { "text": "九霄", "kind": "意象", "weight": 7 },
-    { "text": "寒月", "kind": "意象", "weight": 6 },
-    { "text": "流云", "kind": "意象", "weight": 6 },
-    { "text": "镇岳", "kind": "功能", "weight": 6 },
-    { "text": "破军", "kind": "功能", "weight": 5 },
-    { "text": "太虚", "kind": "意象", "weight": 6 },
-    { "text": "紫电", "kind": "意象", "weight": 6 },
-    { "text": "玄冰", "kind": "意象", "weight": 5 },
-    { "text": "赤霞", "kind": "意象", "weight": 5 },
-    { "text": "青木", "kind": "意象", "weight": 6 },
-    { "text": "无相", "kind": "意象", "weight": 5 },
-    { "text": "长生", "kind": "功能", "weight": 5 },
-    { "text": "噬魂", "kind": "功能", "weight": 4 },
-    { "text": "斩仙", "kind": "功能", "weight": 4 },
-    { "text": "定海", "kind": "功能", "weight": 5 },
-    { "text": "覆海", "kind": "功能", "weight": 5 },
-    { "text": "焚天", "kind": "功能", "weight": 5 },
-    { "text": "玄天", "kind": "意象", "weight": 6 },
-    { "text": "太初", "kind": "意象", "weight": 5 },
-    { "text": "混沌", "kind": "意象", "weight": 5 },
-    { "text": "九幽", "kind": "意象", "weight": 5 },
-    { "text": "青莲", "kind": "意象", "weight": 5 },
-    { "text": "白玉", "kind": "材质", "weight": 7 },
-    { "text": "琥珀", "kind": "材质", "weight": 5 },
-    { "text": "星陨", "kind": "材质", "weight": 5 },
-    { "text": "月华", "kind": "意象", "weight": 5 },
-    { "text": "日曜", "kind": "意象", "weight": 5 },
-    { "text": "风雷", "kind": "意象", "weight": 5 },
-    { "text": "阴阳", "kind": "意象", "weight": 4 },
-    { "text": "五行", "kind": "意象", "weight": 4 }
+    {
+      "text": "神意",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "铁",
+      "kind": "材质",
+      "weight": 10
+    },
+    {
+      "text": "赤焰",
+      "kind": "意象",
+      "weight": 8
+    },
+    {
+      "text": "万魂",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "翻天",
+      "kind": "功能",
+      "weight": 6
+    },
+    {
+      "text": "澄明",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "玄铁",
+      "kind": "材质",
+      "weight": 8
+    },
+    {
+      "text": "青蛟",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "九霄",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "寒月",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "流云",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "镇岳",
+      "kind": "功能",
+      "weight": 6
+    },
+    {
+      "text": "破军",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "太虚",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "紫电",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "玄冰",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "赤霞",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "青木",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "无相",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "长生",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "噬魂",
+      "kind": "功能",
+      "weight": 4
+    },
+    {
+      "text": "斩仙",
+      "kind": "功能",
+      "weight": 4
+    },
+    {
+      "text": "定海",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "覆海",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "焚天",
+      "kind": "功能",
+      "weight": 5
+    },
+    {
+      "text": "玄天",
+      "kind": "意象",
+      "weight": 6
+    },
+    {
+      "text": "太初",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "混沌",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "九幽",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "青莲",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "白玉",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "琥珀",
+      "kind": "材质",
+      "weight": 5
+    },
+    {
+      "text": "星陨",
+      "kind": "材质",
+      "weight": 5
+    },
+    {
+      "text": "月华",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "日曜",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "风雷",
+      "kind": "意象",
+      "weight": 5
+    },
+    {
+      "text": "阴阳",
+      "kind": "意象",
+      "weight": 4
+    },
+    {
+      "text": "五行",
+      "kind": "意象",
+      "weight": 4
+    }
   ],
   "forms": [
-    { "text": "剑", "weight": 10 },
-    { "text": "刀", "weight": 8 },
-    { "text": "鼎", "weight": 6 },
-    { "text": "钟", "weight": 5 },
-    { "text": "塔", "weight": 5 },
-    { "text": "印", "weight": 7 },
-    { "text": "珠", "weight": 7 },
-    { "text": "幡", "weight": 5 },
-    { "text": "镜", "weight": 5 },
-    { "text": "尺", "weight": 4 },
-    { "text": "伞", "weight": 3 },
-    { "text": "琴", "weight": 4 },
-    { "text": "箫", "weight": 4 },
-    { "text": "弓", "weight": 4 },
-    { "text": "枪", "weight": 4 },
-    { "text": "斧", "weight": 3 },
-    { "text": "钺", "weight": 3 },
-    { "text": "钩", "weight": 3 },
-    { "text": "环", "weight": 4 },
-    { "text": "铃", "weight": 4 }
+    {
+      "text": "剑",
+      "weight": 10
+    },
+    {
+      "text": "刀",
+      "weight": 8
+    },
+    {
+      "text": "鼎",
+      "weight": 6
+    },
+    {
+      "text": "钟",
+      "weight": 5
+    },
+    {
+      "text": "塔",
+      "weight": 5
+    },
+    {
+      "text": "印",
+      "weight": 7
+    },
+    {
+      "text": "珠",
+      "weight": 7
+    },
+    {
+      "text": "幡",
+      "weight": 5
+    },
+    {
+      "text": "镜",
+      "weight": 5
+    },
+    {
+      "text": "尺",
+      "weight": 4
+    },
+    {
+      "text": "伞",
+      "weight": 3
+    },
+    {
+      "text": "琴",
+      "weight": 4
+    },
+    {
+      "text": "箫",
+      "weight": 4
+    },
+    {
+      "text": "弓",
+      "weight": 4
+    },
+    {
+      "text": "枪",
+      "weight": 4
+    },
+    {
+      "text": "斧",
+      "weight": 3
+    },
+    {
+      "text": "钺",
+      "weight": 3
+    },
+    {
+      "text": "钩",
+      "weight": 3
+    },
+    {
+      "text": "环",
+      "weight": 4
+    },
+    {
+      "text": "铃",
+      "weight": 4
+    }
   ],
   "blacklist": [
     "诛仙剑",
@@ -71,6 +283,27 @@
     "崆峒印",
     "神农鼎",
     "昆仑镜",
-    "炼妖壶"
+    "炼妖壶",
+    "戮仙剑",
+    "陷仙剑",
+    "绝仙剑",
+    "诛仙阵图",
+    "太极图",
+    "盘古幡",
+    "混沌钟",
+    "山河社稷图",
+    "番天印",
+    "定海珠",
+    "落宝金钱",
+    "金蛟剪",
+    "混天绫",
+    "乾坤圈",
+    "风火轮",
+    "火尖枪",
+    "紫金红葫芦",
+    "羊脂玉净瓶",
+    "七星剑",
+    "照妖镜",
+    "玲珑宝塔"
   ]
 }
