@@ -8,10 +8,10 @@
 | `chars.json` | 名字用字（拼音/声调/字义/性别/风格） | 124 |
 | `given-names.json` | 双字名 | 50 |
 | `generations.json` | 字辈模板 | 3 |
-| `artifacts.json` | 法宝修饰词 + 器型 | 38 + 20 |
-| `sects.json` | 宗门前缀 + 后缀 | 107 + 5 |
-| `pills.json` | 丹药修饰词 + 功效 + 高级意象 + 后缀 | 29 + 48 + 30 + 4 |
-| `techniques.json` | 功法起手 + 中段 + 后缀 | 63 + 34 + 7 |
+| `artifacts.json` | 法宝修饰词 + 器型 | 51 + 20 |
+| `sects.json` | 宗门前缀 + 后缀 | 134 + 5 |
+| `pills.json` | 丹药修饰词 + 功效 + 高级意象 + 后缀 | 29 + 48 + 54 + 4 |
+| `techniques.json` | 功法起手 + 中段 + 后缀 | 77 + 50 + 7 |
 | `blacklist.json` | 不雅谐音/黑名单 | 7 |
 | `famous.json` | 历史名人碰撞示例 | 10 |
 

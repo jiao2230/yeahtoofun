@@ -60,7 +60,10 @@ function generateOne(
 ): SectName {
   const rng = new Rng(seed);
   const prefix = rng.weightedPick(prefixes, (item) => item.weight);
-  const suffix = rng.weightedPick(suffixes, (item) => {
+  const suffixPool = suffixes.filter(
+    (item) => !(prefix.alignment === '正道' && item.text === '教'),
+  );
+  const suffix = rng.weightedPick(suffixPool, (item) => {
     let weight = item.weight;
     if (item.alignment === prefix.alignment) weight += 2;
     if (item.text === '教' && prefix.alignment === '魔道') weight += 2;

@@ -198,6 +198,9 @@ test('sect alignment filters prefixes and avoids 教 for 正道', () => {
     assert.equal(sect.alignment, '正道');
     assert.notEqual(sect.suffix, '教');
   }
+  for (const sect of generateSects({ count: 200, seed: 11 }, pack)) {
+    if (sect.alignment === '正道') assert.notEqual(sect.suffix, '教', sect.fullName);
+  }
 });
 
 test('sect batch is unique', () => {
@@ -208,14 +211,14 @@ test('sect batch is unique', () => {
 test('sect examples are reproducible from seeds', () => {
   const examples: Array<[number, string]> = [
     [69, '青林宗'],
-    [2373, '绝意门'],
-    [883, '栖霞门'],
-    [263, '问剑宗'],
-    [187, '衔山派'],
+    [940, '绝意门'],
+    [283, '栖霞门'],
+    [63, '问剑宗'],
+    [731, '衔山派'],
     [347, '赤阳派'],
-    [1510, '东极宫'],
-    [365, '天魔宫'],
-    [1414, '虺心教'],
+    [255, '东极宫'],
+    [511, '天魔宫'],
+    [423, '虺心教'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generateSects({ count: 1, seed }, pack)[0]?.fullName, expected);
@@ -290,8 +293,8 @@ test('pill examples are reproducible from seeds', () => {
     [8060, '太阴凝华露'],
     [15165, '幻月绝情散'],
     [6757, '青木生机丹'],
-    [2357, '玄霄龙象丹'],
-    [4764, '九天造化丹'],
+    [2797, '玄霄龙象丹'],
+    [12959, '九天造化丹'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generatePills({ count: 1, seed }, pack)[0]?.fullName, expected);
@@ -328,9 +331,9 @@ test('technique batch is unique', () => {
 
 test('technique examples are reproducible from seeds', () => {
   const examples: Array<[number, string]> = [
-    [4658, '青木归元真经'],
-    [641, '大镇山诀'],
-    [143, '吐纳功'],
+    [14796, '青木归元真经'],
+    [16, '大镇山诀'],
+    [514, '吐纳功'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generateTechniques({ count: 1, seed }, pack)[0]?.fullName, expected);

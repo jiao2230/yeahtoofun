@@ -247,7 +247,10 @@ function generateSects(options = {}, pack) {
 function generateOne2(seed, pack, prefixes, suffixes) {
   const rng = new Rng(seed);
   const prefix = rng.weightedPick(prefixes, (item) => item.weight);
-  const suffix = rng.weightedPick(suffixes, (item) => {
+  const suffixPool = suffixes.filter(
+    (item) => !(prefix.alignment === "\u6B63\u9053" && item.text === "\u6559")
+  );
+  const suffix = rng.weightedPick(suffixPool, (item) => {
     let weight = item.weight;
     if (item.alignment === prefix.alignment) weight += 2;
     if (item.text === "\u6559" && prefix.alignment === "\u9B54\u9053") weight += 2;

@@ -13,6 +13,7 @@
 | `classics/shijing.json` | 同上 诗经 | MIT | 305 篇原文 |
 | `classics/lunyu.json` | 同上 论语 | MIT | 20 篇原文 |
 | `classics/allusions.json` | 由 `tools/build_allusions.py` 生成 | MIT | 23,217 个双字 → 出处索引（楚辞/诗经/论语） |
+| `lexicons/ATTRIBUTION.md` | 人工筛选的扩展词来源登记 | 见文件内逐项说明 | 2026-11-01 第一批宗门/丹药/功法/法宝扩展词 |
 
 > 两份拼音表都是**部分抓取**（web fetch 有长度上限）。构建期只保留有调号的字，所以最终 pack 内 100% 有调号；完整表可在本地用 `pinyin-data` 重新生成。
 

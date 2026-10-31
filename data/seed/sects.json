@@ -1176,6 +1176,303 @@
       ],
       "note": "",
       "weight": 6
+    },
+    {
+      "text": "玉虚",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "碧游",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "金鳌",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "琼华",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "瑶池",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "广寒",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "扶桑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "赤霄",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "青丘",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "不周",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "太华",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "九华",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "上清",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "玉清",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "太清",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "灵宝",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "神霄",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "东华",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "瑶台",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "璇玑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "悬圃",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "阆苑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "紫府",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "玄圃",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "紫极",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "九天",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "玄霄",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
     }
   ],
   "suffixes": [

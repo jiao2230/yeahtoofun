@@ -189,6 +189,71 @@
       "text": "五行",
       "kind": "意象",
       "weight": 4
+    },
+    {
+      "text": "寒铁",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "赤铜",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "昆吾",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "琉璃",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "珊瑚",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "云母",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "水晶",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "龙纹",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "凤血",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "星砂",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "月魄",
+      "kind": "意象",
+      "weight": 7
+    },
+    {
+      "text": "玄玉",
+      "kind": "材质",
+      "weight": 7
+    },
+    {
+      "text": "紫芝",
+      "kind": "意象",
+      "weight": 7
     }
   ],
   "forms": [

@@ -314,6 +314,76 @@
       "text": "鸿蒙",
       "kind": "程度",
       "weight": 5
+    },
+    {
+      "text": "存思",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "服气",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "辟谷",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "胎息",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "导引",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "行气",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "咽津",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "叩齿",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "握固",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "内观",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "坐忘",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "心斋",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "守静",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "炼己",
+      "kind": "动作",
+      "weight": 6
     }
   ],
   "middles": [
@@ -451,6 +521,70 @@
     },
     {
       "text": "剑意",
+      "weight": 7
+    },
+    {
+      "text": "河车",
+      "weight": 7
+    },
+    {
+      "text": "还丹",
+      "weight": 7
+    },
+    {
+      "text": "玉液",
+      "weight": 7
+    },
+    {
+      "text": "金液",
+      "weight": 7
+    },
+    {
+      "text": "三花",
+      "weight": 7
+    },
+    {
+      "text": "五气",
+      "weight": 7
+    },
+    {
+      "text": "朝元",
+      "weight": 7
+    },
+    {
+      "text": "结胎",
+      "weight": 7
+    },
+    {
+      "text": "脱胎",
+      "weight": 7
+    },
+    {
+      "text": "阳神",
+      "weight": 7
+    },
+    {
+      "text": "阴神",
+      "weight": 7
+    },
+    {
+      "text": "元神",
+      "weight": 7
+    },
+    {
+      "text": "识神",
+      "weight": 7
+    },
+    {
+      "text": "黄庭",
+      "weight": 7
+    },
+    {
+      "text": "绛宫",
+      "weight": 7
+    },
+    {
+      "text": "泥丸",
       "weight": 7
     }
   ],
