@@ -8,68 +8,147 @@
     :root { color-scheme: dark; --bg:#11130f; --panel:#1b1e17; --ink:#e8e3d3; --muted:#9b9788; --line:#34382d; --accent:#c9a86a; }
     * { box-sizing: border-box; }
     body { margin:0; font:15px/1.6 "Noto Serif SC", "Songti SC", serif; background:var(--bg); color:var(--ink); }
-    main { max-width: 920px; margin: 0 auto; padding: 32px 20px 64px; }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 20px 64px; }
     h1 { margin:0 0 6px; font-size:28px; letter-spacing:.08em; color:var(--accent); }
-    p.lead { margin:0 0 24px; color:var(--muted); }
+    p.lead { margin:0 0 20px; color:var(--muted); }
+    .toolbar { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+    .tabs { display:flex; gap:6px; flex-wrap:wrap; }
+    .tab { margin:0; padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--muted); font:inherit; cursor:pointer; }
+    .tab.active { border-color:var(--accent); color:var(--accent); background:rgba(201,168,106,.10); }
+    .token { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
+    .token input { width:150px; }
     .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
     label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
     select, input { width:100%; padding:7px 8px; border:1px solid var(--line); border-radius:6px; background:#12140f; color:var(--ink); font:inherit; }
-    button { margin-top:14px; padding:9px 20px; border:1px solid var(--accent); border-radius:6px; background:transparent; color:var(--accent); font:inherit; cursor:pointer; }
-    button:hover { background:rgba(201,168,106,.12); }
-    #status { margin:14px 0; color:var(--muted); min-height:1.6em; }
-    #names { display:grid; gap:10px; margin-top:8px; }
+    button.primary { margin-top:14px; padding:9px 20px; border:1px solid var(--accent); border-radius:6px; background:transparent; color:var(--accent); font:inherit; cursor:pointer; }
+    button.primary:hover { background:rgba(201,168,106,.12); }
+    .status { margin:14px 0; color:var(--muted); min-height:1.6em; }
+    .results { display:grid; gap:10px; margin-top:8px; }
     .name { border:1px solid var(--line); border-radius:8px; padding:12px 14px; background:#151710; }
     .name b { font-size:22px; letter-spacing:.06em; color:var(--accent); margin-right:10px; }
     .tag { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:1px 8px; font-size:11px; color:var(--muted); margin-left:6px; }
     .chars { margin-top:8px; color:var(--muted); font-size:13px; }
     .warn { color:#d8a15a; font-size:12px; }
+    [hidden] { display:none !important; }
+    .hint { color:var(--muted); font-size:12px; margin-top:6px; }
   </style>
 </head>
 <body>
 <main>
   <h1>名箓</h1>
-  <p class="lead">本地古典取名器 · 姓 + 名（+ 字辈）· 不联网 · 同 seed 可复现</p>
+  <p class="lead">本地古典取名器 · 姓名 / 宗门 / 丹药 / 功法 · 不联网 · 同 seed 可复现</p>
 
-  <form id="form" class="panel">
-    <div class="grid">
-      <div><label for="era">时代</label><select id="era">
-        <option value="song">宋</option><option value="tang">唐</option><option value="ming">明</option>
-        <option value="qing">清</option><option value="weijin">魏晋</option><option value="han">汉</option>
-        <option value="preqin">先秦</option><option value="xianxia">仙侠</option>
-      </select></div>
-      <div><label for="gender">性别</label><select id="gender">
-        <option value="any">不限</option><option value="male">男</option><option value="female">女</option>
-      </select></div>
-      <div><label for="style">风格</label><select id="style">
-        <option value="">不限</option><option value="雅正">雅正</option><option value="清冷">清冷</option>
-        <option value="雄浑">雄浑</option><option value="仙逸">仙逸</option><option value="质朴">质朴</option>
-        <option value="绮丽">绮丽</option>
-      </select></div>
-      <div><label for="klass">阶层</label><select id="klass">
-        <option value="寒门">寒门</option><option value="士族">士族</option><option value="仙门">仙门</option>
-        <option value="江湖">江湖</option><option value="宫闱">宫闱</option><option value="僧道">僧道</option>
-      </select></div>
-      <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="4" pattern="[一-龥]{1,4}" title="只允许 1–4 个汉字" placeholder="如 沈"></div>
-      <div><label for="count">数量 1–20</label><input id="count" type="number" min="1" max="20" value="5"></div>
-      <div><label for="seed">种子（可空）</label><input id="seed" placeholder="如 42"></div>
-      <div><label for="preset">字辈</label><select id="preset">
-        <option value="">不启用</option><option value="ming-imperial">明皇室</option>
-        <option value="generic-a">通用 A</option><option value="generic-b">通用 B</option>
-      </select></div>
-      <div><label for="index">字辈序号</label><input id="index" type="number" min="1" value="1"></div>
-      <div><label for="token">Token（局域网时）</label><input id="token" placeholder="可空"></div>
-    </div>
-    <button type="submit">生成</button>
-    <div id="status"></div>
-    <div id="names"></div>
-  </form>
+  <div class="toolbar">
+    <nav class="tabs" aria-label="命名类型">
+      <button class="tab active" type="button" data-tab="person">姓名</button>
+      <button class="tab" type="button" data-tab="sect">宗门</button>
+      <button class="tab" type="button" data-tab="pill">丹药</button>
+      <button class="tab" type="button" data-tab="technique">功法</button>
+    </nav>
+    <label class="token" for="token">Token（局域网时）<input id="token" placeholder="可空"></label>
+  </div>
+
+  <section id="panel-person" class="panel" data-panel="person">
+    <form id="form-person">
+      <div class="grid">
+        <div><label for="era">时代</label><select id="era">
+          <option value="song">宋</option><option value="tang">唐</option><option value="ming">明</option>
+          <option value="qing">清</option><option value="weijin">魏晋</option><option value="han">汉</option>
+          <option value="preqin">先秦</option><option value="xianxia">仙侠</option>
+        </select></div>
+        <div><label for="gender">性别</label><select id="gender">
+          <option value="any">不限</option><option value="male">男</option><option value="female">女</option>
+        </select></div>
+        <div><label for="style">风格</label><select id="style">
+          <option value="">不限</option><option value="雅正">雅正</option><option value="清冷">清冷</option>
+          <option value="雄浑">雄浑</option><option value="仙逸">仙逸</option><option value="质朴">质朴</option>
+          <option value="绮丽">绮丽</option>
+        </select></div>
+        <div><label for="klass">阶层</label><select id="klass">
+          <option value="寒门">寒门</option><option value="士族">士族</option><option value="仙门">仙门</option>
+          <option value="江湖">江湖</option><option value="宫闱">宫闱</option><option value="僧道">僧道</option>
+        </select></div>
+        <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="4" pattern="[一-龥]{1,4}" title="只允许 1–4 个汉字" placeholder="如 沈"></div>
+        <div><label for="count-person">数量 1–20</label><input id="count-person" type="number" min="1" max="20" value="5"></div>
+        <div><label for="seed-person">种子（可空）</label><input id="seed-person" placeholder="如 42"></div>
+        <div><label for="preset">字辈</label><select id="preset">
+          <option value="">不启用</option><option value="ming-imperial">明皇室</option>
+          <option value="generic-a">通用 A</option><option value="generic-b">通用 B</option>
+        </select></div>
+        <div><label for="index">字辈序号</label><input id="index" type="number" min="1" value="1"></div>
+      </div>
+      <button class="primary" type="submit">生成姓名</button>
+      <div id="status-person" class="status"></div>
+      <div id="names-person" class="results"></div>
+    </form>
+  </section>
+
+  <section id="panel-sect" class="panel" data-panel="sect" hidden>
+    <form id="form-sect">
+      <div class="grid">
+        <div><label for="count-sect">数量 1–30</label><input id="count-sect" type="number" min="1" max="30" value="9"></div>
+        <div><label for="alignment-sect">阵营</label><select id="alignment-sect">
+          <option value="any">不限</option><option value="正道">正道</option><option value="魔道">魔道</option><option value="中立">中立</option>
+        </select></div>
+        <div><label for="seed-sect">种子（可空）</label><input id="seed-sect" placeholder="如 42"></div>
+      </div>
+      <button class="primary" type="submit">生成宗门</button>
+      <div class="hint">结构：双字前缀 + 宗 / 门 / 派 / 宫 / 教</div>
+      <div id="status-sect" class="status"></div>
+      <div id="names-sect" class="results"></div>
+    </form>
+  </section>
+
+  <section id="panel-pill" class="panel" data-panel="pill" hidden>
+    <form id="form-pill">
+      <div class="grid">
+        <div><label for="count-pill">数量 1–30</label><input id="count-pill" type="number" min="1" max="30" value="8"></div>
+        <div><label for="kind-pill">功效</label><select id="kind-pill">
+          <option value="any">不限</option><option value="天地">天地</option><option value="突破">突破</option>
+          <option value="疗伤">疗伤</option><option value="淬体">淬体</option><option value="神魂">神魂</option>
+          <option value="通用">通用</option>
+        </select></div>
+        <div><label for="suffix-pill">后缀</label><select id="suffix-pill">
+          <option value="any">不限</option><option value="丹">丹</option><option value="膏">膏</option>
+          <option value="散">散</option><option value="露">露</option>
+        </select></div>
+        <div><label for="seed-pill">种子（可空）</label><input id="seed-pill" placeholder="如 42"></div>
+      </div>
+      <button class="primary" type="submit">生成丹药</button>
+      <div class="hint">结构：修饰词 + 核心 + 丹 / 膏 / 散 / 露</div>
+      <div id="status-pill" class="status"></div>
+      <div id="names-pill" class="results"></div>
+    </form>
+  </section>
+
+  <section id="panel-technique" class="panel" data-panel="technique" hidden>
+    <form id="form-technique">
+      <div class="grid">
+        <div><label for="count-technique">数量 1–30</label><input id="count-technique" type="number" min="1" max="30" value="8"></div>
+        <div><label for="kind-technique">起手</label><select id="kind-technique">
+          <option value="any">不限</option><option value="意象">意象</option>
+          <option value="动作">动作</option><option value="程度">程度</option>
+        </select></div>
+        <div><label for="suffix-technique">后缀</label><select id="suffix-technique">
+          <option value="any">不限</option><option value="诀">诀</option><option value="功">功</option>
+          <option value="真经">真经</option><option value="妙法">妙法</option>
+          <option value="篇">篇</option><option value="典">典</option><option value="章">章</option>
+        </select></div>
+        <div><label for="seed-technique">种子（可空）</label><input id="seed-technique" placeholder="如 42"></div>
+      </div>
+      <button class="primary" type="submit">生成功法</button>
+      <div class="hint">结构：A + B + C；B 为空时显示 ∅，不会生成「无」</div>
+      <div id="status-technique" class="status"></div>
+      <div id="names-technique" class="results"></div>
+    </form>
+  </section>
 </main>
 <script type="module">
 import { createGenerator, loadPack } from '/minglu-sdk.js';
 
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 const surnameInput = $('surname');
 function validateSurname() {
@@ -80,21 +159,40 @@ function validateSurname() {
 surnameInput.addEventListener('input', validateSurname);
 validateSurname();
 
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = [...document.querySelectorAll('[data-panel]')];
+tabs.forEach((tab) => tab.addEventListener('click', () => {
+  const name = tab.dataset.tab;
+  for (const item of tabs) item.classList.toggle('active', item === tab);
+  for (const panel of panels) panel.hidden = panel.dataset.panel !== name;
+}));
+
+function seedOf(inputId) {
+  const raw = $(inputId).value.trim();
+  if (!raw) return undefined;
+  return /^\d+$/.test(raw) ? Number(raw) : raw;
+}
+
 let gen = null;
-async function ensureGenerator(token, status) {
+async function ensureGenerator(status) {
   if (gen) return gen;
   status.textContent = '首次生成：加载本地 pack…';
+  const token = $('token').value.trim();
   const headers = token ? { authorization: 'Bearer ' + token } : {};
   const pack = await loadPack('/v1/pack', headers);
   gen = createGenerator(pack);
   return gen;
 }
 
-$('form').addEventListener('submit', async (event) => {
+function packLine(generator) {
+  return `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
+}
+
+$('form-person').addEventListener('submit', async (event) => {
   event.preventDefault();
-  const status = $('status');
-  const names = $('names');
-  status.textContent = '生成中…'; names.innerHTML = '';
+  const status = $('status-person');
+  const results = $('names-person');
+  status.textContent = '生成中…'; results.innerHTML = '';
   const style = $('style').value;
   const surname = surnameInput.value.trim();
   if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
@@ -109,23 +207,95 @@ $('form').addEventListener('submit', async (event) => {
     ...(surname ? { surname } : {}),
     ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
   };
-  const seed = $('seed').value.trim();
-  const token = $('token').value.trim();
   try {
-    const generator = await ensureGenerator(token, status);
+    const generator = await ensureGenerator(status);
     const people = generator.generateBatch({
       ...profile,
-      count: Number($('count').value) || 5,
-      ...(seed ? { seed: /^\d+$/.test(seed) ? Number(seed) : seed } : {}),
+      count: Number($('count-person').value) || 5,
+      ...(seedOf('seed-person') !== undefined ? { seed: seedOf('seed-person') } : {}),
     });
-    status.textContent = `已生成 ${people.length} 个 · pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
-    names.innerHTML = people.map((p) => {
+    status.textContent = `已生成 ${people.length} 个 · ${packLine(generator)}`;
+    results.innerHTML = people.map((p) => {
       const tags = (p.styleTags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
       const chars = p.given.map((c) => `${esc(c.text)} ${esc(c.pinyin || '')}${c.tone ? ' ' + c.tone : ''}`).join(' · ');
       const genTag = p.generation ? `<span class="tag">字辈 ${esc(p.generation.char)}</span>` : '';
       const allusion = p.allusion ? `<div class="chars">典：${esc(p.allusion.source)}「${esc(p.allusion.line)}」</div>` : '';
       const warnings = (p.warnings || []).map((w) => `<div class="warn">${esc(w.message)}</div>`).join('');
       return `<div class="name"><b>${esc(p.fullName)}</b>${genTag}${tags}<div class="chars">${chars}</div>${allusion}${warnings}</div>`;
+    }).join('');
+  } catch (error) {
+    status.textContent = '失败：' + error.message;
+  }
+});
+
+$('form-sect').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = $('status-sect');
+  const results = $('names-sect');
+  status.textContent = '生成中…'; results.innerHTML = '';
+  try {
+    const generator = await ensureGenerator(status);
+    const alignment = $('alignment-sect').value;
+    const sects = generator.sects({
+      count: Number($('count-sect').value) || 9,
+      alignment,
+      ...(seedOf('seed-sect') !== undefined ? { seed: seedOf('seed-sect') } : {}),
+    });
+    status.textContent = `已生成 ${sects.length} 个宗门 · ${packLine(generator)}`;
+    results.innerHTML = sects.map((sect) => {
+      const tags = (sect.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+      return `<div class="name"><b>${esc(sect.fullName)}</b>${tags}<div class="chars">${esc(sect.description)}</div></div>`;
+    }).join('');
+  } catch (error) {
+    status.textContent = '失败：' + error.message;
+  }
+});
+
+$('form-pill').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = $('status-pill');
+  const results = $('names-pill');
+  status.textContent = '生成中…'; results.innerHTML = '';
+  try {
+    const generator = await ensureGenerator(status);
+    const kind = $('kind-pill').value;
+    const suffix = $('suffix-pill').value;
+    const pills = generator.pills({
+      count: Number($('count-pill').value) || 8,
+      kind,
+      suffix,
+      ...(seedOf('seed-pill') !== undefined ? { seed: seedOf('seed-pill') } : {}),
+    });
+    status.textContent = `已生成 ${pills.length} 个丹药 · ${packLine(generator)}`;
+    results.innerHTML = pills.map((pill) => {
+      const tags = (pill.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+      return `<div class="name"><b>${esc(pill.fullName)}</b>${tags}<div class="chars">${esc(pill.description)}</div></div>`;
+    }).join('');
+  } catch (error) {
+    status.textContent = '失败：' + error.message;
+  }
+});
+
+$('form-technique').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = $('status-technique');
+  const results = $('names-technique');
+  status.textContent = '生成中…'; results.innerHTML = '';
+  try {
+    const generator = await ensureGenerator(status);
+    const kind = $('kind-technique').value;
+    const suffix = $('suffix-technique').value;
+    const techniques = generator.techniques({
+      count: Number($('count-technique').value) || 8,
+      kind,
+      suffix,
+      ...(seedOf('seed-technique') !== undefined ? { seed: seedOf('seed-technique') } : {}),
+    });
+    status.textContent = `已生成 ${techniques.length} 个功法 · ${packLine(generator)}`;
+    results.innerHTML = techniques.map((technique) => {
+      const tags = (technique.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+      const structure = `${technique.head} + ${technique.middle ?? '∅'} + ${technique.suffix}`;
+      return `<div class="name"><b>${esc(technique.fullName)}</b>${tags}<div class="chars">${esc(structure)} · ${esc(technique.description)}</div></div>`;
     }).join('');
   } catch (error) {
     status.textContent = '失败：' + error.message;

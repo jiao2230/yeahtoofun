@@ -19,6 +19,7 @@
 - Unihan 18.0 偏旁/笔画：102,999 字。
 - softmax / top-K 采样、MMR、diverse 配额。
 - M3：`/v1/batch` 流式 JSONL、`/v1/pack` 静态 pack、OpenAPI 3.1、Web UI、Node/浏览器 SDK、CSV BOM。
+- Web UI 扩展为姓名/宗门/丹药/功法四标签页，全部走浏览器 SDK。
 
 ### Changed
 

@@ -408,7 +408,7 @@ minglu/
     typecheck.mjs  # 定位本地 tsc
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
-    index.html     # 最小 Web UI
+    index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
     minglu-sdk.js  # 浏览器 bundle（约 30 KB）
   tools/
     audit_sources.py  # M0 数据审计
@@ -466,7 +466,7 @@ minglu/
 
 | 方法 | 路径 | 作用 |
 |---|---|---|
-| GET | `/` | 最小 Web UI |
+| GET | `/` | 四标签页 Web UI（姓名/宗门/丹药/功法） |
 | GET | `/health` | 健康检查 |
 | GET | `/openapi.json` | OpenAPI 3.1 文档 |
 | GET | `/v1/profiles` | 列出时代/风格/阶层 |
@@ -485,7 +485,7 @@ minglu/
 | POST | `/v1/names/check` | 查重名/谐音 |
 | POST | `/v1/batch` | 大批量生成（流式 JSONL，最多 100000） |
 
-> 原型已实现上述全部端点，并带 `/` 最小 Web UI；局域网需 `--allow-lan --token`，默认只绑定 `127.0.0.1`。
+> 原型已实现上述全部端点，并带 `/` 四标签页 Web UI；局域网需 `--allow-lan --token`，默认只绑定 `127.0.0.1`。
 
 统一响应：
 
@@ -599,7 +599,7 @@ minglu/
 17. **core pack 偏现代**：CNC 是 120 万现代姓名分布，core 只是数据分层，不代表商用计划；历史风格请用 cbdb 包。
 18. **core pack 姓氏拼音**：只覆盖 seed 的 72 个同姓，其余姓氏拼音为空；名用字拼音来自拼音表。
 19. **M2 未完成项**：盲评未做；偏旁/笔画已从 Unihan 18.0 导入（102,999 字，pack 内全量覆盖）；楚辞/诗经/论语合并 23,217 个双字索引已接入，`文澜` 不在其中。softmax/top-K 与 MMR 已实现。
-20. **M3 状态**：CI 6/6 全绿；AC-58 OpenCC 往返 100/100；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。Web UI 仍是最小内联页。
+20. **M3 状态**：CI 6/6 全绿；AC-58 OpenCC 往返 100/100；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。Web UI 已扩展为姓名/宗门/丹药/功法四标签页。
 21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
 22. **宗门 seed 原型**：107 个双字前缀、5 个后缀；只做“前缀 + 宗/门/派/宫/教”，没有四字前缀、驻地、传承、职阶体系。正道/魔道/中立是手工标签，不是语义模型判断。
 23. **丹药 seed 原型**：50 个修饰词、69 个核心、4 个后缀；只做 3 字/5 字，核心与修饰词的搭配靠 targets 手工约束，不做完整药性/丹方体系。
@@ -626,7 +626,7 @@ minglu/
 | 核心生成器 | 🟡 姓 / 名 / 字辈；无字、无号；seed / core / cbdb 三包 |
 | CLI | 🟡 `gen` / `artifact` / `batch` / `check` / `generation list` / `data info` / `serve` |
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
-| Web UI | ✅ `/` 最小表单页；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
+| Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
 | 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 30 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
@@ -642,7 +642,7 @@ minglu/
 | 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |
-| M3 验收 | ✅ CI 6/6 全绿；AC-58 往返 100/100；Web UI 仍是最小页 |
+| M3 验收 | ✅ CI 6/6 全绿；AC-58 往返 100/100；Web UI 四标签页 |
 
 ---
 
