@@ -50,6 +50,7 @@
           <option value="雅士">雅士</option><option value="俗人">俗人</option>
         </select></div>
         <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="6" pattern="[一-龥]{1,6}" title="只允许 1–6 个汉字" placeholder="如 沈"></div>
+        <div><label for="exclude-person">排除字词（可空，逗号分隔）</label><input id="exclude-person" placeholder="如 阳关、白发"></div>
         <div><label for="count-person">数量 1–10</label><input id="count-person" type="number" min="1" max="10" value="5"></div>
         <div><label for="seed-person">种子（可空）</label><input id="seed-person" placeholder="如 42"></div>
         <div><label for="preset">字辈</label><select id="preset">

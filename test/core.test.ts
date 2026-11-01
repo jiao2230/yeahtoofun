@@ -445,6 +445,12 @@ test('sparse generation pools fall back to generation char + free char', () => {
   }
 });
 
+test('unsuitable poetry names are blacklisted', () => {
+  for (const name of ['阳关', '满天', '白发', '赤壁', '归路']) {
+    assert.equal(checkName(name, pack).valid, false, name);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

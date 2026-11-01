@@ -35,6 +35,24 @@ function validateSurname() {
 surnameInput.addEventListener('input', validateSurname);
 validateSurname();
 
+const EXCLUDE_KEY = 'minglu-exclude-words';
+const excludeInput = $('exclude-person');
+try { excludeInput.value = localStorage.getItem(EXCLUDE_KEY) || ''; } catch { /* ignore */ }
+excludeInput.addEventListener('input', () => {
+  try {
+    if (excludeInput.value.trim()) localStorage.setItem(EXCLUDE_KEY, excludeInput.value);
+    else localStorage.removeItem(EXCLUDE_KEY);
+  } catch { /* ignore */ }
+});
+function excludedWords() {
+  return excludeInput.value.split(/[,，、\s]+/).map((term) => term.trim()).filter(Boolean);
+}
+function containsExcluded(person, terms) {
+  if (terms.length === 0) return false;
+  const given = person.given.map((c) => c.text).join('');
+  return terms.some((term) => given.includes(term) || person.fullName.includes(term));
+}
+
 const tabs = [...document.querySelectorAll('.tab')];
 const panels = [...document.querySelectorAll('[data-panel]')];
 function activateTab(name, focus = false) {
@@ -262,12 +280,14 @@ $('form-person').addEventListener('submit', async (event) => {
       count: explicitSeed ? requested : requested + 20,
       ...(explicitSeed ? { seed: seedOf('seed-person') } : {}),
     });
-    const fresh = explicitSeed ? people : people.filter((p) => !recent.has(p.fullName));
+    const excluded = excludedWords();
+    const fresh = (explicitSeed ? people : people.filter((p) => !recent.has(p.fullName)))
+      .filter((person) => !containsExcluded(person, excluded));
     const selected = fresh.slice(0, requested);
     if (selected.length < requested) {
       for (const person of people) {
         if (selected.length >= requested) break;
-        if (!selected.includes(person)) selected.push(person);
+        if (!selected.includes(person) && !containsExcluded(person, excluded)) selected.push(person);
       }
     }
     if (!explicitSeed) rememberNames(selected.map((p) => p.fullName));

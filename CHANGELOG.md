@@ -9,7 +9,7 @@
 
 ### Added
 
-- 楚辞 / 诗经 / 论语 / 周易 / 庄子 / 唐诗 / 宋词用典索引：23,573 个双字，带 `corpus/source/line`。
+- 楚辞 / 诗经 / 论语 / 周易 / 庄子 / 唐诗 / 宋词用典索引：23,568 个双字，带 `corpus/source/line`。
 - `--allusion chuci|shijing|lunyu|zhouyi|zhuangzi|tangshi|songci|all`。
 - 风格改为三种：`史实` / `写意` / `宗教`；史实、写意软约束，宗教名必须包含 `道/僧/法/德/正/元/玄/承/景/宗/真/之/弘/修/悟/子/智/贤/纯/中` 之一，男女配字分开。
 - 阶层改为 `雅士` / `俗人`；俗人走通俗常见字与排行/小名路径（三毛、五四、大郎、小白、三娘），僧道阶层移除，宗教改由 `style=宗教` 承担。
@@ -43,6 +43,7 @@
 - UI 交互：生成中禁用按钮；无典故 pack 禁用用典；Tab 增加 ARIA 和键盘切换。
 - 稀疏字辈名池兜底：匹配名 < 8 时改为字辈字 + 自由字，seed 不再整批生成文德。
 - 女性用典不再依赖“写意”风格：风格不限时也合并女性用典池，修复 cbdb 只剩淑姬。
+- 姓名页新增用户“排除字词”过滤；阳关、满天、白发、赤壁、归路入硬黑名单并移出唐宋词表。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
 - 从 CNC 女性语料提取 120 个写意双字名（排除叠字），并入女性写意池；报告 `reports/cnc-female-writeyi-20261101.md`。
@@ -66,7 +67,7 @@
 
 ### Verification
 
-- `npm test`：63 core ＋ 6 M3 = 69 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：64 core ＋ 6 M3 = 70 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。
