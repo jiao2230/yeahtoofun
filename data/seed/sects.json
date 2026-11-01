@@ -1803,6 +1803,336 @@
       ],
       "note": "",
       "weight": 6
+    },
+    {
+      "text": "金鼎",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "金鳞",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "木灵",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "木樨",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "水月",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "弱水",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "火云",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "离火",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "厚土",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "息土",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "风雷",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "罡风",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "雷泽",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "惊雷",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "刀锋",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "兵刃"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "断刀",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "兵刃"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "剑鸣",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "兵刃"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "藏剑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "兵刃"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "鼎湖",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "器鼎"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "龙鼎",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "器鼎"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "龙渊",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "龙属"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "龙吟",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "龙属"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "灵墟",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "灵山",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "灵海",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "山海",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "山岳",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "鲸海",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "灵山海"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "刀剑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "兵刃"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "水火",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "五行"
+      ],
+      "note": "",
+      "weight": 6
     }
   ],
   "suffixes": [

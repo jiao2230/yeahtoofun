@@ -211,14 +211,14 @@ test('sect batch is unique', () => {
 test('sect examples are reproducible from seeds', () => {
   const examples: Array<[number, string]> = [
     [86, '青林宗'],
-    [265, '绝意门'],
-    [572, '栖霞门'],
-    [151, '问剑宗'],
-    [789, '衔山派'],
-    [377, '赤阳派'],
-    [23, '东极宫'],
-    [185, '天魔宫'],
-    [570, '虺心教'],
+    [450, '绝意门'],
+    [607, '栖霞门'],
+    [1432, '问剑宗'],
+    [1709, '衔山派'],
+    [190, '赤阳派'],
+    [388, '东极宫'],
+    [589, '天魔宫'],
+    [182, '虺心教'],
   ];
   for (const [seed, expected] of examples) {
     assert.equal(generateSects({ count: 1, seed }, pack)[0]?.fullName, expected);
