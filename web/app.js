@@ -16,6 +16,14 @@ function resetOutputs() {
     if (results) results.innerHTML = '';
   }
 }
+function setBusy(form, busy) {
+  const button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  if (!button.dataset.idleLabel) button.dataset.idleLabel = button.textContent;
+  button.disabled = busy;
+  button.textContent = busy ? '生成中…' : button.dataset.idleLabel;
+  form.setAttribute('aria-busy', String(busy));
+}
 document.querySelectorAll('.status').forEach((element) => element.setAttribute('aria-live', 'polite'));
 
 const surnameInput = $('surname');
@@ -29,11 +37,41 @@ validateSurname();
 
 const tabs = [...document.querySelectorAll('.tab')];
 const panels = [...document.querySelectorAll('[data-panel]')];
-tabs.forEach((tab) => tab.addEventListener('click', () => {
+function activateTab(name, focus = false) {
+  const selected = tabs.find((tab) => tab.dataset.tab === name) ?? tabs[0];
+  for (const tab of tabs) {
+    const active = tab === selected;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  }
+  for (const panel of panels) panel.hidden = panel.dataset.panel !== selected.dataset.tab;
+  if (focus) selected.focus();
+}
+tabs.forEach((tab, index) => {
   const name = tab.dataset.tab;
-  for (const item of tabs) item.classList.toggle('active', item === tab);
-  for (const panel of panels) panel.hidden = panel.dataset.panel !== name;
-}));
+  tab.id = `tab-${name}`;
+  tab.setAttribute('role', 'tab');
+  tab.setAttribute('aria-controls', `panel-${name}`);
+  const panel = panels.find((item) => item.dataset.panel === name);
+  if (panel) {
+    panel.id = `panel-${name}`;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', `tab-${name}`);
+  }
+  tab.addEventListener('click', () => activateTab(name));
+  tab.addEventListener('keydown', (event) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? tabs.length - 1
+        : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    activateTab(tabs[next].dataset.tab, true);
+  });
+});
+activateTab('person');
 
 function seedOf(inputId) {
   const raw = $(inputId).value.trim();
@@ -44,16 +82,33 @@ function seedOf(inputId) {
 let gen = null;
 const PACK_KEY = 'minglu-pack';
 let activePack = localStorage.getItem(PACK_KEY) || 'seed';
-async function ensureGenerator(status) {
-  if (gen) return gen;
-  setStatus(status, `首次生成：加载本地 pack（${activePack}）…`);
+async function ensureGenerator(status, silent = false) {
+  if (gen) {
+    syncAllusionAvailability();
+    return gen;
+  }
+  if (!silent) setStatus(status, `首次生成：加载本地 pack（${activePack}）…`);
   setPackStatus(`加载 ${activePack}…`);
   const token = $('token').value.trim();
   const headers = token ? { authorization: 'Bearer ' + token } : {};
   const pack = await loadPack(`/v1/pack?pack=${encodeURIComponent(activePack)}`, headers);
   gen = createGenerator(pack);
   setPackStatus(packLine(gen));
+  syncAllusionAvailability();
   return gen;
+}
+
+function syncAllusionAvailability() {
+  const select = $('allusion');
+  const commoner = $('klass').value === '俗人';
+  const available = Boolean(gen && Object.keys(gen.pack.allusions ?? {}).length > 0);
+  select.disabled = commoner || !available;
+  if (!available) {
+    if (!commoner) select.value = '';
+    select.title = gen ? '当前数据包没有典故索引' : '数据包加载后才能选择用典';
+  } else {
+    select.title = '';
+  }
 }
 
 async function loadPackOptions() {
@@ -70,24 +125,36 @@ async function loadPackOptions() {
     activePack = saved && packs.some((pack) => pack.id === saved) ? saved : (payload.default || packs[0].id);
     if (!packs.some((pack) => pack.id === activePack)) activePack = packs[0].id;
     select.value = activePack;
-    setPackStatus(`数据包：${activePack}（生成时加载）`);
+    setPackStatus(`数据包：${activePack}（加载中）`);
   } catch {
     select.innerHTML = '<option value="seed">seed</option>';
     activePack = 'seed';
     select.value = activePack;
     setPackStatus('pack 列表加载失败，使用 seed');
   }
+  try {
+    await ensureGenerator($('status-person'), true);
+  } catch (error) {
+    setPackStatus(`pack 加载失败：${error.message}`);
+  }
 }
-$('pack-select').addEventListener('change', () => {
+$('pack-select').addEventListener('change', async () => {
   activePack = $('pack-select').value;
   localStorage.setItem(PACK_KEY, activePack);
   gen = null;
   resetOutputs();
-  setPackStatus(`已切换：${activePack}（生成时加载）`);
+  syncAllusionAvailability();
+  setPackStatus(`已切换：${activePack}（加载中）`);
+  try {
+    await ensureGenerator($('status-person'), true);
+  } catch (error) {
+    setPackStatus(`pack 加载失败：${error.message}`);
+  }
 });
 $('token').addEventListener('change', () => {
   gen = null;
   resetOutputs();
+  syncAllusionAvailability();
   loadPackOptions();
 });
 loadPackOptions();
@@ -144,6 +211,7 @@ function syncClassLocks() {
     $('index').value = '1';
   }
   syncGenerationIndex();
+  syncAllusionAvailability();
   const hint = $('lock-person');
   hint.hidden = !commoner;
   hint.textContent = commoner ? '俗人模式：时代、风格、字辈固定不启用' : '';
@@ -153,6 +221,7 @@ syncClassLocks();
 
 $('form-person').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = $('status-person');
   const results = $('names-person');
   setStatus(status, '生成中…'); results.innerHTML = '';
@@ -169,6 +238,7 @@ $('form-person').addEventListener('submit', async (event) => {
     status.textContent = `字辈序号需为 1–${presetMax}`;
     return;
   }
+  setBusy(form, true);
   const profile = {
     gender: $('gender').value,
     class: $('klass').value,
@@ -212,14 +282,18 @@ $('form-person').addEventListener('submit', async (event) => {
     }).join('');
   } catch (error) {
     setStatus(status, '失败：' + error.message, true);
+  } finally {
+    setBusy(form, false);
   }
 });
 
 $('form-sect').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = $('status-sect');
   const results = $('names-sect');
   setStatus(status, '生成中…'); results.innerHTML = '';
+  setBusy(form, true);
   try {
     const generator = await ensureGenerator(status);
     const alignment = $('alignment-sect').value;
@@ -235,14 +309,18 @@ $('form-sect').addEventListener('submit', async (event) => {
     }).join('');
   } catch (error) {
     setStatus(status, '失败：' + error.message, true);
+  } finally {
+    setBusy(form, false);
   }
 });
 
 $('form-pill').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = $('status-pill');
   const results = $('names-pill');
   setStatus(status, '生成中…'); results.innerHTML = '';
+  setBusy(form, true);
   try {
     const generator = await ensureGenerator(status);
     const kind = $('kind-pill').value;
@@ -262,14 +340,18 @@ $('form-pill').addEventListener('submit', async (event) => {
     }).join('');
   } catch (error) {
     setStatus(status, '失败：' + error.message, true);
+  } finally {
+    setBusy(form, false);
   }
 });
 
 $('form-technique').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = $('status-technique');
   const results = $('names-technique');
   setStatus(status, '生成中…'); results.innerHTML = '';
+  setBusy(form, true);
   try {
     const generator = await ensureGenerator(status);
     const kind = $('kind-technique').value;
@@ -288,14 +370,18 @@ $('form-technique').addEventListener('submit', async (event) => {
     }).join('');
   } catch (error) {
     setStatus(status, '失败：' + error.message, true);
+  } finally {
+    setBusy(form, false);
   }
 });
 
 $('form-artifact').addEventListener('submit', async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const status = $('status-artifact');
   const results = $('names-artifact');
   setStatus(status, '生成中…'); results.innerHTML = '';
+  setBusy(form, true);
   try {
     const generator = await ensureGenerator(status);
     const artifacts = generator.artifacts({
@@ -309,5 +395,7 @@ $('form-artifact').addEventListener('submit', async (event) => {
     }).join('');
   } catch (error) {
     setStatus(status, '失败：' + error.message, true);
+  } finally {
+    setBusy(form, false);
   }
 });
