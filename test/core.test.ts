@@ -355,6 +355,7 @@ test('weak religious single names and 房中 are excluded', () => {
     assert.ok(!['中', '子', '之'].includes(person.given[0]!.text), person.fullName);
   }
   assert.equal(checkName('房中', pack).valid, false);
+  assert.equal(checkName('慧星', pack).valid, false);
 });
 
 test('xianxia and writeyi use supplemented double-name pools', () => {
@@ -411,7 +412,7 @@ test('female allusion pool can use name-level female entries', () => {
 });
 
 test('removed romantic female names are never generated', () => {
-  const removed = new Set(['西楼', '闲愁', '阑珊', '黄花', '归路', '藕花', '鸥鹭', '寒蝉', '长亭', '晓风']);
+  const removed = new Set(['西楼', '闲愁', '阑珊', '黄花', '归路', '藕花', '鸥鹭', '寒蝉', '长亭', '晓风', '慧星']);
   for (const allusion of [undefined, 'all'] as const) {
     const people = generateBatch(
       { era: 'xianxia', style: ['写意'], gender: 'female', count: 80, seed: 8, ...(allusion ? { allusion } : {}) },

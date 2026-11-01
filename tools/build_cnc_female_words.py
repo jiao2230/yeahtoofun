@@ -48,6 +48,7 @@ def main() -> int:
     }
     compounds = sorted((s for s in surnames if len(s) == 2), key=len, reverse=True)
     blocked = set("氏某女娘妇女姑姐妹嫂婆奴婢")
+    manual_drop = {"慧星"}
 
     counts: collections.Counter[str] = collections.Counter()
     female_rows = 0
@@ -68,6 +69,8 @@ def main() -> int:
         surname = next((s for s in compounds if name.startswith(s)), name[0])
         given = name[len(surname):]
         if len(given) != 2 or given[0] == given[1]:
+            continue
+        if given in manual_drop:
             continue
         if any(ch not in writeyi or ch in blocked for ch in given):
             continue
