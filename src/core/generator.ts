@@ -26,6 +26,8 @@ const INITIALS = [
 ];
 const RELIGIOUS_PREFIXES = ['道', '法', '僧'];
 const RELIGIOUS_PATTERN_CHANCE = 0.35;
+const MIN_STYLE_CHARS = 12;
+const MIN_STYLE_GIVEN = 8;
 const ALLUSION_STOP_CHARS = new Set(
   '之兮而其所以不无有为与则乃于乎哉夫何然者也矣可能将欲既亦皆各自相见使令从来上去中外出前后左右大小多少长短高低我尔汝女曰谓云是人十百千万',
 );
@@ -424,7 +426,7 @@ function pickGivenOnce(
           findChar(pack, c)?.styles.some((s) => profile.style.includes(s)),
         ),
       );
-      if (styled.length > 0) pool = styled;
+      if (styled.length >= MIN_STYLE_GIVEN) pool = styled;
     }
     if (pool.length > 0) {
       const sampled = sampleSubset(pool, rng, 128);
@@ -519,15 +521,27 @@ function pickOtherChar(
   avoid?: string,
   surnameChars: Set<string> = new Set(),
 ): string {
-  const pool = pack.chars.filter((c) => {
+  const base = pack.chars.filter((c) => {
     if (c.char === avoid) return false;
     if (surnameChars.has(c.char)) return false;
     if (profile.gender !== 'any' && c.gender !== 'neutral' && c.gender !== profile.gender) return false;
-    if (profile.style.length > 0 && c.styles.some((s) => profile.style.includes(s))) return true;
-    return profile.style.length === 0;
+    return true;
   });
+  const styled =
+    profile.style.length > 0
+      ? base.filter((c) => c.styles.some((s) => profile.style.includes(s)))
+      : [];
   const fallback = pack.chars.filter((c) => c.char !== avoid && !surnameChars.has(c.char));
-  const source = pool.length > 0 ? pool : fallback;
+  const source =
+    profile.style.length > 0
+      ? styled.length >= MIN_STYLE_CHARS
+        ? styled
+        : base.length > 0
+          ? base
+          : fallback
+      : base.length > 0
+        ? base
+        : fallback;
   const sampled = sampleSubset(source, rng, 96);
   const scored = sampled.map((c) => ({
     item: c.char,

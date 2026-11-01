@@ -97,6 +97,17 @@ test('style profile yields matching style tags', () => {
   assert.ok(matched >= 15, `only ${matched}/20 names carry 清冷`);
 });
 
+test('sparse style pools do not collapse to a few chars', () => {
+  const styles = ['雅正', '清冷', '雄浑', '仙逸', '质朴', '绮丽'] as const;
+  for (const gender of ['male', 'female', 'any'] as const) {
+    for (const style of styles) {
+      const people = generateBatch({ count: 40, gender, style: [style], seed: 7 }, pack);
+      const chars = new Set(people.flatMap((p) => p.given.map((c) => c.text)));
+      assert.ok(chars.size >= 8, `${gender}/${style} only used ${chars.size} chars`);
+    }
+  }
+});
+
 test('僧道 class uses 道/法/僧 prefix pattern', () => {
   const people = generateBatch({ class: '僧道', count: 100, seed: 3 }, pack);
   const religious = people.filter((p) => p.pattern === 'religious-prefix');

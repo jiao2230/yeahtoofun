@@ -672,6 +672,8 @@ var INITIALS = [
 ];
 var RELIGIOUS_PREFIXES = ["\u9053", "\u6CD5", "\u50E7"];
 var RELIGIOUS_PATTERN_CHANCE = 0.35;
+var MIN_STYLE_CHARS = 12;
+var MIN_STYLE_GIVEN = 8;
 var ALLUSION_STOP_CHARS = new Set(
   "\u4E4B\u516E\u800C\u5176\u6240\u4EE5\u4E0D\u65E0\u6709\u4E3A\u4E0E\u5219\u4E43\u4E8E\u4E4E\u54C9\u592B\u4F55\u7136\u8005\u4E5F\u77E3\u53EF\u80FD\u5C06\u6B32\u65E2\u4EA6\u7686\u5404\u81EA\u76F8\u89C1\u4F7F\u4EE4\u4ECE\u6765\u4E0A\u53BB\u4E2D\u5916\u51FA\u524D\u540E\u5DE6\u53F3\u5927\u5C0F\u591A\u5C11\u957F\u77ED\u9AD8\u4F4E\u6211\u5C14\u6C5D\u5973\u66F0\u8C13\u4E91\u662F\u4EBA\u5341\u767E\u5343\u4E07"
 );
@@ -995,7 +997,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
           (c) => findChar(pack, c)?.styles.some((s) => profile.style.includes(s))
         )
       );
-      if (styled.length > 0) pool2 = styled;
+      if (styled.length >= MIN_STYLE_GIVEN) pool2 = styled;
     }
     if (pool2.length > 0) {
       const sampled = sampleSubset(pool2, rng, 128);
@@ -1064,15 +1066,15 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   return sampleTopK(scored, rng, 24);
 }
 function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set()) {
-  const pool = pack.chars.filter((c) => {
+  const base = pack.chars.filter((c) => {
     if (c.char === avoid) return false;
     if (surnameChars.has(c.char)) return false;
     if (profile.gender !== "any" && c.gender !== "neutral" && c.gender !== profile.gender) return false;
-    if (profile.style.length > 0 && c.styles.some((s) => profile.style.includes(s))) return true;
-    return profile.style.length === 0;
+    return true;
   });
+  const styled = profile.style.length > 0 ? base.filter((c) => c.styles.some((s) => profile.style.includes(s))) : [];
   const fallback = pack.chars.filter((c) => c.char !== avoid && !surnameChars.has(c.char));
-  const source = pool.length > 0 ? pool : fallback;
+  const source = profile.style.length > 0 ? styled.length >= MIN_STYLE_CHARS ? styled : base.length > 0 ? base : fallback : base.length > 0 ? base : fallback;
   const sampled = sampleSubset(source, rng, 96);
   const scored = sampled.map((c) => ({
     item: c.char,
