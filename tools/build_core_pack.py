@@ -17,6 +17,7 @@ from pathlib import Path
 HAN = re.compile(r"^[\u4e00-\u9fa5]{1,8}$")
 MIN_FREQ = 20
 COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马', '良', '生', '虎', '保', '龙', '旺', '存', '桃', '杏', '菊', '春', '满', '枝', '桂', '莲', '爱', '悟']
+STYLE_EXTRA = ['风', '蓉', '惜', '寒', '羞', '画']
 TONE_MARKS = {
     "ā": 1, "á": 2, "ǎ": 3, "à": 4,
     "ē": 1, "é": 2, "ě": 3, "è": 4,
@@ -59,7 +60,7 @@ def load_allusions() -> dict[str, list[dict[str, str]]]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
 
 
-STOP_CHARS = set("之兮而其所以不无有为与则乃于乎哉夫何然者也矣可能将欲既亦皆各自相见使令从来上去中外出前后左右大小多少长短高低我尔汝女曰谓云是人十百千万")
+STOP_CHARS = set("之兮而其所以不无有为与则乃于乎哉夫何然者也矣可能将欲既亦皆各自相见使令从来上去中外出前后左右大小多少短高低我尔汝女曰谓是人十百千万")
 
 
 def with_allusion_names(
@@ -206,7 +207,7 @@ def main() -> int:
             }
         )
 
-    for ch in COLLOQUIAL_EXTRA:
+    for ch in COLLOQUIAL_EXTRA + STYLE_EXTRA:
         if any(entry["char"] == ch for entry in chars):
             continue
         seed = seed_chars.get(ch)

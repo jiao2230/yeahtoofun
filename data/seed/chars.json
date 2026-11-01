@@ -2303,5 +2303,60 @@
       "写意"
     ],
     "weight": 16
+  },
+  {
+    "char": "风",
+    "pinyin": "fēng",
+    "tone": 1,
+    "meaning": "风致；风雅",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "蓉",
+    "pinyin": "róng",
+    "tone": 2,
+    "meaning": "芙蓉；蓉华",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "惜",
+    "pinyin": "xī",
+    "tone": 1,
+    "meaning": "惜春；珍惜",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "羞",
+    "pinyin": "xiū",
+    "tone": 1,
+    "meaning": "含羞；羞涩",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "画",
+    "pinyin": "huà",
+    "tone": 4,
+    "meaning": "画屏；如画",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
   }
 ]
