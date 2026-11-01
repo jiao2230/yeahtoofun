@@ -17,7 +17,9 @@
     "test:m3": "node test/m3.test.ts",
     "typecheck": "node scripts/typecheck.mjs",
     "bundle:web": "node scripts/bundle-web.mjs",
-    "cli": "node src/cli.ts"
+    "cli": "node src/cli.ts",
+    "build:data": "python tools/build_data.py",
+    "build:data:dry": "python tools/build_data.py --dry-run"
   },
   "engines": {
     "node": ">=22"

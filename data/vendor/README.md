@@ -25,7 +25,9 @@
 构建命令：
 
 ```bash
-python tools/build_allusions.py
-python tools/build_pack.py --cbdb ... --out data/packs/cbdb
-python tools/build_core_pack.py --cnc ... --out data/packs/core
+# 一键：典故 → core → cbdb
+python tools/build_data.py
+
+# 只预览命令
+python tools/build_data.py --dry-run
 ```
