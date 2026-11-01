@@ -1,38 +1,158 @@
 [
-  {"name": "静姝", "corpus": "shijing", "source": "诗经·邶风·静女", "line": "静女其姝，俟我于城隅。"},
-  {"name": "清扬", "corpus": "shijing", "source": "诗经·郑风·野有蔓草", "line": "有美一人，清扬婉兮。"},
-  {"name": "清婉", "corpus": "shijing", "source": "诗经·郑风·野有蔓草", "line": "有美一人，清扬婉兮。"},
-  {"name": "静好", "corpus": "shijing", "source": "诗经·郑风·女曰鸡鸣", "line": "琴瑟在御，莫不静好。"},
-  {"name": "琼琚", "corpus": "shijing", "source": "诗经·卫风·木瓜", "line": "投我以木瓜，报之以琼琚。"},
-  {"name": "琼瑶", "corpus": "shijing", "source": "诗经·卫风·木瓜", "line": "投我以木桃，报之以琼瑶。"},
-  {"name": "舜华", "corpus": "shijing", "source": "诗经·郑风·有女同车", "line": "有女同车，颜如舜华。"},
-  {"name": "采薇", "corpus": "shijing", "source": "诗经·小雅·采薇", "line": "采薇采薇，薇亦作止。"},
-  {"name": "子衿", "corpus": "shijing", "source": "诗经·郑风·子衿", "line": "青青子衿，悠悠我心。"},
-  {"name": "蒹葭", "corpus": "shijing", "source": "诗经·秦风·蒹葭", "line": "蒹葭苍苍，白露为霜。"},
-  {"name": "兰芷", "corpus": "chuci", "source": "楚辞·离骚·离骚", "line": "兰芷变而不芳兮，荃蕙化而为茅。"},
-  {"name": "木兰", "corpus": "chuci", "source": "楚辞·离骚·离骚", "line": "朝搴阰之木兰兮，夕揽洲之宿莽。"},
-  {"name": "芙蓉", "corpus": "chuci", "source": "楚辞·离骚·离骚", "line": "制芰荷以为衣兮，集芙蓉以为裳。"},
-  {"name": "若英", "corpus": "chuci", "source": "楚辞·九歌·云中君", "line": "浴兰汤兮沐芳，华采衣兮若英。"},
-  {"name": "望舒", "corpus": "chuci", "source": "楚辞·离骚·离骚", "line": "前望舒使先驱兮，后飞廉使奔属。"},
-  {"name": "婵娟", "corpus": "songci", "source": "宋词·水调歌头", "line": "但愿人长久，千里共婵娟。"},
-  {"name": "清影", "corpus": "songci", "source": "宋词·水调歌头", "line": "起舞弄清影，何似在人间。"},
-  {"name": "红藕", "corpus": "songci", "source": "宋词·一剪梅", "line": "红藕香残玉簟秋。"},
-  {"name": "锦书", "corpus": "songci", "source": "宋词·一剪梅", "line": "云中谁寄锦书来？雁字回时，月满西楼。"},
-  {"name": "西楼", "corpus": "songci", "source": "宋词·一剪梅", "line": "云中谁寄锦书来？雁字回时，月满西楼。"},
-  {"name": "闲愁", "corpus": "songci", "source": "宋词·一剪梅", "line": "一种相思，两处闲愁。"},
-  {"name": "春水", "corpus": "songci", "source": "宋词·虞美人", "line": "问君能有几多愁？恰似一江春水向东流。"},
-  {"name": "朱颜", "corpus": "songci", "source": "宋词·虞美人", "line": "雕栏玉砌应犹在，只是朱颜改。"},
-  {"name": "月明", "corpus": "songci", "source": "宋词·虞美人", "line": "小楼昨夜又东风，故国不堪回首月明中。"},
-  {"name": "阑珊", "corpus": "songci", "source": "宋词·青玉案·元夕", "line": "蓦然回首，那人却在，灯火阑珊处。"},
-  {"name": "盈袖", "corpus": "songci", "source": "宋词·醉花阴", "line": "东篱把酒黄昏后，有暗香盈袖。"},
-  {"name": "黄花", "corpus": "songci", "source": "宋词·声声慢", "line": "满地黄花堆积。"},
-  {"name": "梧桐", "corpus": "songci", "source": "宋词·声声慢", "line": "梧桐更兼细雨，到黄昏、点点滴滴。"},
-  {"name": "归路", "corpus": "songci", "source": "宋词·如梦令", "line": "常记溪亭日暮，沉醉不知归路。"},
-  {"name": "藕花", "corpus": "songci", "source": "宋词·如梦令", "line": "兴尽晚回舟，误入藕花深处。"},
-  {"name": "鸥鹭", "corpus": "songci", "source": "宋词·如梦令", "line": "争渡，争渡，惊起一滩鸥鹭。"},
-  {"name": "兰舟", "corpus": "songci", "source": "宋词·雨霖铃", "line": "都门帐饮无绪，留恋处，兰舟催发。"},
-  {"name": "寒蝉", "corpus": "songci", "source": "宋词·雨霖铃", "line": "寒蝉凄切，对长亭晚，骤雨初歇。"},
-  {"name": "长亭", "corpus": "songci", "source": "宋词·雨霖铃", "line": "寒蝉凄切，对长亭晚，骤雨初歇。"},
-  {"name": "晓风", "corpus": "songci", "source": "宋词·雨霖铃", "line": "今宵酒醒何处？杨柳岸，晓风残月。"},
-  {"name": "残月", "corpus": "songci", "source": "宋词·雨霖铃", "line": "今宵酒醒何处？杨柳岸，晓风残月。"}
+  {
+    "name": "静姝",
+    "corpus": "shijing",
+    "source": "诗经·邶风·静女",
+    "line": "静女其姝，俟我于城隅。"
+  },
+  {
+    "name": "清扬",
+    "corpus": "shijing",
+    "source": "诗经·郑风·野有蔓草",
+    "line": "有美一人，清扬婉兮。"
+  },
+  {
+    "name": "清婉",
+    "corpus": "shijing",
+    "source": "诗经·郑风·野有蔓草",
+    "line": "有美一人，清扬婉兮。"
+  },
+  {
+    "name": "静好",
+    "corpus": "shijing",
+    "source": "诗经·郑风·女曰鸡鸣",
+    "line": "琴瑟在御，莫不静好。"
+  },
+  {
+    "name": "琼琚",
+    "corpus": "shijing",
+    "source": "诗经·卫风·木瓜",
+    "line": "投我以木瓜，报之以琼琚。"
+  },
+  {
+    "name": "琼瑶",
+    "corpus": "shijing",
+    "source": "诗经·卫风·木瓜",
+    "line": "投我以木桃，报之以琼瑶。"
+  },
+  {
+    "name": "舜华",
+    "corpus": "shijing",
+    "source": "诗经·郑风·有女同车",
+    "line": "有女同车，颜如舜华。"
+  },
+  {
+    "name": "采薇",
+    "corpus": "shijing",
+    "source": "诗经·小雅·采薇",
+    "line": "采薇采薇，薇亦作止。"
+  },
+  {
+    "name": "子衿",
+    "corpus": "shijing",
+    "source": "诗经·郑风·子衿",
+    "line": "青青子衿，悠悠我心。"
+  },
+  {
+    "name": "蒹葭",
+    "corpus": "shijing",
+    "source": "诗经·秦风·蒹葭",
+    "line": "蒹葭苍苍，白露为霜。"
+  },
+  {
+    "name": "兰芷",
+    "corpus": "chuci",
+    "source": "楚辞·离骚·离骚",
+    "line": "兰芷变而不芳兮，荃蕙化而为茅。"
+  },
+  {
+    "name": "木兰",
+    "corpus": "chuci",
+    "source": "楚辞·离骚·离骚",
+    "line": "朝搴阰之木兰兮，夕揽洲之宿莽。"
+  },
+  {
+    "name": "芙蓉",
+    "corpus": "chuci",
+    "source": "楚辞·离骚·离骚",
+    "line": "制芰荷以为衣兮，集芙蓉以为裳。"
+  },
+  {
+    "name": "若英",
+    "corpus": "chuci",
+    "source": "楚辞·九歌·云中君",
+    "line": "浴兰汤兮沐芳，华采衣兮若英。"
+  },
+  {
+    "name": "望舒",
+    "corpus": "chuci",
+    "source": "楚辞·离骚·离骚",
+    "line": "前望舒使先驱兮，后飞廉使奔属。"
+  },
+  {
+    "name": "婵娟",
+    "corpus": "songci",
+    "source": "宋词·水调歌头",
+    "line": "但愿人长久，千里共婵娟。"
+  },
+  {
+    "name": "清影",
+    "corpus": "songci",
+    "source": "宋词·水调歌头",
+    "line": "起舞弄清影，何似在人间。"
+  },
+  {
+    "name": "红藕",
+    "corpus": "songci",
+    "source": "宋词·一剪梅",
+    "line": "红藕香残玉簟秋。"
+  },
+  {
+    "name": "锦书",
+    "corpus": "songci",
+    "source": "宋词·一剪梅",
+    "line": "云中谁寄锦书来？雁字回时，月满西楼。"
+  },
+  {
+    "name": "春水",
+    "corpus": "songci",
+    "source": "宋词·虞美人",
+    "line": "问君能有几多愁？恰似一江春水向东流。"
+  },
+  {
+    "name": "朱颜",
+    "corpus": "songci",
+    "source": "宋词·虞美人",
+    "line": "雕栏玉砌应犹在，只是朱颜改。"
+  },
+  {
+    "name": "月明",
+    "corpus": "songci",
+    "source": "宋词·虞美人",
+    "line": "小楼昨夜又东风，故国不堪回首月明中。"
+  },
+  {
+    "name": "盈袖",
+    "corpus": "songci",
+    "source": "宋词·醉花阴",
+    "line": "东篱把酒黄昏后，有暗香盈袖。"
+  },
+  {
+    "name": "梧桐",
+    "corpus": "songci",
+    "source": "宋词·声声慢",
+    "line": "梧桐更兼细雨，到黄昏、点点滴滴。"
+  },
+  {
+    "name": "兰舟",
+    "corpus": "songci",
+    "source": "宋词·雨霖铃",
+    "line": "都门帐饮无绪，留恋处，兰舟催发。"
+  },
+  {
+    "name": "残月",
+    "corpus": "songci",
+    "source": "宋词·雨霖铃",
+    "line": "今宵酒醒何处？杨柳岸，晓风残月。"
+  }
 ]

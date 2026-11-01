@@ -53,6 +53,7 @@ const SINGLE_RATE: Record<Era, number> = {
 // standalone given name (e.g. 小英 is fine, 赵小 is not).
 const SINGLE_NAME_STOP = new Set(['小', '阿', '老', '儿', '氏', '某', '娘', '姑', '丫', '妞', '娃', '妹', '娣']);
 const ELEGANT_BANNED_CHARS = new Set(['大', '小', '丫', '娘', '郎']);
+const FEMALE_NAME_BLOCKLIST = new Set(['西楼', '闲愁', '阑珊', '黄花', '归路', '藕花', '鸥鹭', '寒蝉', '长亭', '晓风']);
 
 export const DEFAULT_PROFILE: ResolvedProfile = {
   era: 'tangsong',
@@ -588,6 +589,7 @@ function pickGivenOnce(
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isFemaleNameBlocked(entry.text, profile)) return false;
       if (profile.gender === 'any') return true;
       if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
       return entry.text.split('').every((c) => {
@@ -624,6 +626,7 @@ function pickGivenOnce(
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
     return entry.text.split('').every((c) => {
@@ -665,6 +668,7 @@ function findPairWithGeneration(
   const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
     const meta = findChar(pack, entry.text[1 - pos]!);
@@ -739,6 +743,10 @@ function toNameChar(pack: SeedPack, char: string, warnings: Warning[]): NameChar
 }
 
 const charIndexCache = new WeakMap<SeedPack, Map<string, CharEntry>>();
+
+function isFemaleNameBlocked(text: string, profile: ResolvedProfile): boolean {
+  return profile.gender === 'female' && FEMALE_NAME_BLOCKLIST.has(text);
+}
 
 function isElegantGivenAllowed(text: string, profile: ResolvedProfile): boolean {
   if (profile.class !== '雅士') return true;

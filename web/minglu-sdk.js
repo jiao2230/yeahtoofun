@@ -699,6 +699,7 @@ var SINGLE_RATE = {
 };
 var SINGLE_NAME_STOP = /* @__PURE__ */ new Set(["\u5C0F", "\u963F", "\u8001", "\u513F", "\u6C0F", "\u67D0", "\u5A18", "\u59D1", "\u4E2B", "\u599E", "\u5A03", "\u59B9", "\u5A23"]);
 var ELEGANT_BANNED_CHARS = /* @__PURE__ */ new Set(["\u5927", "\u5C0F", "\u4E2B", "\u5A18", "\u90CE"]);
+var FEMALE_NAME_BLOCKLIST = /* @__PURE__ */ new Set(["\u897F\u697C", "\u95F2\u6101", "\u9611\u73CA", "\u9EC4\u82B1", "\u5F52\u8DEF", "\u85D5\u82B1", "\u9E25\u9E6D", "\u5BD2\u8749", "\u957F\u4EAD", "\u6653\u98CE"]);
 var DEFAULT_PROFILE = {
   era: "tangsong",
   gender: "any",
@@ -1093,6 +1094,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isFemaleNameBlocked(entry.text, profile)) return false;
       if (profile.gender === "any") return true;
       if (entry.gender) return entry.gender === "neutral" || entry.gender === profile.gender;
       return entry.text.split("").every((c) => {
@@ -1125,6 +1127,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+    if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === "any") return true;
     if (entry.gender) return entry.gender === "neutral" || entry.gender === profile.gender;
     return entry.text.split("").every((c) => {
@@ -1157,6 +1160,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+    if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === "any") return true;
     if (entry.gender) return entry.gender === "neutral" || entry.gender === profile.gender;
     const meta = findChar(pack, entry.text[1 - pos]);
@@ -1206,6 +1210,9 @@ function toNameChar(pack, char, warnings) {
   };
 }
 var charIndexCache = /* @__PURE__ */ new WeakMap();
+function isFemaleNameBlocked(text, profile) {
+  return profile.gender === "female" && FEMALE_NAME_BLOCKLIST.has(text);
+}
 function isElegantGivenAllowed(text, profile) {
   if (profile.class !== "\u96C5\u58EB") return true;
   return !Array.from(text).some((char) => ELEGANT_BANNED_CHARS.has(char));

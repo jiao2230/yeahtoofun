@@ -409,6 +409,19 @@ test('female allusion pool can use name-level female entries', () => {
   }
 });
 
+test('removed romantic female names are never generated', () => {
+  const removed = new Set(['西楼', '闲愁', '阑珊', '黄花', '归路', '藕花', '鸥鹭', '寒蝉', '长亭', '晓风']);
+  for (const allusion of [undefined, 'all'] as const) {
+    const people = generateBatch(
+      { era: 'xianxia', style: ['写意'], gender: 'female', count: 80, seed: 8, ...(allusion ? { allusion } : {}) },
+      pack,
+    );
+    for (const person of people) {
+      assert.ok(!removed.has(person.given.map((c) => c.text).join('')), person.fullName);
+    }
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
