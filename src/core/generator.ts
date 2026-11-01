@@ -165,7 +165,21 @@ export function generateOne(
 }
 
 export function generate(input: Profile, pack: SeedPack): PersonName {
-  return generateOne(input, pack, 0);
+  return generateUnblocked(input, pack, 0);
+}
+
+function isBlacklisted(person: PersonName): boolean {
+  return person.warnings.some((warning) => warning.code === 'blacklist');
+}
+
+function generateUnblocked(input: Profile, pack: SeedPack, index: number): PersonName {
+  let last: PersonName | null = null;
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const candidate = generateOne(input, pack, index + attempt * 1_000_003);
+    last = candidate;
+    if (!isBlacklisted(candidate)) return candidate;
+  }
+  return last!;
 }
 
 export function generateBatch(input: Profile, pack: SeedPack): PersonName[] {
@@ -188,6 +202,7 @@ export function generateBatch(input: Profile, pack: SeedPack): PersonName[] {
       const salt = attempt === 0 ? i : i + attempt * 1_000_003;
       const candidate = generateOne(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
+      if (isBlacklisted(candidate)) continue;
       if (profile.mode === 'diverse' && count >= 20) {
         const s = candidate.surname.text;
         const f = candidate.given[0]?.text ?? '';
@@ -208,7 +223,7 @@ export function generateBatch(input: Profile, pack: SeedPack): PersonName[] {
       person = pickByMmr(mmrPool, results);
     }
     if (!person) {
-      person = generateOne(input, pack, i + 9_000_019);
+      person = generateUnblocked(input, pack, i + 9_000_019);
       person.warnings.push({ code: 'duplicate_relaxed', message: '多次重掷仍重复，已放宽' });
       if (profile.mode === 'diverse' && count >= 20) {
         person.warnings.push({ code: 'quota_relaxed', message: '配额重掷 8 次仍未满足，已放宽' });

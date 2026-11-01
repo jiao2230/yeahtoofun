@@ -785,7 +785,19 @@ function generateOne5(input, pack, index = 0, seedOverride) {
   };
 }
 function generate(input, pack) {
-  return generateOne5(input, pack, 0);
+  return generateUnblocked(input, pack, 0);
+}
+function isBlacklisted(person) {
+  return person.warnings.some((warning) => warning.code === "blacklist");
+}
+function generateUnblocked(input, pack, index) {
+  let last = null;
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const candidate = generateOne5(input, pack, index + attempt * 1000003);
+    last = candidate;
+    if (!isBlacklisted(candidate)) return candidate;
+  }
+  return last;
 }
 function generateBatch(input, pack) {
   const profile = resolveProfile(input);
@@ -806,6 +818,7 @@ function generateBatch(input, pack) {
       const salt = attempt === 0 ? i : i + attempt * 1000003;
       const candidate = generateOne5(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
+      if (isBlacklisted(candidate)) continue;
       if (profile.mode === "diverse" && count >= 20) {
         const s = candidate.surname.text;
         const f2 = candidate.given[0]?.text ?? "";
@@ -826,7 +839,7 @@ function generateBatch(input, pack) {
       person = pickByMmr(mmrPool, results);
     }
     if (!person) {
-      person = generateOne5(input, pack, i + 9000019);
+      person = generateUnblocked(input, pack, i + 9000019);
       person.warnings.push({ code: "duplicate_relaxed", message: "\u591A\u6B21\u91CD\u63B7\u4ECD\u91CD\u590D\uFF0C\u5DF2\u653E\u5BBD" });
       if (profile.mode === "diverse" && count >= 20) {
         person.warnings.push({ code: "quota_relaxed", message: "\u914D\u989D\u91CD\u63B7 8 \u6B21\u4ECD\u672A\u6EE1\u8DB3\uFF0C\u5DF2\u653E\u5BBD" });

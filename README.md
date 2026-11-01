@@ -7,7 +7,7 @@
 > 本地优先 · 可复现 · 可解释 · 给修仙与历史题材项目用
 
 **状态：v0.6 规格 + M1 原型（2026-10-31）**
-规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、51 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
+规格见 `docs/`；`src/` 下已有可运行的人名/法宝/宗门/丹药/功法生成器、CLI、HTTP、52 项测试。CBDB 2026-10-24 与 CNC 已实测，并构建了 `core` 与 `cbdb` 数据包；`seed` 仍保留用于测试。
 
 当前定位：**个人自用，不规划商用版本**。`core` 保留为 CNC/seed 数据分层；`cbdb` 只在本机构建、不分享。
 
@@ -56,7 +56,7 @@ node src/cli.ts technique gen --count 8 --seed 42
 node src/cli.ts serve --port 5178
 # 浏览器打开 http://127.0.0.1:5178/
 
-# 测试（45 core ＋ 6 M3）
+# 测试（46 core ＋ 6 M3）
 npm test
 
 # 类型检查 / 浏览器 bundle（需要本地 TypeScript / esbuild）
@@ -280,7 +280,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 52.4 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 52.8 KB）
 ```
 
 ```js
@@ -409,14 +409,14 @@ minglu/
   types/
     node-shim.d.ts # 本地最小 Node 类型声明（无 @types/node 时用）
   test/
-    core.test.ts   # 45 项核心断言
+    core.test.ts   # 46 项核心断言
     m3.test.ts     # 6 项 M3/OpenAPI 断言
   scripts/
     typecheck.mjs  # 定位本地 tsc
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 52.4 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 52.8 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -614,6 +614,7 @@ minglu/
 24. **功法 seed 原型**：97 个起手词、71 个中段、13 个后缀；只做 A+B+C / A+∅+C，没有品阶、修炼阶段、威力数值。B 槽为空时输出中 `middle` 为 `null`，不会写成「无」。程度词只保留单字「大」作前缀；`极/至` 不再单独当前缀，`洗髓` 不与程度词搭配。
 25. **专名黑名单**：法宝 1、宗门 9、丹药 11、功法 3；仅覆盖真实药品/宗教/影视标题，游戏/小说中的泛专名不默认拦截，扩表时按此口径补。
 26. **稀疏风格回退**：seed 中某性别+风格的可用字少于 12 个时，回退到同性别全字池，只保留风格评分偏好，不保证每个名字都带该风格。`宗教` 例外：它始终保证包含宗教字池之一。
+27. **人名黑名单**：seed 共 38 条，含不雅谐音、政治人物与 `吴道子`；生成时硬排除，不只警告，`check` 也会判为 invalid。
 
 ---
 
@@ -640,10 +641,10 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 52.4 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 52.8 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
-| 测试 | ✅ 51 项（45 core ＋ 6 M3；`npm test`） |
+| 测试 | ✅ 52 项（46 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
 | 风格标签 | 🟡 cbdb 364/1,788 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |

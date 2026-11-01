@@ -15,6 +15,7 @@
 - 阶层改为 `雅士` / `俗人`；俗人走通俗常见字与排行/小名路径（三毛、五四、大郎、小白、三娘），僧道阶层移除，宗教改由 `style=宗教` 承担。
 - 俗人模式在 Web UI 锁定时代/风格/字辈；API 对俗人同样忽略这三项。
 - seed 补入 `僧`、`法`，宗教字池在 seed 全部可用；补入俗人男女用字，seed 用字 183。
+- 人名黑名单扩至 38 条：加入中国知名政治人物与 `吴道子`，生成/批量硬排除，`check` 判 invalid。
 - 时代改为五档：`qinhan` / `weijin` / `tangsong` / `mingqing` / `xianxia`，默认唐宋。
 - 风格候选不足时回退到同性别全字池，避免“男+绮丽”只剩两三个字。
 - 宗门 seed 原型：194 个双字前缀 + `宗/门/派/宫/教`，带正道/魔道/中立与气质标签。
@@ -36,7 +37,7 @@
 
 ### Verification
 
-- `npm test`：45 core ＋ 6 M3 = 51 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：46 core ＋ 6 M3 = 52 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

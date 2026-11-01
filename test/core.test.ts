@@ -183,7 +183,17 @@ test('surname input only accepts Han characters', () => {
 
 test('check catches blacklist and famous collision', () => {
   assert.equal(checkName('范统', pack).valid, false);
+  assert.equal(checkName('彭真', pack).valid, false);
+  assert.equal(checkName('吴道子', pack).valid, false);
   assert.ok(checkName('苏轼', pack).warnings.some((w) => w.code === 'famous_collision'));
+});
+
+test('blacklist names are excluded from generation, not only warned', () => {
+  const seed = generate({ surname: '彭', givenLength: 1, seed: 0 }, pack);
+  const blockedPack = { ...pack, blacklist: [...pack.blacklist, seed.fullName] };
+  const generated = generate({ surname: '彭', givenLength: 1, seed: 0 }, blockedPack);
+  assert.notEqual(generated.fullName, seed.fullName);
+  assert.ok(!generated.warnings.some((w) => w.code === 'blacklist'));
 });
 
 test('defaults are resolved', () => {
