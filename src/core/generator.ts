@@ -39,7 +39,7 @@ const ALLUSION_STOP_CHARS = new Set(
 );
 
 const SINGLE_RATE: Record<Era, number> = {
-  qinhan: 0.55,
+  qinhan: 0.75,
   weijin: 0.45,
   tangsong: 0.35,
   mingqing: 0.25,
