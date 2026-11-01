@@ -9,6 +9,7 @@ import { generateTechniques } from '../src/core/technique.ts';
 import { slotConflict } from '../src/core/slot.ts';
 import { checkName, splitSurname } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
+import { validatePack } from '../src/core/pack.ts';
 
 const pack = loadSeedPack();
 
@@ -420,6 +421,14 @@ test('removed romantic female names are never generated', () => {
       assert.ok(!removed.has(person.given.map((c) => c.text).join('')), person.fullName);
     }
   }
+});
+
+test('pack validator rejects a malformed pack', () => {
+  assert.throws(() => validatePack({ ...pack, givenNames: [] }), /E_PACK_INVALID/);
+  assert.throws(
+    () => validatePack({ ...pack, surnames: [{ ...pack.surnames[0]!, text: '某' }] }),
+    /E_PACK_INVALID/,
+  );
 });
 
 test('defaults are resolved', () => {

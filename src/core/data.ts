@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { validatePack } from './pack.ts';
 import type {
   AllusionEntry,
   ArtifactPack,
@@ -90,6 +91,7 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
       ? readJson<string[]>('collision.json', dir)
       : [],
   };
+  validatePack(pack);
   cache.set(packId, pack);
   return pack;
 }
