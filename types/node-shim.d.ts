@@ -32,6 +32,8 @@ declare module 'node:fs' {
   export function readFileSync(path: string | URL, encoding: 'utf8'): string;
   export function writeFileSync(path: string | URL, data: string, encoding?: 'utf8'): void;
   export function existsSync(path: string | URL): boolean;
+  export interface Stats { mtimeMs: number; size: number; }
+  export function statSync(path: string | URL): Stats;
 }
 
 declare module 'node:http' {

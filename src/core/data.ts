@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { validatePack } from './pack.ts';
 import type {
   AllusionEntry,
@@ -22,7 +22,8 @@ interface PackManifest {
 
 const DEFAULT_PACK = (process.env.MINGLU_PACK ?? 'seed').trim() || 'seed';
 const PACK_IDS = ['seed', 'core', 'cbdb'];
-const cache = new Map<string, SeedPack>();
+interface CachedPack { pack: SeedPack; signature: string }
+const cache = new Map<string, CachedPack>();
 
 function dataDir(id: string): URL {
   return id === 'seed'
@@ -40,15 +41,34 @@ function readJson<T>(name: string, dir: URL): T {
   return JSON.parse(readFileSync(url, 'utf8')) as T;
 }
 
+function packSignature(dir: URL): string {
+  const files = [
+    'pack.json', 'surnames.json', 'chars.json', 'given-names.json',
+    'given-names-by-era.json', 'female-given-names-by-era.json',
+    'given-names-extra.json', 'given-names-cnc.json', 'generations.json',
+    'allusions.json', 'artifacts.json', 'sects.json', 'pills.json',
+    'techniques.json', 'blacklist.json', 'famous.json', 'collision.json',
+  ];
+  return files.map((name) => {
+    try {
+      const stat = statSync(new URL(name, dir));
+      return `${name}:${stat.mtimeMs}:${stat.size}`;
+    } catch {
+      return `${name}:-`;
+    }
+  }).join('|');
+}
+
 export function loadPack(id = DEFAULT_PACK): SeedPack {
   const packId = id.trim() || 'seed';
   if (!/^[a-z0-9_-]+$/.test(packId)) {
     throw new Error('E_PACK_INVALID: pack id 只能包含小写字母、数字、下划线和连字符');
   }
-  const cached = cache.get(packId);
-  if (cached) return cached;
-
   const dir = dataDir(packId);
+  const signature = packSignature(dir);
+  const cached = cache.get(packId);
+  if (cached && cached.signature === signature) return cached.pack;
+
   const manifest = existsSync(new URL('pack.json', dir))
     ? readJson<PackManifest>('pack.json', dir)
     : null;
@@ -100,7 +120,7 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
       : [],
   };
   validatePack(pack);
-  cache.set(packId, pack);
+  cache.set(packId, { pack, signature });
   return pack;
 }
 
