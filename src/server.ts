@@ -56,6 +56,8 @@ export function startServer(options: ServerOptions = {}): Server {
   const defaultPack = loadSeedPack();
   const webIndex = readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
   const webSdk = readFileSync(new URL('../web/minglu-sdk.js', import.meta.url), 'utf8');
+  const webStyles = readFileSync(new URL('../web/styles.css', import.meta.url), 'utf8');
+  const webApp = readFileSync(new URL('../web/app.js', import.meta.url), 'utf8');
 
   const server = createServer(async (req, res) => {
     const started = Date.now();
@@ -86,6 +88,22 @@ export function startServer(options: ServerOptions = {}): Server {
           'cache-control': 'no-store',
         });
         res.end(webSdk);
+        return;
+      }
+      if (req.method === 'GET' && url.pathname === '/styles.css') {
+        res.writeHead(200, {
+          'content-type': 'text/css; charset=utf-8',
+          'cache-control': 'no-store',
+        });
+        res.end(webStyles);
+        return;
+      }
+      if (req.method === 'GET' && url.pathname === '/app.js') {
+        res.writeHead(200, {
+          'content-type': 'text/javascript; charset=utf-8',
+          'cache-control': 'no-store',
+        });
+        res.end(webApp);
         return;
       }
       if (req.method === 'GET' && url.pathname === '/health') {
