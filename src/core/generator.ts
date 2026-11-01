@@ -674,7 +674,9 @@ function findPairWithGeneration(
     const meta = findChar(pack, entry.text[1 - pos]!);
     return !meta || meta.gender === 'neutral' || meta.gender === profile.gender;
   });
-  if (pool.length === 0) return undefined;
+  // 稀疏 pack（尤其是 seed）可能只有一个匹配名；继续死用会让整批都变成同一个名字。
+  // 这类情况交给「字辈字 + 自由生成另一字」兜底。
+  if (pool.length < 8) return undefined;
   const sampled = sampleSubset(pool, rng, 128);
   const scored = sampled.map((entry) => ({
     item: entry.text,

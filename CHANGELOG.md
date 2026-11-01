@@ -39,6 +39,7 @@
 - UI 收口：pack 状态徽标、切换清空旧结果、统一错误状态、移动端单列布局。
 - UI 结构拆分：内联样式/脚本拆为 `web/styles.css`、`web/app.js`，服务端新增两个静态路由。
 - UI 交互：生成中禁用按钮；无典故 pack 禁用用典；Tab 增加 ARIA 和键盘切换。
+- 稀疏字辈名池兜底：匹配名 < 8 时改为字辈字 + 自由字，seed 不再整批生成文德。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
 - 从 CNC 女性语料提取 120 个写意双字名（排除叠字），并入女性写意池；报告 `reports/cnc-female-writeyi-20261101.md`。
@@ -62,7 +63,7 @@
 
 ### Verification
 
-- `npm test`：62 core ＋ 6 M3 = 68 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：63 core ＋ 6 M3 = 69 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

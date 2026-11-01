@@ -1166,7 +1166,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
     const meta = findChar(pack, entry.text[1 - pos]);
     return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
   });
-  if (pool.length === 0) return void 0;
+  if (pool.length < 8) return void 0;
   const sampled = sampleSubset(pool, rng, 128);
   const scored = sampled.map((entry) => ({
     item: entry.text,

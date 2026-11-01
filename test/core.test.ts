@@ -431,6 +431,19 @@ test('pack validator rejects a malformed pack', () => {
   );
 });
 
+test('sparse generation pools fall back to generation char + free char', () => {
+  const people = generateBatch(
+    { era: 'tangsong', generation: { preset: 'generic-a', index: 1, position: 'first' }, count: 10, seed: 1 },
+    pack,
+  );
+  assert.equal(people.length, 10);
+  assert.ok(new Set(people.map((person) => person.given.map((c) => c.text).join(''))).size > 1);
+  for (const person of people) {
+    assert.equal(person.given[0]!.text, '文');
+    assert.equal(person.generation?.char, '文');
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
