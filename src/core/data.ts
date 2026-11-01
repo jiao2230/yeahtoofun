@@ -50,6 +50,9 @@ export function loadSeedPack(): SeedPack {
     surnames: readJson<SurnameEntry[]>('surnames.json'),
     chars: readJson<CharEntry[]>('chars.json'),
     givenNames: readJson<GivenEntry[]>('given-names.json'),
+    givenNamesByEra: existsSync(new URL('given-names-by-era.json', DATA_DIR))
+      ? readJson<SeedPack['givenNamesByEra']>('given-names-by-era.json')
+      : undefined,
     generations: readJson<GenerationPreset[]>('generations.json'),
     allusions: existsSync(new URL('allusions.json', DATA_DIR))
       ? readJson<Record<string, AllusionEntry[]>>('allusions.json')

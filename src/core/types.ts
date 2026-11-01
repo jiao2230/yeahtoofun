@@ -259,6 +259,7 @@ export interface SeedPack {
   surnames: SurnameEntry[];
   chars: CharEntry[];
   givenNames: GivenEntry[];
+  givenNamesByEra?: Partial<Record<Era, GivenEntry[]>>;
   generations: GenerationPreset[];
   allusions: Record<string, AllusionEntry[]>;
   artifacts: ArtifactPack;

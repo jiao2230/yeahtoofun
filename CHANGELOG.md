@@ -21,6 +21,7 @@
 - Web UI 未指定 seed 时避开最近 40 个姓名，减少刷新重复；指定 seed 时仍完全复现。
 - 时代改为五档：`qinhan` / `weijin` / `tangsong` / `mingqing` / `xianxia`，默认唐宋。
 - 秦汉单字名比例按先秦＋汉合并统计调到 0.75；秦汉双字名不单独建池，样本不足。
+- cbdb pack 增加 `givenNamesByEra`：魏晋 275、唐宋 5000、明清 5000；生成时按时代取池，秦汉回退全局。
 - 风格候选不足时回退到同性别全字池，避免“男+绮丽”只剩两三个字。
 - 宗门 seed 原型：194 个双字前缀 + `宗/门/派/宫/教`，带正道/魔道/中立与气质标签。
 - 丹药 seed 原型：49 天地修饰 + 70 功效 + 74 高级意象 + 17×9 毒丹组合 + 4 后缀；普通功效丹 / 高级通用丹 / 毒丹三模式。
@@ -41,7 +42,7 @@
 
 ### Verification
 
-- `npm test`：46 core ＋ 6 M3 = 52 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：47 core ＋ 6 M3 = 53 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

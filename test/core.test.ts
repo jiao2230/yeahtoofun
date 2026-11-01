@@ -202,6 +202,20 @@ test('blacklist names are excluded from generation, not only warned', () => {
   }
 });
 
+test('era-specific given-name pools override the global pool', () => {
+  const eraNames = pack.givenNames.slice(0, 50);
+  const eraPack = {
+    ...pack,
+    givenNames: [],
+    givenNamesByEra: { tangsong: eraNames },
+  };
+  const people = generateBatch({ era: 'tangsong', givenLength: 2, count: 20, seed: 3 }, eraPack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.ok(eraNames.some((entry) => entry.text === person.given.map((c) => c.text).join('')), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

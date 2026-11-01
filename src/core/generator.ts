@@ -571,7 +571,7 @@ function pickGivenOnce(
     return [toNameChar(pack, char, warnings)];
   }
 
-  let pool = pack.givenNames.filter((entry) => {
+  let pool = givenNamesForEra(pack, profile.era).filter((entry) => {
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (profile.gender === 'any') return true;
@@ -611,7 +611,7 @@ function findPairWithGeneration(
   surname: NameChar,
 ): string | undefined {
   const pos = generation.position === 'first' ? 0 : 1;
-  const pool = pack.givenNames.filter((entry) => {
+  const pool = givenNamesForEra(pack, profile.era).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (profile.gender === 'any') return true;
     const meta = findChar(pack, entry.text[1 - pos]!);
@@ -682,6 +682,11 @@ function toNameChar(pack: SeedPack, char: string, warnings: Warning[]): NameChar
 }
 
 const charIndexCache = new WeakMap<SeedPack, Map<string, CharEntry>>();
+
+function givenNamesForEra(pack: SeedPack, era: Era): SeedPack['givenNames'] {
+  const pool = pack.givenNamesByEra?.[era];
+  return pool && pool.length >= 50 ? pool : pack.givenNames;
+}
 
 function findChar(pack: SeedPack, char: string): CharEntry | undefined {
   let index = charIndexCache.get(pack);

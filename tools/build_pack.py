@@ -26,6 +26,16 @@ HAN_CHAR = re.compile(r"[\u4e00-\u9fa5]")
 BAD_NAME_CHARS = set("氏某女娘婦妇姑姐妹嫂婆奴婢")
 MIN_FREQ = 20
 COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马', '良', '生', '虎', '保', '龙', '旺', '存', '桃', '杏', '菊', '春', '满', '枝', '桂', '莲', '爱', '悟']
+ERA_CODES = {
+    "qinhan": {1, 2, 25, 29, 46, 61, 83},
+    "weijin": {
+        3, 4, 23, 24, 26, 27, 28, 30, 31, 32, 34, 35, 36, 37, 39, 40,
+        41, 42, 44, 45, 47, 48, 49, 50, 51, 52, 53, 55, 56, 60, 62, 63,
+        64, 65, 68, 69, 70, 71, 72, 73, 74, 76, 82, 87,
+    },
+    "tangsong": {5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 38, 57, 59, 66, 75, 77, 78, 81},
+    "mingqing": {19, 20, 79, 80, 85, 86},
+}
 
 
 def is_common(text: str) -> bool:
@@ -115,6 +125,7 @@ def main() -> int:
         )
         given = build_given_names(conn, char_meta, simplifier)
         given = with_allusion_names(given, allusions, char_meta)
+        given_by_era = build_given_names_by_era(conn, char_meta, simplifier)
         collision = build_collision(conn, simplifier)
     finally:
         conn.close()
@@ -130,6 +141,8 @@ def main() -> int:
     write(args.out / "surnames.json", surnames)
     write(args.out / "chars.json", chars)
     write(args.out / "given-names.json", given)
+    if given_by_era:
+        write(args.out / "given-names-by-era.json", given_by_era)
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)
@@ -154,6 +167,7 @@ def main() -> int:
             "surnames": len(surnames),
             "chars": len(chars),
             "givenNames": len(given),
+            "givenNamesByEra": {era: len(items) for era, items in given_by_era.items()},
             "generations": len(generations),
             "allusions": len(allusions),
             "collision": len(collision),
@@ -366,6 +380,47 @@ def build_given_names(
         for name, count in counts.most_common(20_000)
         if count >= 2
     ]
+
+
+def build_given_names_by_era(
+    conn: sqlite3.Connection, chars: dict[str, dict], simplifier: dict[str, str]
+) -> dict[str, list[dict]]:
+    """Aggregate CBDB 2-char given names into the five project eras.
+
+    Qin-Han is deliberately omitted: the 2-char sample is too small.
+    Each name must use chars available in this pack. Keep top 5000.
+    """
+    reverse = {code: era for era, codes in ERA_CODES.items() for code in codes}
+    counts: dict[str, collections.Counter[str]] = {
+        era: collections.Counter() for era in ERA_CODES
+    }
+    for row in conn.execute(
+        "SELECT c_mingzi_chn, c_dy FROM BIOG_MAIN "
+        "WHERE c_mingzi_chn IS NOT NULL AND c_dy IS NOT NULL"
+    ):
+        era = reverse.get(int(row[1]))
+        if not era or era == "qinhan":
+            continue
+        name = simplify((row[0] or "").strip(), simplifier)
+        if len(name) != 2 or not HAN.fullmatch(name) or name[0] == name[1]:
+            continue
+        if any(ch in BAD_NAME_CHARS for ch in name):
+            continue
+        if all(ch in chars for ch in name):
+            counts[era][name] += 1
+
+    out: dict[str, list[dict]] = {}
+    for era, counter in counts.items():
+        if era == "qinhan" or not counter:
+            continue
+        entries = [
+            {"text": name, "weight": count}
+            for name, count in counter.most_common(5000)
+            if count >= 2
+        ]
+        if entries:
+            out[era] = entries
+    return out
 
 
 def build_collision(conn: sqlite3.Connection, simplifier: dict[str, str]) -> list[str]:
