@@ -725,7 +725,7 @@ function resolveProfile(input = {}) {
     class: socialClass,
     surname: surname || void 0,
     givenLength,
-    allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "all" ? input.allusion : void 0,
+    allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "zhouyi" || input.allusion === "zhuangzi" || input.allusion === "all" ? input.allusion : void 0,
     generation: commoner ? null : input.generation ?? null,
     restraint: clamp(input.restraint ?? DEFAULT_PROFILE.restraint, 0, 1),
     seed: input.seed ?? (Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0,
@@ -748,7 +748,8 @@ function generateOne5(input, pack, index = 0, seedOverride) {
   const given = pickGiven(profile, pack, rng, generation, warnings, surname);
   const givenText = given.map((c) => c.text).join("");
   const fullName = surname.text + givenText;
-  const allusion = pack.allusions[givenText]?.[0];
+  const allusionHits = pack.allusions[givenText];
+  const allusion = profile.allusion && profile.allusion !== "all" ? allusionHits?.find((hit) => hit.corpus === profile.allusion) ?? allusionHits?.[0] : allusionHits?.[0];
   if (pack.blacklist.includes(fullName) || givenText.length === 2 && pack.blacklist.includes(givenText)) {
     warnings.push({ code: "blacklist", message: "\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD\uFF1B\u5EFA\u8BAE\u91CD\u65B0\u751F\u6210" });
   }

@@ -210,7 +210,12 @@ def with_allusion_names(
 ) -> list[dict]:
     existing = {entry["text"] for entry in given}
     extra: list[dict] = []
-    for phrase in sorted(allusions):
+    def allusion_priority(phrase: str) -> tuple[int, str]:
+        hits = allusions.get(phrase, [])
+        is_new = any(hit.get("corpus") in ("zhouyi", "zhuangzi") for hit in hits)
+        return (0 if is_new else 1, phrase)
+
+    for phrase in sorted(allusions, key=allusion_priority):
         if len(phrase) != 2 or phrase in existing:
             continue
         if any(ch not in chars for ch in phrase):

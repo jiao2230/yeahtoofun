@@ -87,6 +87,8 @@ export function resolveProfile(input: Profile = {}): ResolvedProfile {
       input.allusion === 'chuci' ||
       input.allusion === 'shijing' ||
       input.allusion === 'lunyu' ||
+      input.allusion === 'zhouyi' ||
+      input.allusion === 'zhuangzi' ||
       input.allusion === 'all'
         ? input.allusion
         : undefined,
@@ -120,7 +122,11 @@ export function generateOne(
 
   const givenText = given.map((c) => c.text).join('');
   const fullName = surname.text + givenText;
-  const allusion = pack.allusions[givenText]?.[0];
+  const allusionHits = pack.allusions[givenText];
+  const allusion =
+    profile.allusion && profile.allusion !== 'all'
+      ? (allusionHits?.find((hit) => hit.corpus === profile.allusion) ?? allusionHits?.[0])
+      : allusionHits?.[0];
 
   if (pack.blacklist.includes(fullName) || (givenText.length === 2 && pack.blacklist.includes(givenText))) {
     warnings.push({ code: 'blacklist', message: '命中黑名单词；建议重新生成' });

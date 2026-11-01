@@ -202,7 +202,7 @@ export const openapi = {
           class: { type: 'string', enum: ['俗人', '雅士'] },
           surname: { type: 'string', description: '指定姓氏；只接受 1–4 个汉字' },
           givenLength: { oneOf: [{ type: 'string', enum: ['auto'] }, { type: 'integer', enum: [1, 2] }] },
-          allusion: { type: 'string', enum: ['chuci', 'shijing', 'lunyu', 'all'], description: '只取对应经典的用典名' },
+          allusion: { type: 'string', enum: ['chuci', 'shijing', 'lunyu', 'zhouyi', 'zhuangzi', 'all'], description: '只取对应经典的用典名' },
           generation: {
             oneOf: [
               { type: 'null' },

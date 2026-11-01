@@ -243,6 +243,32 @@ test('long Manchu/Mongolian surnames are split and accepted', () => {
   assert.equal(person.given.length, 2);
 });
 
+test('zhouyi and zhuangzi allusions are selectable', () => {
+  const allusions = {
+    ...pack.allusions,
+    潜龙: [{ corpus: 'zhouyi' as const, source: '周易·乾·乾', line: '初九：潜龙勿用。' }],
+    天池: [
+      { corpus: 'chuci' as const, source: '楚辞·九思·疾世', line: '濿沧海兮东游，沐盥浴兮天池。' },
+      { corpus: 'zhuangzi' as const, source: '庄子·内篇·逍遥游', line: '南冥者，天池也。' },
+    ],
+  };
+  const namedPack = {
+    ...pack,
+    givenNames: [{ text: '潜龙', weight: 1 }, { text: '天池', weight: 1 }],
+    allusions,
+  };
+  const zhouyi = generateBatch({ allusion: 'zhouyi', count: 1, seed: 3 }, namedPack);
+  for (const person of zhouyi) {
+    assert.equal(person.allusion?.corpus, 'zhouyi');
+    assert.ok(person.allusion?.source.includes('周易'));
+  }
+  const zhuangzi = generateBatch({ allusion: 'zhuangzi', count: 1, seed: 3 }, namedPack);
+  for (const person of zhuangzi) {
+    assert.equal(person.allusion?.corpus, 'zhuangzi');
+    assert.ok(person.allusion?.source.includes('庄子'));
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
