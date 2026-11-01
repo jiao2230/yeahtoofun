@@ -29,7 +29,7 @@ def main() -> int:
         if not allow_stop and any(ch in STOP_CHARS for ch in phrase):
             return
         hits = index.setdefault(phrase, [])
-        if len(hits) >= 5:
+        if len(hits) >= 10:
             return
         if any(hit["source"] == source and hit["line"] == line for hit in hits):
             return
@@ -83,7 +83,7 @@ def main() -> int:
         source = "唐诗·" + str(poem.get("title") or "")
         lines = poem.get("content") or []
         words = poem.get("words") or []
-        if words:
+        if "words" in poem:
             add_words("tangshi", source, lines, words)
         else:
             for line in lines:
@@ -94,7 +94,7 @@ def main() -> int:
         source = "宋词·" + str(poem.get("title") or "")
         lines = poem.get("content") or []
         words = poem.get("words") or []
-        if words:
+        if "words" in poem:
             add_words("songci", source, lines, words)
         else:
             for line in lines:

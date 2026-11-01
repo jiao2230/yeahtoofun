@@ -207,20 +207,24 @@ export function generateBatch(input: Profile, pack: SeedPack): PersonName[] {
   const results: PersonName[] = [];
   const seen = new Set<string>();
   const surnameCount = new Map<string, number>();
+  const givenNameCount = new Map<string, number>();
   const firstCount = new Map<string, number>();
   const lastCount = new Map<string, number>();
   const maxSurname = Math.max(2, Math.floor(count * 0.12));
+  const maxGivenName = Math.max(2, Math.floor(count * 0.15));
   const maxFirst = Math.max(2, Math.floor(count * 0.1));
   const maxLast = Math.max(2, Math.floor(count * 0.08));
 
   for (let i = 0; i < count; i++) {
     let person: PersonName | null = null;
     const mmrPool: PersonName[] = [];
-    for (let attempt = 0; attempt < 8; attempt++) {
+    for (let attempt = 0; attempt < 32; attempt++) {
       const salt = attempt === 0 ? i : i + attempt * 1_000_003;
       const candidate = generateOne(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
       if (isBlacklisted(candidate)) continue;
+      const givenKey = candidate.given.map((c) => c.text).join('');
+      if ((givenNameCount.get(givenKey) ?? 0) >= maxGivenName) continue;
       if (profile.mode === 'diverse' && count >= 20) {
         const s = candidate.surname.text;
         const f = candidate.given[0]?.text ?? '';
@@ -251,6 +255,10 @@ export function generateBatch(input: Profile, pack: SeedPack): PersonName[] {
     surnameCount.set(person.surname.text, (surnameCount.get(person.surname.text) ?? 0) + 1);
     const f = person.given[0]?.text ?? '';
     const l = person.given[person.given.length - 1]?.text ?? '';
+    givenNameCount.set(
+      person.given.map((c) => c.text).join(''),
+      (givenNameCount.get(person.given.map((c) => c.text).join('')) ?? 0) + 1,
+    );
     if (person.generation?.position !== 'first') {
       firstCount.set(f, (firstCount.get(f) ?? 0) + 1);
     }

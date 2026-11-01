@@ -818,19 +818,23 @@ function generateBatch(input, pack) {
   const results = [];
   const seen = /* @__PURE__ */ new Set();
   const surnameCount = /* @__PURE__ */ new Map();
+  const givenNameCount = /* @__PURE__ */ new Map();
   const firstCount = /* @__PURE__ */ new Map();
   const lastCount = /* @__PURE__ */ new Map();
   const maxSurname = Math.max(2, Math.floor(count * 0.12));
+  const maxGivenName = Math.max(2, Math.floor(count * 0.15));
   const maxFirst = Math.max(2, Math.floor(count * 0.1));
   const maxLast = Math.max(2, Math.floor(count * 0.08));
   for (let i = 0; i < count; i++) {
     let person = null;
     const mmrPool = [];
-    for (let attempt = 0; attempt < 8; attempt++) {
+    for (let attempt = 0; attempt < 32; attempt++) {
       const salt = attempt === 0 ? i : i + attempt * 1000003;
       const candidate = generateOne5(input, pack, salt);
       if (seen.has(candidate.fullName)) continue;
       if (isBlacklisted(candidate)) continue;
+      const givenKey = candidate.given.map((c) => c.text).join("");
+      if ((givenNameCount.get(givenKey) ?? 0) >= maxGivenName) continue;
       if (profile.mode === "diverse" && count >= 20) {
         const s = candidate.surname.text;
         const f2 = candidate.given[0]?.text ?? "";
@@ -861,6 +865,10 @@ function generateBatch(input, pack) {
     surnameCount.set(person.surname.text, (surnameCount.get(person.surname.text) ?? 0) + 1);
     const f = person.given[0]?.text ?? "";
     const l = person.given[person.given.length - 1]?.text ?? "";
+    givenNameCount.set(
+      person.given.map((c) => c.text).join(""),
+      (givenNameCount.get(person.given.map((c) => c.text).join("")) ?? 0) + 1
+    );
     if (person.generation?.position !== "first") {
       firstCount.set(f, (firstCount.get(f) ?? 0) + 1);
     }
