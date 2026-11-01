@@ -16,15 +16,17 @@ import type {
   Warning,
 } from './types.ts';
 
-const ERAS: Era[] = ['preqin', 'han', 'weijin', 'tang', 'song', 'ming', 'qing', 'xianxia'];
+const ERAS: Era[] = ['qinhan', 'weijin', 'tangsong', 'mingqing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'] as const;
-const STYLES: Style[] = ['雅正', '清冷', '雄浑', '仙逸', '质朴', '绮丽'];
+const STYLES: Style[] = ['史实', '写意', '宗教'];
 const CLASSES = ['士族', '寒门', '僧道', '江湖', '宫闱', '仙门'] as const;
 const INITIALS = [
   'zh', 'ch', 'sh', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l',
   'g', 'k', 'h', 'j', 'q', 'x', 'r', 'z', 'c', 's', 'y', 'w',
 ];
 const RELIGIOUS_PREFIXES = ['道', '法', '僧'];
+const RELIGIOUS_NAME_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '承', '景'] as const;
+const RELIGIOUS_NAME_SET = new Set<string>(RELIGIOUS_NAME_CHARS);
 const RELIGIOUS_PATTERN_CHANCE = 0.35;
 const MIN_STYLE_CHARS = 12;
 const MIN_STYLE_GIVEN = 8;
@@ -33,18 +35,15 @@ const ALLUSION_STOP_CHARS = new Set(
 );
 
 const SINGLE_RATE: Record<Era, number> = {
-  preqin: 0.64,
-  han: 0.83,
-  weijin: 0.58,
-  tang: 0.53,
-  song: 0.45,
-  ming: 0.53,
-  qing: 0.18,
+  qinhan: 0.55,
+  weijin: 0.45,
+  tangsong: 0.35,
+  mingqing: 0.25,
   xianxia: 0.3,
 };
 
 export const DEFAULT_PROFILE: ResolvedProfile = {
-  era: 'song',
+  era: 'tangsong',
   gender: 'any',
   style: [],
   class: '寒门',
@@ -301,7 +300,7 @@ function resolveGeneration(
       message: '明皇室字辈通常用于男性；需要严格历史用法时设 applyTo=male',
     });
   }
-  if (preset?.id === 'ming-imperial' && profile.era !== 'ming' && profile.era !== 'xianxia') {
+  if (preset?.id === 'ming-imperial' && profile.era !== 'mingqing' && profile.era !== 'xianxia') {
     warnings.push({
       code: 'era_mismatch',
       message: '明皇室字辈与所选时代不一致；仅提示，不阻断',
@@ -372,6 +371,60 @@ function pickGiven(
   return pickGivenOnce(profile, pack, rng, generation, warnings, surname);
 }
 
+function pickReligiousGiven(
+  profile: ResolvedProfile,
+  pack: SeedPack,
+  rng: Rng,
+  surname: NameChar,
+  surnameChars: Set<string>,
+  wantSingle: boolean,
+): NameChar[] | null {
+  const available = RELIGIOUS_NAME_CHARS.filter(
+    (ch) =>
+      Boolean(findChar(pack, ch)) &&
+      !surnameChars.has(ch) &&
+      (profile.gender !== 'female' || ch !== '僧'),
+  );
+  if (available.length === 0) return null;
+  if (wantSingle) {
+    return [toNameChar(pack, rng.pick(available), [])];
+  }
+
+  const religious = rng.pick(available);
+  const exactGender = pack.chars.filter(
+    (c) =>
+      c.char !== religious &&
+      !RELIGIOUS_NAME_SET.has(c.char) &&
+      !surnameChars.has(c.char) &&
+      c.gender === profile.gender,
+  );
+  const neutral = pack.chars.filter(
+    (c) =>
+      c.char !== religious &&
+      !RELIGIOUS_NAME_SET.has(c.char) &&
+      !surnameChars.has(c.char) &&
+      c.gender === 'neutral',
+  );
+  const companionPool =
+    profile.gender === 'any'
+      ? pack.chars.filter(
+          (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char),
+        )
+      : exactGender.length > 0
+        ? exactGender
+        : neutral;
+  if (companionPool.length === 0) return null;
+
+  const sampled = sampleSubset(companionPool, rng, 96);
+  const scored = sampled.map((entry) => ({
+    item: entry.char,
+    score: scoreGiven(pack, surname, plainChars(pack, entry.char), profile),
+  }));
+  const companion = sampleTopK(scored, rng, 24);
+  const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
+  return chars.map((ch) => toNameChar(pack, ch, []));
+}
+
 function pickGivenOnce(
   profile: ResolvedProfile,
   pack: SeedPack,
@@ -395,6 +448,13 @@ function pickGivenOnce(
     const chars =
       generation.position === 'first' ? [generation.char, other] : [other, generation.char];
     return chars.map((c) => toNameChar(pack, c, warnings));
+  }
+
+  if (
+    profile.style.includes('宗教')
+  ) {
+    const religious = pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle);
+    if (religious) return religious;
   }
 
   if (

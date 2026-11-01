@@ -196,9 +196,9 @@ export const openapi = {
         type: 'object',
         description: '生成档案；所有字段可选',
         properties: {
-          era: { type: 'string', enum: ['preqin', 'han', 'weijin', 'tang', 'song', 'ming', 'qing', 'xianxia'] },
+          era: { type: 'string', enum: ['qinhan', 'weijin', 'tangsong', 'mingqing', 'xianxia'] },
           gender: { type: 'string', enum: ['male', 'female', 'any'] },
-          style: { type: 'array', items: { type: 'string', enum: ['雅正', '清冷', '雄浑', '仙逸', '质朴', '绮丽'] } },
+          style: { type: 'array', items: { type: 'string', enum: ['史实', '写意', '宗教'] } },
           class: { type: 'string', enum: ['士族', '寒门', '僧道', '江湖', '宫闱', '仙门'] },
           surname: { type: 'string', description: '指定姓氏；只接受 1–4 个汉字' },
           givenLength: { oneOf: [{ type: 'string', enum: ['auto'] }, { type: 'integer', enum: [1, 2] }] },

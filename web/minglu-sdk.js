@@ -641,9 +641,9 @@ function pickWithLength(rng, items, length, fallbackLength) {
 }
 
 // src/core/generator.ts
-var ERAS = ["preqin", "han", "weijin", "tang", "song", "ming", "qing", "xianxia"];
+var ERAS = ["qinhan", "weijin", "tangsong", "mingqing", "xianxia"];
 var GENDERS = ["male", "female", "any"];
-var STYLES = ["\u96C5\u6B63", "\u6E05\u51B7", "\u96C4\u6D51", "\u4ED9\u9038", "\u8D28\u6734", "\u7EEE\u4E3D"];
+var STYLES = ["\u53F2\u5B9E", "\u5199\u610F", "\u5B97\u6559"];
 var CLASSES = ["\u58EB\u65CF", "\u5BD2\u95E8", "\u50E7\u9053", "\u6C5F\u6E56", "\u5BAB\u95F1", "\u4ED9\u95E8"];
 var INITIALS = [
   "zh",
@@ -671,6 +671,8 @@ var INITIALS = [
   "w"
 ];
 var RELIGIOUS_PREFIXES = ["\u9053", "\u6CD5", "\u50E7"];
+var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F"];
+var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
 var RELIGIOUS_PATTERN_CHANCE = 0.35;
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;
@@ -678,17 +680,14 @@ var ALLUSION_STOP_CHARS = new Set(
   "\u4E4B\u516E\u800C\u5176\u6240\u4EE5\u4E0D\u65E0\u6709\u4E3A\u4E0E\u5219\u4E43\u4E8E\u4E4E\u54C9\u592B\u4F55\u7136\u8005\u4E5F\u77E3\u53EF\u80FD\u5C06\u6B32\u65E2\u4EA6\u7686\u5404\u81EA\u76F8\u89C1\u4F7F\u4EE4\u4ECE\u6765\u4E0A\u53BB\u4E2D\u5916\u51FA\u524D\u540E\u5DE6\u53F3\u5927\u5C0F\u591A\u5C11\u957F\u77ED\u9AD8\u4F4E\u6211\u5C14\u6C5D\u5973\u66F0\u8C13\u4E91\u662F\u4EBA\u5341\u767E\u5343\u4E07"
 );
 var SINGLE_RATE = {
-  preqin: 0.64,
-  han: 0.83,
-  weijin: 0.58,
-  tang: 0.53,
-  song: 0.45,
-  ming: 0.53,
-  qing: 0.18,
+  qinhan: 0.55,
+  weijin: 0.45,
+  tangsong: 0.35,
+  mingqing: 0.25,
   xianxia: 0.3
 };
 var DEFAULT_PROFILE = {
-  era: "song",
+  era: "tangsong",
   gender: "any",
   style: [],
   class: "\u5BD2\u95E8",
@@ -907,7 +906,7 @@ function resolveGeneration(profile, pack, warnings) {
       message: "\u660E\u7687\u5BA4\u5B57\u8F88\u901A\u5E38\u7528\u4E8E\u7537\u6027\uFF1B\u9700\u8981\u4E25\u683C\u5386\u53F2\u7528\u6CD5\u65F6\u8BBE applyTo=male"
     });
   }
-  if (preset?.id === "ming-imperial" && profile.era !== "ming" && profile.era !== "xianxia") {
+  if (preset?.id === "ming-imperial" && profile.era !== "mingqing" && profile.era !== "xianxia") {
     warnings.push({
       code: "era_mismatch",
       message: "\u660E\u7687\u5BA4\u5B57\u8F88\u4E0E\u6240\u9009\u65F6\u4EE3\u4E0D\u4E00\u81F4\uFF1B\u4EC5\u63D0\u793A\uFF0C\u4E0D\u963B\u65AD"
@@ -961,6 +960,34 @@ function pickGiven(profile, pack, rng, generation, warnings, surname) {
   }
   return pickGivenOnce(profile, pack, rng, generation, warnings, surname);
 }
+function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle) {
+  const available = RELIGIOUS_NAME_CHARS.filter(
+    (ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch) && (profile.gender !== "female" || ch !== "\u50E7")
+  );
+  if (available.length === 0) return null;
+  if (wantSingle) {
+    return [toNameChar(pack, rng.pick(available), [])];
+  }
+  const religious = rng.pick(available);
+  const exactGender = pack.chars.filter(
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && c.gender === profile.gender
+  );
+  const neutral = pack.chars.filter(
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && c.gender === "neutral"
+  );
+  const companionPool = profile.gender === "any" ? pack.chars.filter(
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char)
+  ) : exactGender.length > 0 ? exactGender : neutral;
+  if (companionPool.length === 0) return null;
+  const sampled = sampleSubset(companionPool, rng, 96);
+  const scored = sampled.map((entry) => ({
+    item: entry.char,
+    score: scoreGiven(pack, surname, plainChars(pack, entry.char), profile)
+  }));
+  const companion = sampleTopK(scored, rng, 24);
+  const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
+  return chars.map((ch) => toNameChar(pack, ch, []));
+}
 function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
   const surnameText = surname.text;
   const surnameChars = new Set(Array.from(surnameText));
@@ -973,6 +1000,10 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     const other = pickOtherChar(pack, profile, rng, surname, generation.char, surnameChars);
     const chars = generation.position === "first" ? [generation.char, other] : [other, generation.char];
     return chars.map((c) => toNameChar(pack, c, warnings));
+  }
+  if (profile.style.includes("\u5B97\u6559")) {
+    const religious = pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle);
+    if (religious) return religious;
   }
   if (profile.allusion && profile.givenLength !== 1) {
     let pool2 = pack.givenNames.filter((entry) => {

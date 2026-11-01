@@ -1,16 +1,8 @@
-export type Era =
-  | 'preqin'
-  | 'han'
-  | 'weijin'
-  | 'tang'
-  | 'song'
-  | 'ming'
-  | 'qing'
-  | 'xianxia';
+export type Era = 'qinhan' | 'weijin' | 'tangsong' | 'mingqing' | 'xianxia';
 
 export type Gender = 'male' | 'female' | 'any';
 
-export type Style = '雅正' | '清冷' | '雄浑' | '仙逸' | '质朴' | '绮丽';
+export type Style = '史实' | '写意' | '宗教';
 
 export type SocialClass = '士族' | '寒门' | '僧道' | '江湖' | '宫闱' | '仙门';
 

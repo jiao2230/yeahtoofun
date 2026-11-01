@@ -17,9 +17,9 @@ import type {
   TechniqueSuffixText,
 } from './core/types.ts';
 
-const ERAS = ['preqin', 'han', 'weijin', 'tang', 'song', 'ming', 'qing', 'xianxia'];
+const ERAS = ['qinhan', 'weijin', 'tangsong', 'mingqing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'];
-const STYLES = ['雅正', '清冷', '雄浑', '仙逸', '质朴', '绮丽'];
+const STYLES = ['史实', '写意', '宗教'];
 const CLASSES = ['士族', '寒门', '僧道', '江湖', '宫闱', '仙门'];
 
 export interface ServerOptions {

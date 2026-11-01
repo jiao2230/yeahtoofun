@@ -13,8 +13,8 @@ import { createGenerator } from '../src/sdk.ts';
 const pack = loadSeedPack();
 
 test('same seed produces the same name', () => {
-  const a = generate({ era: 'song', gender: 'male', seed: 42 }, pack);
-  const b = generate({ era: 'song', gender: 'male', seed: 42 }, pack);
+  const a = generate({ era: 'tangsong', gender: 'male', seed: 42 }, pack);
+  const b = generate({ era: 'tangsong', gender: 'male', seed: 42 }, pack);
   assert.deepEqual(a, b);
 });
 
@@ -33,6 +33,7 @@ test('no courtesy/字 field is emitted', () => {
 test('Ming imperial generation index 8 is 翊', () => {
   const person = generate({
     surname: '沈',
+    era: 'mingqing',
     generation: { preset: 'ming-imperial', index: 8, position: 'first' },
     seed: 3,
   }, pack);
@@ -92,18 +93,34 @@ test('phonetic conflicts are filtered in batch', () => {
 });
 
 test('style profile yields matching style tags', () => {
-  const people = generateBatch({ count: 20, style: ['清冷'], seed: 3 }, pack);
-  const matched = people.filter((p) => p.styleTags.includes('清冷')).length;
-  assert.ok(matched >= 15, `only ${matched}/20 names carry 清冷`);
+  const people = generateBatch({ count: 20, style: ['写意'], seed: 3 }, pack);
+  const matched = people.filter((p) => p.styleTags.includes('写意')).length;
+  assert.ok(matched >= 15, `only ${matched}/20 names carry 写意`);
 });
 
 test('sparse style pools do not collapse to a few chars', () => {
-  const styles = ['雅正', '清冷', '雄浑', '仙逸', '质朴', '绮丽'] as const;
+  const styles = ['史实', '写意', '宗教'] as const;
   for (const gender of ['male', 'female', 'any'] as const) {
     for (const style of styles) {
       const people = generateBatch({ count: 40, gender, style: [style], seed: 7 }, pack);
       const chars = new Set(people.flatMap((p) => p.given.map((c) => c.text)));
       assert.ok(chars.size >= 8, `${gender}/${style} only used ${chars.size} chars`);
+    }
+  }
+});
+
+test('religious style includes one of the nine chars and keeps gender imagery separate', () => {
+  const religious = new Set('道僧法德正元玄承景');
+  const byChar = new Map(pack.chars.map((c) => [c.char, c]));
+  for (const gender of ['male', 'female'] as const) {
+    const people = generateBatch({ count: 60, gender, style: ['宗教'], seed: 12 }, pack);
+    for (const person of people) {
+      assert.ok(person.given.some((c) => religious.has(c.text)), person.fullName);
+      for (const c of person.given) {
+        if (religious.has(c.text)) continue;
+        const meta = byChar.get(c.text);
+        assert.ok(!meta || meta.gender === 'neutral' || meta.gender === gender, person.fullName);
+      }
     }
   }
 });
@@ -157,7 +174,7 @@ test('check catches blacklist and famous collision', () => {
 
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
-  assert.equal(profile.era, 'song');
+  assert.equal(profile.era, 'tangsong');
   assert.equal(profile.mode, 'stable');
   assert.equal(profile.generation, null);
 });

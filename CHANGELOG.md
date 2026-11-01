@@ -12,6 +12,10 @@
 - 楚辞 / 诗经 / 论语用典索引：23,217 个双字，带 `corpus/source/line`。
 - `--allusion chuci|shijing|lunyu|all`。
 - 僧道法名式：`道/法/僧 + 名`，35% 概率，仅 `class=僧道`。
+- 风格改为三种：`史实` / `写意` / `宗教`；史实、写意软约束，宗教名必须包含 `道/僧/法/德/正/元/玄/承/景` 之一，男女配字分开。
+- seed 补入 `僧`、`法`，宗教九字在 seed 全部可用；seed 用字 126。
+- 时代改为五档：`qinhan` / `weijin` / `tangsong` / `mingqing` / `xianxia`，默认唐宋。
+- 风格候选不足时回退到同性别全字池，避免“男+绮丽”只剩两三个字。
 - 宗门 seed 原型：194 个双字前缀 + `宗/门/派/宫/教`，带正道/魔道/中立与气质标签。
 - 丹药 seed 原型：49 天地修饰 + 70 功效 + 74 高级意象 + 17×9 毒丹组合 + 4 后缀；普通功效丹 / 高级通用丹 / 毒丹三模式。
 - 功法 seed 原型：97 个起手 + 71 个中段 + 13 个后缀；B 槽可为空，空槽不写「无」。
@@ -31,7 +35,7 @@
 
 ### Verification
 
-- `npm test`：44 core ＋ 6 M3 = 50 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：45 core ＋ 6 M3 = 51 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

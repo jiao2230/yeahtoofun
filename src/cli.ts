@@ -460,9 +460,9 @@ function printHelp(): void {
   minglu serve [--port 5178] [--allow-lan --token <token>]
 
 gen 选项：
-  --era song|tang|ming|...      时代
+  --era qinhan|weijin|tangsong|mingqing|xianxia  时代
   --gender male|female|any      性别
-  --style 雅正,清冷              风格（逗号分隔）
+  --style 史实,写意,宗教          风格（逗号分隔）
   --class 士族|寒门|...          阶层
   --surname 沈                   指定姓氏
   --given-length auto|1|2        名字长度
@@ -477,7 +477,7 @@ gen 选项：
   --json                         输出 JSON
 
 示例：
-  minglu gen --era song --gender male --class 士族 --seed 42 --json
+  minglu gen --era tangsong --gender male --class 士族 --seed 42 --json
   minglu gen --surname 沈 --generation ming-imperial --generation-index 8
   minglu sect gen --count 9 --seed 42
   minglu pill gen --count 8 --seed 42
