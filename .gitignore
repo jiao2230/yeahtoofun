@@ -9,6 +9,8 @@ __pycache__/
 *.pyc
 cbdb_20261024/
 Chinese-Names-Corpus-master/
+mqww202512.accdb
+mqww*.accdb
 chinese-poetry*/
 data/packs/cbdb/
 reports/data-audit.json

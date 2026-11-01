@@ -216,6 +216,20 @@ test('era-specific given-name pools override the global pool', () => {
   }
 });
 
+test('female era pools take priority for female profiles', () => {
+  const femaleNames = pack.givenNames.slice(0, 50);
+  const femalePack = {
+    ...pack,
+    givenNames: [],
+    femaleGivenNamesByEra: { mingqing: femaleNames },
+  };
+  const people = generateBatch({ era: 'mingqing', gender: 'female', givenLength: 2, count: 20, seed: 3 }, femalePack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.ok(femaleNames.some((entry) => entry.text === person.given.map((c) => c.text).join('')), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

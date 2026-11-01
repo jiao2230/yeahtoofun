@@ -1091,7 +1091,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     const char = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars);
     return [toNameChar(pack, char, warnings)];
   }
-  let pool = givenNamesForEra(pack, profile.era).filter((entry) => {
+  let pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (profile.gender === "any") return true;
@@ -1122,7 +1122,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
 }
 function findPairWithGeneration(pack, generation, profile, rng, surname) {
   const pos = generation.position === "first" ? 0 : 1;
-  const pool = givenNamesForEra(pack, profile.era).filter((entry) => {
+  const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (profile.gender === "any") return true;
     const meta = findChar(pack, entry.text[1 - pos]);
@@ -1171,8 +1171,10 @@ function toNameChar(pack, char, warnings) {
   };
 }
 var charIndexCache = /* @__PURE__ */ new WeakMap();
-function givenNamesForEra(pack, era) {
-  const pool = pack.givenNamesByEra?.[era];
+function givenNamesForProfile(pack, profile) {
+  const eraPool = pack.givenNamesByEra?.[profile.era];
+  const femalePool = pack.femaleGivenNamesByEra?.[profile.era];
+  const pool = profile.gender === "female" && femalePool && femalePool.length >= 50 ? femalePool : eraPool;
   return pool && pool.length >= 50 ? pool : pack.givenNames;
 }
 function findChar(pack, char) {
