@@ -300,6 +300,21 @@ test('xianxia does not generate long historical surnames', () => {
   }
 });
 
+test('era-tagged surnames stay out of earlier and xianxia pools', () => {
+  const taggedPack = {
+    ...pack,
+    surnames: [
+      ...pack.surnames.map((entry) => ({ ...entry, eras: ['tangsong' as const] })),
+      { text: '爱新觉罗', pinyin: 'ai', weight: 1000, compound: true, eras: ['mingqing' as const] },
+      { text: '富察', pinyin: 'fu', weight: 1000, compound: true, eras: ['mingqing' as const] },
+    ],
+  };
+  for (const era of ['tangsong', 'xianxia'] as const) {
+    const people = generateBatch({ era, count: 30, seed: 7 }, taggedPack);
+    assert.ok(people.every((person) => !person.fullName.includes('爱新觉罗') && !person.fullName.includes('富察')));
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

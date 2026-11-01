@@ -15,6 +15,7 @@ export interface SurnameEntry {
   pinyin: string;
   weight: number;
   compound: boolean;
+  eras?: Era[];
 }
 
 export interface CharEntry {

@@ -947,7 +947,18 @@ function normalizePoem(raw) {
   return raw.replace(/[^\u4e00-\u9fa5]/g, "");
 }
 function surnamesForEra(pack, era) {
-  if (era === "mingqing") return pack.surnames;
+  if (era === "xianxia") {
+    const eligible = pack.surnames.filter(
+      (s) => s.text.length <= 2 && (!s.eras || s.eras.some((tag) => tag !== "mingqing"))
+    );
+    return eligible.length > 0 ? eligible : pack.surnames.filter((s) => s.text.length <= 2);
+  }
+  const tagged = pack.surnames.filter((s) => s.eras?.includes(era));
+  if (tagged.length >= 20) return tagged;
+  if (era === "qinhan" || era === "weijin") {
+    const singles = pack.surnames.filter((s) => s.text.length === 1);
+    return [...new Map([...tagged, ...singles].map((s) => [s.text, s])).values()];
+  }
   return pack.surnames.filter((s) => s.text.length <= 2);
 }
 function pickSurname(profile, pack, rng, generationChar) {

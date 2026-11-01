@@ -231,8 +231,10 @@ def build_surnames(
 ) -> list[dict]:
     counts: collections.Counter[str] = collections.Counter()
     roman: dict[str, collections.Counter[str]] = collections.defaultdict(collections.Counter)
+    reverse = {code: era for era, codes in ERA_CODES.items() for code in codes}
+    era_counts: dict[str, collections.Counter[str]] = collections.defaultdict(collections.Counter)
     for row in conn.execute(
-        "SELECT c_surname_chn, c_surname FROM BIOG_MAIN "
+        "SELECT c_surname_chn, c_surname, c_dy FROM BIOG_MAIN "
         "WHERE c_surname_chn IS NOT NULL AND TRIM(c_surname_chn)<>''"
     ):
         name = simplify(row[0].strip(), simplifier)
@@ -245,15 +247,23 @@ def build_surnames(
         counts[name] += 1
         if row[1]:
             roman[name][row[1].strip().lower()] += 1
+        era = reverse.get(int(row[2])) if row[2] is not None else None
+        if era:
+            era_counts[name][era] += 1
     out = []
     for name, count in counts.most_common(500):
         pinyin = roman[name].most_common(1)[0][0] if roman[name] else ""
+        eras = [
+            era for era in ("qinhan", "weijin", "tangsong", "mingqing")
+            if era_counts[name][era] >= 2 and era_counts[name][era] / count >= 0.02
+        ]
         out.append(
             {
                 "text": name,
                 "pinyin": pinyin,
                 "weight": count,
                 "compound": len(name) > 1,
+                "eras": eras,
             }
         )
     return out
