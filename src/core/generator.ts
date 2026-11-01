@@ -89,6 +89,8 @@ export function resolveProfile(input: Profile = {}): ResolvedProfile {
       input.allusion === 'lunyu' ||
       input.allusion === 'zhouyi' ||
       input.allusion === 'zhuangzi' ||
+      input.allusion === 'tangshi' ||
+      input.allusion === 'songci' ||
       input.allusion === 'all'
         ? input.allusion
         : undefined,

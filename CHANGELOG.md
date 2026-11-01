@@ -9,8 +9,8 @@
 
 ### Added
 
-- 楚辞 / 诗经 / 论语 / 周易 / 庄子用典索引：23,440 个双字，带 `corpus/source/line`。
-- `--allusion chuci|shijing|lunyu|zhouyi|zhuangzi|all`。
+- 楚辞 / 诗经 / 论语 / 周易 / 庄子 / 唐诗 / 宋词用典索引：24,121 个双字，带 `corpus/source/line`。
+- `--allusion chuci|shijing|lunyu|zhouyi|zhuangzi|tangshi|songci|all`。
 - 风格改为三种：`史实` / `写意` / `宗教`；史实、写意软约束，宗教名必须包含 `道/僧/法/德/正/元/玄/承/景/宗/真/之/弘/修/悟/子/智/贤/纯/中` 之一，男女配字分开。
 - 阶层改为 `雅士` / `俗人`；俗人走通俗常见字与排行/小名路径（三毛、五四、大郎、小白、三娘），僧道阶层移除，宗教改由 `style=宗教` 承担。
 - 俗人模式在 Web UI 锁定时代/风格/字辈；API 对俗人同样忽略这三项。
@@ -44,7 +44,7 @@
 
 ### Verification
 
-- `npm test`：50 core ＋ 6 M3 = 56 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：51 core ＋ 6 M3 = 57 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

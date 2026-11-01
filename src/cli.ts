@@ -384,8 +384,8 @@ function seedFlag(flags: Record<string, string | boolean>): number | string | un
 function allusionFlag(flags: Record<string, string | boolean>): Profile['allusion'] {
   const raw = stringFlag(flags, 'allusion');
   if (raw === undefined) return undefined;
-  if (raw === 'chuci' || raw === 'shijing' || raw === 'lunyu' || raw === 'zhouyi' || raw === 'zhuangzi' || raw === 'all') return raw;
-  throw new Error('E_ALLUSION_INVALID: --allusion 只支持 chuci / shijing / lunyu / zhouyi / zhuangzi / all');
+  if (raw === 'chuci' || raw === 'shijing' || raw === 'lunyu' || raw === 'zhouyi' || raw === 'zhuangzi' || raw === 'tangshi' || raw === 'songci' || raw === 'all') return raw;
+  throw new Error('E_ALLUSION_INVALID: --allusion 只支持 chuci / shijing / lunyu / zhouyi / zhuangzi / tangshi / songci / all');
 }
 
 function formatPeople(people: PersonName[], format: string, bom = false): string {
@@ -466,7 +466,7 @@ gen 选项：
   --class 雅士|俗人            阶层
   --surname 沈                   指定姓氏
   --given-length auto|1|2        名字长度
-  --allusion chuci|shijing|lunyu|zhouyi|zhuangzi|all  只取对应经典用典名
+  --allusion chuci|shijing|lunyu|zhouyi|zhuangzi|tangshi|songci|all  只取对应经典用典名
   --generation <preset|诗>       字辈模板或自定义诗
   --generation-index 8           1-based 辈分
   --generation-position first|second

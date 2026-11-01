@@ -35,7 +35,7 @@ export interface GivenEntry {
 }
 
 export interface AllusionEntry {
-  corpus: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi';
+  corpus: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi' | 'tangshi' | 'songci';
   source: string;
   line: string;
 }
@@ -287,7 +287,7 @@ export interface Profile {
   class?: SocialClass;
   surname?: string;
   givenLength?: GivenLength;
-  allusion?: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi' | 'all';
+  allusion?: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi' | 'tangshi' | 'songci' | 'all';
   generation?: GenerationConfig | null;
   restraint?: number;
   seed?: number | string;
@@ -302,7 +302,7 @@ export interface ResolvedProfile {
   class: SocialClass;
   surname?: string;
   givenLength: GivenLength;
-  allusion?: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi' | 'all';
+  allusion?: 'chuci' | 'shijing' | 'lunyu' | 'zhouyi' | 'zhuangzi' | 'tangshi' | 'songci' | 'all';
   generation: GenerationConfig | null;
   restraint: number;
   seed: number | string;

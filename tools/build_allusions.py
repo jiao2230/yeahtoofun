@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a combined 楚辞 / 诗经 / 论语 / 周易 / 庄子 phrase index.
+"""Build a combined 楚辞 / 诗经 / 论语 / 周易 / 庄子 / 唐诗 / 宋词 phrase index.
 
 Output entries:
   {"峻茂": [{"corpus": "chuci", "source": "楚辞·离骚·离骚", "line": "..."}]}
@@ -69,6 +69,18 @@ def main() -> int:
         source = "庄子·" + str(chapter.get("section") or "") + "·" + str(chapter.get("title") or "")
         for line in chapter.get("content") or []:
             add_line("zhuangzi", source, line)
+
+    tangshi = json.loads((args.dir / "tangshi.json").read_text(encoding="utf-8"))
+    for poem in tangshi:
+        source = "唐诗·" + str(poem.get("title") or "")
+        for line in poem.get("content") or []:
+            add_line("tangshi", source, line)
+
+    songci = json.loads((args.dir / "songci.json").read_text(encoding="utf-8"))
+    for poem in songci:
+        source = "宋词·" + str(poem.get("title") or "")
+        for line in poem.get("content") or []:
+            add_line("songci", source, line)
 
     index = {phrase: hits for phrase, hits in sorted(index.items()) if hits}
     args.out.parent.mkdir(parents=True, exist_ok=True)

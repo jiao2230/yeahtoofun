@@ -269,6 +269,25 @@ test('zhouyi and zhuangzi allusions are selectable', () => {
   }
 });
 
+test('tangshi and songci allusions are selectable', () => {
+  const allusions = {
+    ...pack.allusions,
+    明月: [{ corpus: 'tangshi' as const, source: '唐诗·静夜思', line: '举头望明月，低头思故乡。' }],
+    回首: [{ corpus: 'songci' as const, source: '宋词·青玉案·元夕', line: '蓦然回首，那人却在，灯火阑珊处。' }],
+  };
+  const namedPack = {
+    ...pack,
+    givenNames: [{ text: '明月', weight: 1 }, { text: '回首', weight: 1 }],
+    allusions,
+  };
+  const tangshi = generateBatch({ allusion: 'tangshi', count: 1, seed: 3 }, namedPack);
+  assert.equal(tangshi[0]?.allusion?.corpus, 'tangshi');
+  assert.ok(tangshi[0]?.allusion?.source.includes('唐诗'));
+  const songci = generateBatch({ allusion: 'songci', count: 1, seed: 3 }, namedPack);
+  assert.equal(songci[0]?.allusion?.corpus, 'songci');
+  assert.ok(songci[0]?.allusion?.source.includes('宋词'));
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

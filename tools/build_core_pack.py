@@ -69,7 +69,7 @@ def with_allusion_names(
     extra: list[dict] = []
     def allusion_priority(phrase: str) -> tuple[int, str]:
         hits = allusions.get(phrase, [])
-        is_new = any(hit.get("corpus") in ("zhouyi", "zhuangzi") for hit in hits)
+        is_new = any(hit.get("corpus") in ("zhouyi", "zhuangzi", "tangshi", "songci") for hit in hits)
         return (0 if is_new else 1, phrase)
 
     for phrase in sorted(allusions, key=allusion_priority):

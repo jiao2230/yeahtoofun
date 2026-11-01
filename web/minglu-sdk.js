@@ -725,7 +725,7 @@ function resolveProfile(input = {}) {
     class: socialClass,
     surname: surname || void 0,
     givenLength,
-    allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "zhouyi" || input.allusion === "zhuangzi" || input.allusion === "all" ? input.allusion : void 0,
+    allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "zhouyi" || input.allusion === "zhuangzi" || input.allusion === "tangshi" || input.allusion === "songci" || input.allusion === "all" ? input.allusion : void 0,
     generation: commoner ? null : input.generation ?? null,
     restraint: clamp(input.restraint ?? DEFAULT_PROFILE.restraint, 0, 1),
     seed: input.seed ?? (Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0,
