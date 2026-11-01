@@ -401,7 +401,7 @@ test('female allusion pool can use name-level female entries', () => {
     allusions,
   };
   const people = generateBatch(
-    { era: 'xianxia', style: ['写意'], gender: 'female', allusion: 'shijing', givenLength: 2, count: 5, seed: 8 },
+    { era: 'xianxia', gender: 'female', allusion: 'shijing', givenLength: 2, count: 5, seed: 8 },
     femalePack,
   );
   assert.ok(people.length > 0);

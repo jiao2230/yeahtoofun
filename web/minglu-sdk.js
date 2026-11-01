@@ -1080,8 +1080,13 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     if (colloquial) return colloquial;
   }
   if (profile.allusion && profile.givenLength !== 1) {
+    const femaleExtras = profile.gender === "female" ? [
+      ...pack.femaleGivenNamesByStyle?.["\u5199\u610F"] ?? [],
+      ...pack.femaleGivenNamesByEra?.[profile.era] ?? [],
+      ...pack.femaleGivenNamesByEra?.xianxia ?? []
+    ] : [];
     const baseNames = [...new Map(
-      [...pack.givenNames, ...givenNamesForProfile(pack, profile)].map((entry) => [entry.text, entry])
+      [...pack.givenNames, ...givenNamesForProfile(pack, profile), ...femaleExtras].map((entry) => [entry.text, entry])
     ).values()];
     let pool2 = baseNames.filter((entry) => {
       if (entry.text.length !== 2) return false;

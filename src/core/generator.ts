@@ -572,8 +572,18 @@ function pickGivenOnce(
     profile.allusion &&
     profile.givenLength !== 1
   ) {
+    // 女性用典不依赖 style/era：即使用户选“风格不限”，也应能匹配
+    // 女性专属用典名（静姝、清婉、望舒……），而不是退回全局池只剩淑姬。
+    const femaleExtras = profile.gender === 'female'
+      ? [
+          ...(pack.femaleGivenNamesByStyle?.['写意'] ?? []),
+          ...(pack.femaleGivenNamesByEra?.[profile.era] ?? []),
+          ...(pack.femaleGivenNamesByEra?.xianxia ?? []),
+        ]
+      : [];
     const baseNames = [...new Map(
-      [...pack.givenNames, ...givenNamesForProfile(pack, profile)].map((entry) => [entry.text, entry]),
+      [...pack.givenNames, ...givenNamesForProfile(pack, profile), ...femaleExtras]
+        .map((entry) => [entry.text, entry]),
     ).values()];
     let pool = baseNames.filter((entry) => {
       if (entry.text.length !== 2) return false;
