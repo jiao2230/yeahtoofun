@@ -288,7 +288,8 @@
     "meaning": "尊称；学子",
     "gender": "male",
     "styles": [
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 20
   },
@@ -469,7 +470,8 @@
     "meaning": "往；虚词",
     "gender": "neutral",
     "styles": [
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 12
   },
@@ -503,7 +505,8 @@
     "meaning": "真元；本真",
     "gender": "neutral",
     "styles": [
-      "写意"
+      "写意",
+      "宗教"
     ],
     "weight": 18
   },
@@ -1151,7 +1154,8 @@
     "meaning": "贤才；贤德",
     "gender": "male",
     "styles": [
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 10
   },
@@ -1959,5 +1963,89 @@
       "史实"
     ],
     "weight": 10
+  },
+  {
+    "char": "宗",
+    "pinyin": "zōng",
+    "tone": 1,
+    "meaning": "宗法；根本",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "弘",
+    "pinyin": "hóng",
+    "tone": 2,
+    "meaning": "弘大；弘扬",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "修",
+    "pinyin": "xiū",
+    "tone": 1,
+    "meaning": "修持；修行",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "悟",
+    "pinyin": "wù",
+    "tone": 4,
+    "meaning": "悟道；觉悟",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "智",
+    "pinyin": "zhì",
+    "tone": 4,
+    "meaning": "智慧；明智",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "纯",
+    "pinyin": "chún",
+    "tone": 2,
+    "meaning": "纯真；纯粹",
+    "gender": "neutral",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "中",
+    "pinyin": "zhōng",
+    "tone": 1,
+    "meaning": "中正；守中",
+    "gender": "male",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 12
   }
 ]

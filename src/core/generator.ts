@@ -24,7 +24,7 @@ const INITIALS = [
   'zh', 'ch', 'sh', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l',
   'g', 'k', 'h', 'j', 'q', 'x', 'r', 'z', 'c', 's', 'y', 'w',
 ];
-const RELIGIOUS_NAME_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '承', '景'] as const;
+const RELIGIOUS_NAME_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '承', '景', '宗', '真', '之', '弘', '修', '悟', '子', '智', '贤', '纯', '中'] as const;
 const RELIGIOUS_NAME_SET = new Set<string>(RELIGIOUS_NAME_CHARS);
 const MIN_STYLE_CHARS = 12;
 const MIN_STYLE_GIVEN = 8;

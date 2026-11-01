@@ -670,7 +670,7 @@ var INITIALS = [
   "y",
   "w"
 ];
-var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F"];
+var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F", "\u5B97", "\u771F", "\u4E4B", "\u5F18", "\u4FEE", "\u609F", "\u5B50", "\u667A", "\u8D24", "\u7EAF", "\u4E2D"];
 var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;

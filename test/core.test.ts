@@ -109,8 +109,8 @@ test('sparse style pools do not collapse to a few chars', () => {
   }
 });
 
-test('religious style includes one of the nine chars and keeps gender imagery separate', () => {
-  const religious = new Set('道僧法德正元玄承景');
+test('religious style includes one of the religious chars and keeps gender imagery separate', () => {
+  const religious = new Set('道僧法德正元玄承景宗真之弘修悟子智贤纯中');
   const byChar = new Map(pack.chars.map((c) => [c.char, c]));
   for (const gender of ['male', 'female'] as const) {
     const people = generateBatch({ count: 60, gender, style: ['宗教'], seed: 12 }, pack);

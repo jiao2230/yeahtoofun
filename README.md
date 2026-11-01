@@ -64,7 +64,7 @@ npm run typecheck
 npm run bundle:web
 ```
 
-> `data/seed/` 是手工测试包；`data/packs/cbdb/` 是真实 CBDB 包（500 姓 / 1,788 字 / 25,000 双字名 / 418,076 碰撞名），**CC BY-NC-SA，个人自用**；`data/packs/core/` 是 CNC + seed 的 Apache-2.0 包（500 姓 / 1,453 字 / 23,443 名）。审计数字见 [reports/data-audit-20261031.md](reports/data-audit-20261031.md)，构建细节见 [reports/pack-build-20261031.md](reports/pack-build-20261031.md)。
+> `data/seed/` 是手工测试包；`data/packs/cbdb/` 是真实 CBDB 包（500 姓 / 1,788 字 / 25,000 双字名 / 418,076 碰撞名），**CC BY-NC-SA，个人自用**；`data/packs/core/` 是 CNC + seed 的 Apache-2.0 包（500 姓 / 1,454 字 / 23,443 名）。审计数字见 [reports/data-audit-20261031.md](reports/data-audit-20261031.md)，构建细节见 [reports/pack-build-20261031.md](reports/pack-build-20261031.md)。
 
 ---
 
@@ -137,9 +137,9 @@ v0.6 起不再生成表字（字）；修仙与历史项目都只用姓名，必
 ### 风格标签
 
 - 三种：`史实` / `写意` / `宗教`；
-- 来源：seed 的 176 字 ＋ `data/lexicons/styles.json` 手工词表；
+- 来源：seed 的 183 字 ＋ `data/lexicons/styles.json` 手工词表；
 - `史实`、`写意` 是软约束：候选不足时回退到同性别全字池，风格只保留评分偏好；
-- `宗教` 是硬约束：单字或双字名至少包含 `道/僧/法/德/正/元/玄/承/景` 之一；
+- `宗教` 是硬约束：单字或双字名至少包含 `道/僧/法/德/正/元/玄/承/景/宗/真/之/弘/修/悟/子/智/贤/纯/中` 之一；
 - 宗教双字名的另一字按性别取意象：男性优先男性字，女性优先女性字，不足时用中性字。
 - 指定 `style` 时，双字名优先从至少一个字匹配的候选里抽；没有匹配时退回全局池。
 - 字辈字不参与「首字/末字配额」；另一个字仍按音形义生成。
@@ -280,7 +280,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 52.3 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 52.4 KB）
 ```
 
 ```js
@@ -416,7 +416,7 @@ minglu/
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 52.3 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 52.4 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -599,10 +599,10 @@ minglu/
 9. **繁简/异体**：OpenCC 转换个别姓名用字会有异体差异。
 10. **字体**：默认字表在 Noto Serif SC / 思源宋体下应全部可显示；冷门字体可能缺字。默认不生成《通用规范汉字表》以外的字，极生僻的历史用字需自定义词典（P1）。
 11. **字辈模板**：明皇室模板只覆盖燕王系；通用 A/B 是项目自建，不保证对应你的家谱，正式用请粘贴自己的字辈诗。
-12. **seed 原型规模很小**：176 个用字、50 个双字名、72 个姓氏；重复率高，只用于验证接口与管线，不代表最终质量。
+12. **seed 原型规模很小**：183 个用字、50 个双字名、72 个姓氏；重复率高，只用于验证接口与管线，不代表最终质量。
 13. **法宝 seed 原型**：51 个修饰词、20 个器型；只验证组合规则，不代表最终词表。
 14. **cbdb pack 的简繁/拼音**：已用 OpenCC 单字映射做简繁；词组/异体可能残留。**包内 1,788 个字全部有调号**；1,787 个在 GB2312 内，`祐` 是明皇室字辈的显式例外。无调号、非 GB2312、极冷门的字已在构建期剔除（显式字辈除外）。
-15. **cbdb pack 的风格标签**：359/1,788 个字有标签（seed 176 ＋ 手工词表）；其余无标签，风格过滤会退化。
+15. **cbdb pack 的风格标签**：364/1,788 个字有标签（seed 183 ＋ 手工词表）；其余无标签，风格过滤会退化。
 16. **碰撞索引**：`check` 已查 CBDB 418,076 条历史姓名；生成时仍只硬拒绝 seed 名人名单，不做全库硬拒绝。
 17. **core pack 偏现代**：CNC 是 120 万现代姓名分布，core 只是数据分层，不代表商用计划；历史风格请用 cbdb 包。
 18. **core pack 姓氏拼音**：只覆盖 seed 的 72 个同姓，其余姓氏拼音为空；名用字拼音来自拼音表。
@@ -613,7 +613,7 @@ minglu/
 23. **丹药 seed 原型**：49 个天地修饰词、70 个功效、74 个高级意象、4 个后缀、17×9 毒丹组合；普通丹 3/5 字，高级丹 5 字；不做完整药性/丹方体系。
 24. **功法 seed 原型**：97 个起手词、71 个中段、13 个后缀；只做 A+B+C / A+∅+C，没有品阶、修炼阶段、威力数值。B 槽为空时输出中 `middle` 为 `null`，不会写成「无」。程度词只保留单字「大」作前缀；`极/至` 不再单独当前缀，`洗髓` 不与程度词搭配。
 25. **专名黑名单**：法宝 1、宗门 9、丹药 11、功法 3；仅覆盖真实药品/宗教/影视标题，游戏/小说中的泛专名不默认拦截，扩表时按此口径补。
-26. **稀疏风格回退**：seed 中某性别+风格的可用字少于 12 个时，回退到同性别全字池，只保留风格评分偏好，不保证每个名字都带该风格。`宗教` 例外：它始终保证包含九字之一。
+26. **稀疏风格回退**：seed 中某性别+风格的可用字少于 12 个时，回退到同性别全字池，只保留风格评分偏好，不保证每个名字都带该风格。`宗教` 例外：它始终保证包含宗教字池之一。
 
 ---
 
@@ -640,12 +640,12 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 52.3 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 52.4 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
 | 测试 | ✅ 51 项（45 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
-| 风格标签 | 🟡 cbdb 359/1,788 字有标签（seed ＋ 手工词表） |
+| 风格标签 | 🟡 cbdb 364/1,788 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |
 | 法宝 seed 原型 | 🟡 材质/意象/功能 + 器型；无品阶 |
 | 宗门 seed 原型 | 🟡 194 个双字前缀 + 5 个后缀；正道/魔道/中立 + 气质标签 |
