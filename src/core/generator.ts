@@ -121,7 +121,7 @@ export function generateOne(
   const fullName = surname.text + givenText;
   const allusion = pack.allusions[givenText]?.[0];
 
-  if (pack.blacklist.includes(fullName)) {
+  if (pack.blacklist.includes(fullName) || (givenText.length === 2 && pack.blacklist.includes(givenText))) {
     warnings.push({ code: 'blacklist', message: '命中黑名单词；建议重新生成' });
   }
   if (pack.famous.includes(fullName)) {

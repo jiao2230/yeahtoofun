@@ -194,6 +194,11 @@ test('blacklist names are excluded from generation, not only warned', () => {
   const generated = generate({ surname: '彭', givenLength: 1, seed: 0 }, blockedPack);
   assert.notEqual(generated.fullName, seed.fullName);
   assert.ok(!generated.warnings.some((w) => w.code === 'blacklist'));
+  assert.equal(checkName('刘叔季', pack).valid, false);
+  const rankPairs = new Set(['伯仲', '伯叔', '伯季', '仲伯', '仲叔', '仲季', '叔伯', '叔仲', '叔季', '季伯', '季仲', '季叔']);
+  for (const person of generateBatch({ count: 200, seed: 8 }, pack)) {
+    assert.ok(!rankPairs.has(person.given.map((c) => c.text).join('')), person.fullName);
+  }
 });
 
 test('defaults are resolved', () => {

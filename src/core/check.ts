@@ -48,6 +48,10 @@ export function checkName(raw: string, pack: SeedPack): CheckReport {
     warnings.push({ code: 'blacklist', message: '命中黑名单词' });
     collisions.push(name);
   }
+  if (given.length === 2 && pack.blacklist.includes(given)) {
+    warnings.push({ code: 'blacklist', message: '名命中黑名单词' });
+    collisions.push(given);
+  }
   if (pack.famous.includes(name)) {
     warnings.push({ code: 'famous_collision', message: '与内置历史名人重名' });
     collisions.push(name);

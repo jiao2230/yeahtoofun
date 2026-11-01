@@ -41,6 +41,10 @@ function checkName(raw, pack) {
     warnings.push({ code: "blacklist", message: "\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD" });
     collisions.push(name);
   }
+  if (given.length === 2 && pack.blacklist.includes(given)) {
+    warnings.push({ code: "blacklist", message: "\u540D\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD" });
+    collisions.push(given);
+  }
   if (pack.famous.includes(name)) {
     warnings.push({ code: "famous_collision", message: "\u4E0E\u5185\u7F6E\u5386\u53F2\u540D\u4EBA\u91CD\u540D" });
     collisions.push(name);
@@ -744,7 +748,7 @@ function generateOne5(input, pack, index = 0, seedOverride) {
   const givenText = given.map((c) => c.text).join("");
   const fullName = surname.text + givenText;
   const allusion = pack.allusions[givenText]?.[0];
-  if (pack.blacklist.includes(fullName)) {
+  if (pack.blacklist.includes(fullName) || givenText.length === 2 && pack.blacklist.includes(givenText)) {
     warnings.push({ code: "blacklist", message: "\u547D\u4E2D\u9ED1\u540D\u5355\u8BCD\uFF1B\u5EFA\u8BAE\u91CD\u65B0\u751F\u6210" });
   }
   if (pack.famous.includes(fullName)) {
