@@ -33,7 +33,16 @@ export const openapi = {
     },
     '/v1/pack': {
       get: {
-        summary: '返回当前 pack 的完整 JSON（浏览器 SDK 用）',
+        summary: '按 pack 参数返回完整数据包（浏览器 SDK 用）',
+        parameters: [
+          {
+            name: 'pack',
+            in: 'query',
+            required: false,
+            schema: { type: 'string', enum: ['seed', 'core', 'cbdb'] },
+            description: '缺省使用服务启动时的 MINGLU_PACK',
+          },
+        ],
         responses: { '200': { description: 'pack 对象' } },
       },
     },

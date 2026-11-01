@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { URL } from 'node:url';
-import { loadSeedPack } from './core/data.ts';
+import { availablePacks, defaultPackId, loadPack, loadSeedPack } from './core/data.ts';
 import { checkName } from './core/check.ts';
 import { generateArtifacts } from './core/artifact.ts';
 import { generateSects, sectParts } from './core/sect.ts';
@@ -53,7 +53,7 @@ export function startServer(options: ServerOptions = {}): Server {
   }
   if (allowLan && host === '127.0.0.1') host = '0.0.0.0';
 
-  const pack = loadSeedPack();
+  const defaultPack = loadSeedPack();
   const webIndex = readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
   const webSdk = readFileSync(new URL('../web/minglu-sdk.js', import.meta.url), 'utf8');
 
@@ -89,12 +89,22 @@ export function startServer(options: ServerOptions = {}): Server {
         return;
       }
       if (req.method === 'GET' && url.pathname === '/health') {
-        json(res, 200, { ok: true, data: { status: 'ok', pack: `${pack.id}@${pack.version}` } });
+        json(res, 200, { ok: true, data: { status: 'ok', pack: `${defaultPack.id}@${defaultPack.version}` } });
         return;
       }
 
       if (token && !authorized(req, token) && (url.pathname.startsWith('/v1/') || url.pathname === '/openapi.json')) {
         throw new HttpError(401, 'E_UNAUTHORIZED', '需要 Authorization: Bearer <token>');
+      }
+
+      let pack = defaultPack;
+      if (url.pathname.startsWith('/v1/')) {
+        const headerPack = req.headers['x-minglu-pack'];
+        const requestedPack =
+          url.searchParams.get('pack') ??
+          (typeof headerPack === 'string' ? headerPack : undefined) ??
+          defaultPackId();
+        pack = loadPack(requestedPack);
       }
 
       if (req.method === 'GET' && url.pathname === '/openapi.json') {
@@ -115,7 +125,8 @@ export function startServer(options: ServerOptions = {}): Server {
       if (req.method === 'GET' && url.pathname === '/v1/packs') {
         json(res, 200, {
           ok: true,
-          data: [{ id: pack.id, version: pack.version, license: pack.license }],
+          data: availablePacks(),
+          default: defaultPackId(),
         });
         return;
       }
@@ -272,7 +283,7 @@ export function startServer(options: ServerOptions = {}): Server {
 
   server.listen(port, host, () => {
     console.log(`名箓本地服务：http://${host}:${port}`);
-    console.log(`pack: ${pack.id}@${pack.version} (${pack.license})`);
+    console.log(`pack: ${defaultPack.id}@${defaultPack.version} (${defaultPack.license})`);
     if (token) console.log('token: 已启用（Authorization: Bearer <token>）');
     console.log('按 Ctrl+C 退出。');
   });
@@ -313,7 +324,7 @@ function setCors(req: IncomingMessage, res: ServerResponse): void {
     if (host === '127.0.0.1' || host === 'localhost') {
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'content-type, authorization, x-minglu-token');
+      res.setHeader('Access-Control-Allow-Headers', 'content-type, authorization, x-minglu-token, x-minglu-pack');
     }
   } catch {
     // ignore malformed origin

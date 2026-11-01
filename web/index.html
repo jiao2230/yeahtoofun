@@ -16,7 +16,7 @@
     .tab { margin:0; padding:7px 14px; border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--muted); font:inherit; cursor:pointer; }
     .tab.active { border-color:var(--accent); color:var(--accent); background:rgba(201,168,106,.10); }
     .token { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
-    .token input { width:150px; }
+    .token input, .token select { width:150px; }
     .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
     label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
@@ -48,6 +48,7 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
       <button class="tab" type="button" data-tab="technique">功法</button>
       <button class="tab" type="button" data-tab="artifact">法宝</button>
     </nav>
+    <label class="token" for="pack-select">数据包<select id="pack-select"><option value="seed">seed</option></select></label>
     <label class="token" for="token">Token（局域网时）<input id="token" placeholder="可空"></label>
   </div>
 
@@ -65,6 +66,11 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
         <div><label for="style">风格</label><select id="style">
           <option value="">不限</option><option value="史实">史实</option><option value="写意">写意</option>
           <option value="宗教">宗教</option>
+        </select></div>
+        <div><label for="allusion">用典</label><select id="allusion">
+          <option value="">不限</option><option value="chuci">楚辞</option><option value="shijing">诗经</option>
+          <option value="lunyu">论语</option><option value="zhouyi">周易</option><option value="zhuangzi">庄子</option>
+          <option value="tangshi">唐诗</option><option value="songci">宋词</option><option value="all">全部</option>
         </select></div>
         <div><label for="klass">阶层</label><select id="klass">
           <option value="雅士">雅士</option><option value="俗人">俗人</option>
@@ -193,15 +199,49 @@ function seedOf(inputId) {
 }
 
 let gen = null;
+const PACK_KEY = 'minglu-pack';
+let activePack = localStorage.getItem(PACK_KEY) || 'seed';
 async function ensureGenerator(status) {
   if (gen) return gen;
-  status.textContent = '首次生成：加载本地 pack…';
+  status.textContent = `首次生成：加载本地 pack（${activePack}）…`;
   const token = $('token').value.trim();
   const headers = token ? { authorization: 'Bearer ' + token } : {};
-  const pack = await loadPack('/v1/pack', headers);
+  const pack = await loadPack(`/v1/pack?pack=${encodeURIComponent(activePack)}`, headers);
   gen = createGenerator(pack);
   return gen;
 }
+
+async function loadPackOptions() {
+  const select = $('pack-select');
+  const token = $('token').value.trim();
+  const headers = token ? { authorization: 'Bearer ' + token } : {};
+  try {
+    const response = await fetch('/v1/packs', { headers });
+    const payload = await response.json();
+    const packs = Array.isArray(payload.data) ? payload.data : [];
+    if (!packs.length) throw new Error('no packs');
+    select.innerHTML = packs.map((pack) => `<option value="${esc(pack.id)}">${esc(pack.id)} · ${esc(pack.version)}</option>`).join('');
+    const saved = localStorage.getItem(PACK_KEY);
+    activePack = saved && packs.some((pack) => pack.id === saved) ? saved : (payload.default || packs[0].id);
+    if (!packs.some((pack) => pack.id === activePack)) activePack = packs[0].id;
+    select.value = activePack;
+  } catch {
+    select.innerHTML = '<option value="seed">seed</option>';
+    activePack = 'seed';
+    select.value = activePack;
+  }
+}
+$('pack-select').addEventListener('change', () => {
+  activePack = $('pack-select').value;
+  localStorage.setItem(PACK_KEY, activePack);
+  gen = null;
+  $('status-person').textContent = `已切换数据包：${activePack}；生成时加载`;
+});
+$('token').addEventListener('change', () => {
+  gen = null;
+  loadPackOptions();
+});
+loadPackOptions();
 
 function packLine(generator) {
   return `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
@@ -225,13 +265,14 @@ function rememberNames(names) {
   }
 }
 
-const lockedPersonFields = ['era', 'style', 'preset', 'index'];
+const lockedPersonFields = ['era', 'style', 'allusion', 'preset', 'index'];
 function syncClassLocks() {
   const commoner = $('klass').value === '俗人';
   for (const id of lockedPersonFields) $(id).disabled = commoner;
   if (commoner) {
     $('era').value = 'tangsong';
     $('style').value = '';
+    $('allusion').value = '';
     $('preset').value = '';
     $('index').value = '1';
   }
@@ -260,6 +301,7 @@ $('form-person').addEventListener('submit', async (event) => {
       ? {
           era: $('era').value,
           ...(style ? { style: [style] } : {}),
+          ...($('allusion').value ? { allusion: $('allusion').value } : {}),
           ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
         }
       : {}),
