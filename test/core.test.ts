@@ -232,9 +232,12 @@ test('female era pools take priority for female profiles', () => {
 
 test('long Manchu/Mongolian surnames are split and accepted', () => {
   const longSurname = { text: '爱新觉罗', pinyin: '', weight: 1, compound: true };
-  const longPack = { ...pack, surnames: [...pack.surnames, longSurname] };
+  const longerSurname = { text: '博尔济吉特', pinyin: '', weight: 1, compound: true };
+  const longPack = { ...pack, surnames: [...pack.surnames, longSurname, longerSurname] };
   assert.equal(splitSurname('爱新觉罗子正', longPack), '爱新觉罗');
+  assert.equal(splitSurname('博尔济吉特子正', longPack), '博尔济吉特');
   assert.equal(checkName('爱新觉罗子正', longPack).valid, true);
+  assert.equal(checkName('博尔济吉特子正', longPack).valid, true);
   const person = generate({ surname: '爱新觉罗', givenLength: 2, seed: 3 }, longPack);
   assert.ok(person.fullName.startsWith('爱新觉罗'));
   assert.equal(person.given.length, 2);

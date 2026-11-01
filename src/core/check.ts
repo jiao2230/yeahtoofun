@@ -27,8 +27,8 @@ export function checkName(raw: string, pack: SeedPack): CheckReport {
   if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
     warnings.push({ code: 'non_han', message: '包含非汉字字符' });
   }
-  if (name.length < 2 || name.length > 6) {
-    warnings.push({ code: 'length', message: '姓名长度应为 2–6 字（长姓最多 4 字 + 双名）' });
+  if (name.length < 2 || name.length > 8) {
+    warnings.push({ code: 'length', message: '姓名长度应为 2–8 字（长姓最多 6 字 + 双名）' });
   }
 
   const surname = splitSurname(name, pack);

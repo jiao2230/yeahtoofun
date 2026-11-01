@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 
-HAN = re.compile(r"^[\u4e00-\u9fa5]{1,4}$")
+HAN = re.compile(r"^[\u4e00-\u9fa5]{1,8}$")
 MIN_FREQ = 20
 COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马', '良', '生', '虎', '保', '龙', '旺', '存', '桃', '杏', '菊', '春', '满', '枝', '桂', '莲', '爱', '悟']
 TONE_MARKS = {

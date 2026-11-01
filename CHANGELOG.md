@@ -31,7 +31,7 @@
 - M5 验收标准 16 条；丹药/功法增加前后缀同词过滤。
 - 四类专名黑名单收敛：法宝 1、宗门 9、丹药 11、功法 3，仅真实药品/宗教/影视标题。
 - 第一批扩词：宗门 +27、丹药高级意象 +24、功法起手 +14 / 中段 +16、法宝修饰 +13；来源见 `data/vendor/lexicons/ATTRIBUTION.md`。
-- 姓氏校验：只接受 1–4 个汉字，非法报 `E_SURNAME_INVALID`。
+- 姓氏校验：只接受 1–6 个汉字，非法报 `E_SURNAME_INVALID`。
 - Unihan 18.0 偏旁/笔画：102,999 字。
 - softmax / top-K 采样、MMR、diverse 配额。
 - M3：`/v1/batch` 流式 JSONL、`/v1/pack` 静态 pack、OpenAPI 3.1、Web UI、Node/浏览器 SDK、CSV BOM。

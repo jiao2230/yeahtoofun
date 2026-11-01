@@ -73,8 +73,8 @@ export function resolveProfile(input: Profile = {}): ResolvedProfile {
     input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : 'auto';
   const mode: BatchMode = input.mode === 'diverse' ? 'diverse' : 'stable';
   const surname = typeof input.surname === 'string' ? input.surname.trim() : undefined;
-  if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
-    throw new Error('E_SURNAME_INVALID: 姓氏只能填 1–4 个汉字，不能含数字/字母/符号');
+  if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
+    throw new Error('E_SURNAME_INVALID: 姓氏只能填 1–6 个汉字，不能含数字/字母/符号');
   }
   return {
     era,

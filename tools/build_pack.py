@@ -21,7 +21,7 @@ import sqlite3
 from pathlib import Path
 
 
-HAN = re.compile(r"^[\u4e00-\u9fa5]{1,4}$")
+HAN = re.compile(r"^[\u4e00-\u9fa5]{1,8}$")
 HAN_CHAR = re.compile(r"[\u4e00-\u9fa5]")
 BAD_NAME_CHARS = set("氏某女娘婦妇姑姐妹嫂婆奴婢")
 MIN_FREQ = 20

@@ -23,8 +23,8 @@ function checkName(raw, pack) {
   if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
     warnings.push({ code: "non_han", message: "\u5305\u542B\u975E\u6C49\u5B57\u5B57\u7B26" });
   }
-  if (name.length < 2 || name.length > 6) {
-    warnings.push({ code: "length", message: "\u59D3\u540D\u957F\u5EA6\u5E94\u4E3A 2\u20136 \u5B57\uFF08\u957F\u59D3\u6700\u591A 4 \u5B57 + \u53CC\u540D\uFF09" });
+  if (name.length < 2 || name.length > 8) {
+    warnings.push({ code: "length", message: "\u59D3\u540D\u957F\u5EA6\u5E94\u4E3A 2\u20138 \u5B57\uFF08\u957F\u59D3\u6700\u591A 6 \u5B57 + \u53CC\u540D\uFF09" });
   }
   const surname = splitSurname(name, pack);
   const given = name.slice(surname.length);
@@ -715,8 +715,8 @@ function resolveProfile(input = {}) {
   const givenLength = input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : "auto";
   const mode = input.mode === "diverse" ? "diverse" : "stable";
   const surname = typeof input.surname === "string" ? input.surname.trim() : void 0;
-  if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
-    throw new Error("E_SURNAME_INVALID: \u59D3\u6C0F\u53EA\u80FD\u586B 1\u20134 \u4E2A\u6C49\u5B57\uFF0C\u4E0D\u80FD\u542B\u6570\u5B57/\u5B57\u6BCD/\u7B26\u53F7");
+  if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
+    throw new Error("E_SURNAME_INVALID: \u59D3\u6C0F\u53EA\u80FD\u586B 1\u20136 \u4E2A\u6C49\u5B57\uFF0C\u4E0D\u80FD\u542B\u6570\u5B57/\u5B57\u6BCD/\u7B26\u53F7");
   }
   return {
     era,

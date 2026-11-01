@@ -69,7 +69,7 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
         <div><label for="klass">阶层</label><select id="klass">
           <option value="雅士">雅士</option><option value="俗人">俗人</option>
         </select></div>
-        <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="4" pattern="[一-龥]{1,4}" title="只允许 1–4 个汉字" placeholder="如 沈"></div>
+        <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="6" pattern="[一-龥]{1,6}" title="只允许 1–6 个汉字" placeholder="如 沈"></div>
         <div><label for="count-person">数量 1–20</label><input id="count-person" type="number" min="1" max="20" value="5"></div>
         <div><label for="seed-person">种子（可空）</label><input id="seed-person" placeholder="如 42"></div>
         <div><label for="preset">字辈</label><select id="preset">
@@ -172,8 +172,8 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const surnameInput = $('surname');
 function validateSurname() {
   const value = surnameInput.value.trim();
-  const ok = value === '' || /^[\u4e00-\u9fa5]{1,4}$/.test(value);
-  surnameInput.setCustomValidity(ok ? '' : '姓氏只允许 1–4 个汉字');
+  const ok = value === '' || /^[\u4e00-\u9fa5]{1,6}$/.test(value);
+  surnameInput.setCustomValidity(ok ? '' : '姓氏只允许 1–6 个汉字');
 }
 surnameInput.addEventListener('input', validateSurname);
 validateSurname();
@@ -249,8 +249,8 @@ $('form-person').addEventListener('submit', async (event) => {
   status.textContent = '生成中…'; results.innerHTML = '';
   const style = $('style').value;
   const surname = surnameInput.value.trim();
-  if (surname && !/^[\u4e00-\u9fa5]{1,4}$/.test(surname)) {
-    status.textContent = '姓氏只能填 1–4 个汉字，不能含数字/字母/符号';
+  if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
+    status.textContent = '姓氏只能填 1–6 个汉字，不能含数字/字母/符号';
     return;
   }
   const profile = {
