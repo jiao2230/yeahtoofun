@@ -73,8 +73,8 @@ export function resolveProfile(input: Profile = {}): ResolvedProfile {
     input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : 'auto';
   const mode: BatchMode = input.mode === 'diverse' ? 'diverse' : 'stable';
   const surname = typeof input.surname === 'string' ? input.surname.trim() : undefined;
-  if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
-    throw new Error('E_SURNAME_INVALID: 姓氏只能填 1–6 个汉字，不能含数字/字母/符号');
+  if (surname && (!/^[\u4e00-\u9fa5]{1,6}$/.test(surname) || /[某氏]/.test(surname))) {
+    throw new Error('E_SURNAME_INVALID: 姓氏只能填 1–6 个汉字，不能含数字/字母/符号或某/氏等占位字');
   }
   return {
     era,
@@ -348,19 +348,20 @@ function normalizePoem(raw: string): string {
 }
 
 function surnamesForEra(pack: SeedPack, era: Era): SeedPack['surnames'] {
+  const pool = pack.surnames.filter((s) => !/[某氏]/.test(s.text));
   if (era === 'xianxia') {
-    const eligible = pack.surnames.filter(
+    const eligible = pool.filter(
       (s) => s.text.length <= 2 && (!s.eras || s.eras.some((tag) => tag !== 'mingqing')),
     );
-    return eligible.length > 0 ? eligible : pack.surnames.filter((s) => s.text.length <= 2);
+    return eligible.length > 0 ? eligible : pool.filter((s) => s.text.length <= 2);
   }
-  const tagged = pack.surnames.filter((s) => s.eras?.includes(era));
+  const tagged = pool.filter((s) => s.eras?.includes(era));
   if (tagged.length >= 20) return tagged;
   if (era === 'qinhan' || era === 'weijin') {
-    const singles = pack.surnames.filter((s) => s.text.length === 1);
+    const singles = pool.filter((s) => s.text.length === 1);
     return [...new Map([...tagged, ...singles].map((s) => [s.text, s])).values()];
   }
-  return pack.surnames.filter((s) => s.text.length <= 2);
+  return pool.filter((s) => s.text.length <= 2);
 }
 
 function pickSurname(

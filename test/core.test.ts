@@ -315,6 +315,17 @@ test('era-tagged surnames stay out of earlier and xianxia pools', () => {
   }
 });
 
+test('placeholder surnames are never generated', () => {
+  const placeholderPack = {
+    ...pack,
+    surnames: [...pack.surnames, { text: '某', pinyin: 'mou', weight: 100000, compound: false }],
+  };
+  const people = generateBatch({ count: 50, seed: 9 }, placeholderPack);
+  assert.ok(people.length > 0);
+  assert.ok(people.every((person) => person.surname.text !== '某'));
+  assert.throws(() => generate({ surname: '某', seed: 1 }, placeholderPack), /E_SURNAME_INVALID/);
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

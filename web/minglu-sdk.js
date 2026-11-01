@@ -715,8 +715,8 @@ function resolveProfile(input = {}) {
   const givenLength = input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : "auto";
   const mode = input.mode === "diverse" ? "diverse" : "stable";
   const surname = typeof input.surname === "string" ? input.surname.trim() : void 0;
-  if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
-    throw new Error("E_SURNAME_INVALID: \u59D3\u6C0F\u53EA\u80FD\u586B 1\u20136 \u4E2A\u6C49\u5B57\uFF0C\u4E0D\u80FD\u542B\u6570\u5B57/\u5B57\u6BCD/\u7B26\u53F7");
+  if (surname && (!/^[\u4e00-\u9fa5]{1,6}$/.test(surname) || /[某氏]/.test(surname))) {
+    throw new Error("E_SURNAME_INVALID: \u59D3\u6C0F\u53EA\u80FD\u586B 1\u20136 \u4E2A\u6C49\u5B57\uFF0C\u4E0D\u80FD\u542B\u6570\u5B57/\u5B57\u6BCD/\u7B26\u53F7\u6216\u67D0/\u6C0F\u7B49\u5360\u4F4D\u5B57");
   }
   return {
     era,
@@ -947,19 +947,20 @@ function normalizePoem(raw) {
   return raw.replace(/[^\u4e00-\u9fa5]/g, "");
 }
 function surnamesForEra(pack, era) {
+  const pool = pack.surnames.filter((s) => !/[某氏]/.test(s.text));
   if (era === "xianxia") {
-    const eligible = pack.surnames.filter(
+    const eligible = pool.filter(
       (s) => s.text.length <= 2 && (!s.eras || s.eras.some((tag) => tag !== "mingqing"))
     );
-    return eligible.length > 0 ? eligible : pack.surnames.filter((s) => s.text.length <= 2);
+    return eligible.length > 0 ? eligible : pool.filter((s) => s.text.length <= 2);
   }
-  const tagged = pack.surnames.filter((s) => s.eras?.includes(era));
+  const tagged = pool.filter((s) => s.eras?.includes(era));
   if (tagged.length >= 20) return tagged;
   if (era === "qinhan" || era === "weijin") {
-    const singles = pack.surnames.filter((s) => s.text.length === 1);
+    const singles = pool.filter((s) => s.text.length === 1);
     return [...new Map([...tagged, ...singles].map((s) => [s.text, s])).values()];
   }
-  return pack.surnames.filter((s) => s.text.length <= 2);
+  return pool.filter((s) => s.text.length <= 2);
 }
 function pickSurname(profile, pack, rng, generationChar) {
   if (profile.surname) {

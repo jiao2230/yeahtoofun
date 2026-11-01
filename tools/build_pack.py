@@ -244,6 +244,8 @@ def build_surnames(
             continue
         if any(ch in negative for ch in name):
             continue
+        if any(ch in BAD_NAME_CHARS for ch in name):
+            continue
         counts[name] += 1
         if row[1]:
             roman[name][row[1].strip().lower()] += 1
