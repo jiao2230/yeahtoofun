@@ -23,8 +23,8 @@ function checkName(raw, pack) {
   if (!/^[\u4e00-\u9fa5]+$/.test(name)) {
     warnings.push({ code: "non_han", message: "\u5305\u542B\u975E\u6C49\u5B57\u5B57\u7B26" });
   }
-  if (name.length < 2 || name.length > 4) {
-    warnings.push({ code: "length", message: "\u59D3\u540D\u957F\u5EA6\u5E94\u4E3A 2\u20134 \u5B57" });
+  if (name.length < 2 || name.length > 6) {
+    warnings.push({ code: "length", message: "\u59D3\u540D\u957F\u5EA6\u5E94\u4E3A 2\u20136 \u5B57\uFF08\u957F\u59D3\u6700\u591A 4 \u5B57 + \u53CC\u540D\uFF09" });
   }
   const surname = splitSurname(name, pack);
   const given = name.slice(surname.length);

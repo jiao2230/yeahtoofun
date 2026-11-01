@@ -7,7 +7,7 @@ import { generateSects } from '../src/core/sect.ts';
 import { generatePills } from '../src/core/pill.ts';
 import { generateTechniques } from '../src/core/technique.ts';
 import { slotConflict } from '../src/core/slot.ts';
-import { checkName } from '../src/core/check.ts';
+import { checkName, splitSurname } from '../src/core/check.ts';
 import { createGenerator } from '../src/sdk.ts';
 
 const pack = loadSeedPack();
@@ -228,6 +228,16 @@ test('female era pools take priority for female profiles', () => {
   for (const person of people) {
     assert.ok(femaleNames.some((entry) => entry.text === person.given.map((c) => c.text).join('')), person.fullName);
   }
+});
+
+test('long Manchu/Mongolian surnames are split and accepted', () => {
+  const longSurname = { text: '爱新觉罗', pinyin: '', weight: 1, compound: true };
+  const longPack = { ...pack, surnames: [...pack.surnames, longSurname] };
+  assert.equal(splitSurname('爱新觉罗子正', longPack), '爱新觉罗');
+  assert.equal(checkName('爱新觉罗子正', longPack).valid, true);
+  const person = generate({ surname: '爱新觉罗', givenLength: 2, seed: 3 }, longPack);
+  assert.ok(person.fullName.startsWith('爱新觉罗'));
+  assert.equal(person.given.length, 2);
 });
 
 test('defaults are resolved', () => {

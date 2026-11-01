@@ -147,7 +147,7 @@ def main() -> int:
                 "text": name,
                 "pinyin": seed["pinyin"] if seed else "",
                 "weight": count,
-                "compound": len(name) == 2,
+                "compound": len(name) > 1,
             }
         )
 

@@ -248,7 +248,7 @@ def build_surnames(
                 "text": name,
                 "pinyin": pinyin,
                 "weight": count,
-                "compound": len(name) == 2,
+                "compound": len(name) > 1,
             }
         )
     return out
