@@ -76,13 +76,13 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
           <option value="雅士">雅士</option><option value="俗人">俗人</option>
         </select></div>
         <div><label for="surname">姓氏（可空，只接受汉字）</label><input id="surname" maxlength="6" pattern="[一-龥]{1,6}" title="只允许 1–6 个汉字" placeholder="如 沈"></div>
-        <div><label for="count-person">数量 1–20</label><input id="count-person" type="number" min="1" max="20" value="5"></div>
+        <div><label for="count-person">数量 1–10</label><input id="count-person" type="number" min="1" max="10" value="5"></div>
         <div><label for="seed-person">种子（可空）</label><input id="seed-person" placeholder="如 42"></div>
         <div><label for="preset">字辈</label><select id="preset">
           <option value="">不启用</option><option value="ming-imperial">明皇室</option>
           <option value="generic-a">通用 A</option><option value="generic-b">通用 B</option>
         </select></div>
-        <div><label for="index">字辈序号</label><input id="index" type="number" min="1" value="1"></div>
+        <div><label for="index">字辈序号</label><input id="index" type="number" min="1" max="20" step="1" value="1" disabled></div>
       </div>
       <div id="lock-person" class="hint" hidden></div>
       <button class="primary" type="submit">生成姓名</button>
@@ -265,6 +265,22 @@ function rememberNames(names) {
   }
 }
 
+const PRESET_LENGTHS = { 'ming-imperial': 20, 'generic-a': 20, 'generic-b': 20 };
+function syncGenerationIndex() {
+  const preset = $('preset').value;
+  const input = $('index');
+  const max = PRESET_LENGTHS[preset] ?? 20;
+  input.disabled = !preset || $('klass').value === '俗人';
+  input.max = String(max);
+  if (!preset) {
+    input.value = '1';
+    return;
+  }
+  const value = Number(input.value) || 1;
+  input.value = String(Math.min(max, Math.max(1, Math.trunc(value))));
+}
+$('preset').addEventListener('change', syncGenerationIndex);
+
 const lockedPersonFields = ['era', 'style', 'allusion', 'preset', 'index'];
 function syncClassLocks() {
   const commoner = $('klass').value === '俗人';
@@ -276,6 +292,7 @@ function syncClassLocks() {
     $('preset').value = '';
     $('index').value = '1';
   }
+  syncGenerationIndex();
   const hint = $('lock-person');
   hint.hidden = !commoner;
   hint.textContent = commoner ? '俗人模式：时代、风格、字辈固定不启用' : '';
@@ -294,6 +311,13 @@ $('form-person').addEventListener('submit', async (event) => {
     status.textContent = '姓氏只能填 1–6 个汉字，不能含数字/字母/符号';
     return;
   }
+  const preset = $('preset').value;
+  const index = Number($('index').value) || 1;
+  const presetMax = PRESET_LENGTHS[preset] ?? 20;
+  if (preset && (index < 1 || index > presetMax)) {
+    status.textContent = `字辈序号需为 1–${presetMax}`;
+    return;
+  }
   const profile = {
     gender: $('gender').value,
     class: $('klass').value,
@@ -302,14 +326,14 @@ $('form-person').addEventListener('submit', async (event) => {
           era: $('era').value,
           ...(style ? { style: [style] } : {}),
           ...($('allusion').value ? { allusion: $('allusion').value } : {}),
-          ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
+          ...(preset ? { generation: { preset, index, position: 'first' } } : {}),
         }
       : {}),
     ...(surname ? { surname } : {}),
   };
   try {
     const generator = await ensureGenerator(status);
-    const requested = Number($('count-person').value) || 5;
+    const requested = Math.min(10, Math.max(1, Number($('count-person').value) || 5));
     const explicitSeed = seedOf('seed-person') !== undefined;
     const recent = explicitSeed ? new Set() : new Set(recentNames());
     const people = generator.generateBatch({
