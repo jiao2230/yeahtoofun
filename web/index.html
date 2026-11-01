@@ -17,6 +17,19 @@
     .tab.active { border-color:var(--accent); color:var(--accent); background:rgba(201,168,106,.10); }
     .token { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
     .token input, .token select { width:150px; }
+    .toolbar-meta { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .pack-status { color:var(--muted); font-size:12px; border:1px solid var(--line); border-radius:999px; padding:4px 10px; }
+    .status.error { color:#e0a46a; }
+    button.primary:disabled { opacity:.55; cursor:wait; }
+    @media (max-width: 640px) {
+      main { padding:20px 12px 48px; }
+      h1 { font-size:24px; }
+      .toolbar { align-items:stretch; }
+      .toolbar-meta { width:100%; }
+      .token { flex:1; justify-content:space-between; }
+      .token input, .token select { width:min(220px, 62vw); }
+      .grid { grid-template-columns:1fr; }
+    }
     .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
     label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
@@ -48,8 +61,11 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
       <button class="tab" type="button" data-tab="technique">功法</button>
       <button class="tab" type="button" data-tab="artifact">法宝</button>
     </nav>
-    <label class="token" for="pack-select">数据包<select id="pack-select"><option value="seed">seed</option></select></label>
-    <label class="token" for="token">Token（局域网时）<input id="token" placeholder="可空"></label>
+    <div class="toolbar-meta">
+      <span id="pack-status" class="pack-status" aria-live="polite">pack 未加载</span>
+      <label class="token" for="pack-select">数据包<select id="pack-select"><option value="seed">seed</option></select></label>
+      <label class="token" for="token">Token（局域网时）<input id="token" placeholder="可空"></label>
+    </div>
   </div>
 
   <section id="panel-person" class="panel" data-panel="person">
@@ -174,6 +190,21 @@ import { createGenerator, loadPack } from '/minglu-sdk.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const packStatus = $('pack-status');
+function setPackStatus(text) { packStatus.textContent = text; }
+function setStatus(element, text, error = false) {
+  element.textContent = text;
+  element.classList.toggle('error', error);
+}
+function resetOutputs() {
+  for (const panel of document.querySelectorAll('[data-panel]')) {
+    const status = panel.querySelector('.status');
+    const results = panel.querySelector('.results');
+    if (status) setStatus(status, '');
+    if (results) results.innerHTML = '';
+  }
+}
+document.querySelectorAll('.status').forEach((element) => element.setAttribute('aria-live', 'polite'));
 
 const surnameInput = $('surname');
 function validateSurname() {
@@ -203,11 +234,13 @@ const PACK_KEY = 'minglu-pack';
 let activePack = localStorage.getItem(PACK_KEY) || 'seed';
 async function ensureGenerator(status) {
   if (gen) return gen;
-  status.textContent = `首次生成：加载本地 pack（${activePack}）…`;
+  setStatus(status, `首次生成：加载本地 pack（${activePack}）…`);
+  setPackStatus(`加载 ${activePack}…`);
   const token = $('token').value.trim();
   const headers = token ? { authorization: 'Bearer ' + token } : {};
   const pack = await loadPack(`/v1/pack?pack=${encodeURIComponent(activePack)}`, headers);
   gen = createGenerator(pack);
+  setPackStatus(packLine(gen));
   return gen;
 }
 
@@ -225,26 +258,32 @@ async function loadPackOptions() {
     activePack = saved && packs.some((pack) => pack.id === saved) ? saved : (payload.default || packs[0].id);
     if (!packs.some((pack) => pack.id === activePack)) activePack = packs[0].id;
     select.value = activePack;
+    setPackStatus(`数据包：${activePack}（生成时加载）`);
   } catch {
     select.innerHTML = '<option value="seed">seed</option>';
     activePack = 'seed';
     select.value = activePack;
+    setPackStatus('pack 列表加载失败，使用 seed');
   }
 }
 $('pack-select').addEventListener('change', () => {
   activePack = $('pack-select').value;
   localStorage.setItem(PACK_KEY, activePack);
   gen = null;
-  $('status-person').textContent = `已切换数据包：${activePack}；生成时加载`;
+  resetOutputs();
+  setPackStatus(`已切换：${activePack}（生成时加载）`);
 });
 $('token').addEventListener('change', () => {
   gen = null;
+  resetOutputs();
   loadPackOptions();
 });
 loadPackOptions();
 
 function packLine(generator) {
-  return `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
+  const line = `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
+  setPackStatus(line);
+  return line;
 }
 
 const RECENT_KEY = 'minglu-recent-names';
@@ -304,7 +343,7 @@ $('form-person').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-person');
   const results = $('names-person');
-  status.textContent = '生成中…'; results.innerHTML = '';
+  setStatus(status, '生成中…'); results.innerHTML = '';
   const style = $('style').value;
   const surname = surnameInput.value.trim();
   if (surname && !/^[\u4e00-\u9fa5]{1,6}$/.test(surname)) {
@@ -360,7 +399,7 @@ $('form-person').addEventListener('submit', async (event) => {
       return `<div class="name"><b>${esc(p.fullName)}</b>${genTag}${tags}<div class="chars">${chars}</div>${allusion}${warnings}</div>`;
     }).join('');
   } catch (error) {
-    status.textContent = '失败：' + error.message;
+    setStatus(status, '失败：' + error.message, true);
   }
 });
 
@@ -368,7 +407,7 @@ $('form-sect').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-sect');
   const results = $('names-sect');
-  status.textContent = '生成中…'; results.innerHTML = '';
+  setStatus(status, '生成中…'); results.innerHTML = '';
   try {
     const generator = await ensureGenerator(status);
     const alignment = $('alignment-sect').value;
@@ -383,7 +422,7 @@ $('form-sect').addEventListener('submit', async (event) => {
       return `<div class="name"><b>${esc(sect.fullName)}</b>${tags}<div class="chars">${esc(sect.description)}</div></div>`;
     }).join('');
   } catch (error) {
-    status.textContent = '失败：' + error.message;
+    setStatus(status, '失败：' + error.message, true);
   }
 });
 
@@ -391,7 +430,7 @@ $('form-pill').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-pill');
   const results = $('names-pill');
-  status.textContent = '生成中…'; results.innerHTML = '';
+  setStatus(status, '生成中…'); results.innerHTML = '';
   try {
     const generator = await ensureGenerator(status);
     const kind = $('kind-pill').value;
@@ -410,7 +449,7 @@ $('form-pill').addEventListener('submit', async (event) => {
       return `<div class="name"><b>${esc(pill.fullName)}</b><span class="tag">${esc(pill.tier)}</span>${tags}<div class="chars">${esc(pill.description)}</div></div>`;
     }).join('');
   } catch (error) {
-    status.textContent = '失败：' + error.message;
+    setStatus(status, '失败：' + error.message, true);
   }
 });
 
@@ -418,7 +457,7 @@ $('form-technique').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-technique');
   const results = $('names-technique');
-  status.textContent = '生成中…'; results.innerHTML = '';
+  setStatus(status, '生成中…'); results.innerHTML = '';
   try {
     const generator = await ensureGenerator(status);
     const kind = $('kind-technique').value;
@@ -436,7 +475,7 @@ $('form-technique').addEventListener('submit', async (event) => {
       return `<div class="name"><b>${esc(technique.fullName)}</b>${tags}<div class="chars">${esc(structure)} · ${esc(technique.description)}</div></div>`;
     }).join('');
   } catch (error) {
-    status.textContent = '失败：' + error.message;
+    setStatus(status, '失败：' + error.message, true);
   }
 });
 
@@ -444,7 +483,7 @@ $('form-artifact').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-artifact');
   const results = $('names-artifact');
-  status.textContent = '生成中…'; results.innerHTML = '';
+  setStatus(status, '生成中…'); results.innerHTML = '';
   try {
     const generator = await ensureGenerator(status);
     const artifacts = generator.artifacts({
@@ -457,7 +496,7 @@ $('form-artifact').addEventListener('submit', async (event) => {
       return `<div class="name"><b>${esc(artifact.name)}</b><span class="tag">${esc(artifact.modifierKind)}</span>${tags}<div class="chars">${esc(artifact.modifier)} + ${esc(artifact.form)}</div></div>`;
     }).join('');
   } catch (error) {
-    status.textContent = '失败：' + error.message;
+    setStatus(status, '失败：' + error.message, true);
   }
 });
 </script>
