@@ -188,6 +188,106 @@
       "text": "青木",
       "kind": "天地",
       "weight": 8
+    },
+    {
+      "text": "紫霄",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "青霄",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "丹霞",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "赤霄",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "金乌",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "玉衡",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "天枢",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "瑶光",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "太微",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "紫微",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "银汉",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "星河",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "云汉",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "月轮",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "霜华",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "雪魄",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "冰魄",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "雷泽",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "风渊",
+      "kind": "天地",
+      "weight": 6
+    },
+    {
+      "text": "霞光",
+      "kind": "天地",
+      "weight": 6
     }
   ],
   "cores": [
@@ -430,6 +530,116 @@
       "text": "归元",
       "kind": "通用",
       "weight": 8
+    },
+    {
+      "text": "破境",
+      "kind": "突破",
+      "weight": 7
+    },
+    {
+      "text": "破关",
+      "kind": "突破",
+      "weight": 7
+    },
+    {
+      "text": "破虚",
+      "kind": "突破",
+      "weight": 7
+    },
+    {
+      "text": "冲窍",
+      "kind": "突破",
+      "weight": 7
+    },
+    {
+      "text": "渡劫",
+      "kind": "突破",
+      "weight": 7
+    },
+    {
+      "text": "生血",
+      "kind": "疗伤",
+      "weight": 7
+    },
+    {
+      "text": "续骨",
+      "kind": "疗伤",
+      "weight": 7
+    },
+    {
+      "text": "愈伤",
+      "kind": "疗伤",
+      "weight": 7
+    },
+    {
+      "text": "护心",
+      "kind": "疗伤",
+      "weight": 7
+    },
+    {
+      "text": "养脉",
+      "kind": "疗伤",
+      "weight": 7
+    },
+    {
+      "text": "炼骨",
+      "kind": "淬体",
+      "weight": 7
+    },
+    {
+      "text": "锻体",
+      "kind": "淬体",
+      "weight": 7
+    },
+    {
+      "text": "强筋",
+      "kind": "淬体",
+      "weight": 7
+    },
+    {
+      "text": "固髓",
+      "kind": "淬体",
+      "weight": 7
+    },
+    {
+      "text": "凝神",
+      "kind": "神魂",
+      "weight": 7
+    },
+    {
+      "text": "养魂",
+      "kind": "神魂",
+      "weight": 7
+    },
+    {
+      "text": "安魄",
+      "kind": "神魂",
+      "weight": 7
+    },
+    {
+      "text": "醒神",
+      "kind": "神魂",
+      "weight": 7
+    },
+    {
+      "text": "固本",
+      "kind": "通用",
+      "weight": 7
+    },
+    {
+      "text": "养精",
+      "kind": "通用",
+      "weight": 7
+    },
+    {
+      "text": "聚元",
+      "kind": "通用",
+      "weight": 7
+    },
+    {
+      "text": "润元",
+      "kind": "通用",
+      "weight": 7
     }
   ],
   "suffixes": [
@@ -693,6 +903,86 @@
     },
     {
       "text": "丹田",
+      "weight": 6
+    },
+    {
+      "text": "太和",
+      "weight": 6
+    },
+    {
+      "text": "紫气",
+      "weight": 6
+    },
+    {
+      "text": "青华",
+      "weight": 6
+    },
+    {
+      "text": "白虹",
+      "weight": 6
+    },
+    {
+      "text": "赤霄",
+      "weight": 6
+    },
+    {
+      "text": "玄光",
+      "weight": 6
+    },
+    {
+      "text": "金魄",
+      "weight": 6
+    },
+    {
+      "text": "玉髓",
+      "weight": 6
+    },
+    {
+      "text": "龙涎",
+      "weight": 6
+    },
+    {
+      "text": "凤羽",
+      "weight": 6
+    },
+    {
+      "text": "麒麟",
+      "weight": 6
+    },
+    {
+      "text": "玄武",
+      "weight": 6
+    },
+    {
+      "text": "朱雀",
+      "weight": 6
+    },
+    {
+      "text": "白虎",
+      "weight": 6
+    },
+    {
+      "text": "青龙",
+      "weight": 6
+    },
+    {
+      "text": "星辰",
+      "weight": 6
+    },
+    {
+      "text": "银河",
+      "weight": 6
+    },
+    {
+      "text": "月宫",
+      "weight": 6
+    },
+    {
+      "text": "日精",
+      "weight": 6
+    },
+    {
+      "text": "霞举",
       "weight": 6
     }
   ],

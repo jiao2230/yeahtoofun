@@ -384,6 +384,106 @@
       "text": "炼己",
       "kind": "动作",
       "weight": 6
+    },
+    {
+      "text": "凌波",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "缩地",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "穿云",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "裂空",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "碎星",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "饮露",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "餐霞",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "抱元",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "守拙",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "忘机",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "听雨",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "观海",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "问月",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "斩风",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "御雷",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "踏雪",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "焚山",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "煮海",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "摘星",
+      "kind": "动作",
+      "weight": 6
+    },
+    {
+      "text": "揽月",
+      "kind": "动作",
+      "weight": 6
     }
   ],
   "middles": [
@@ -589,6 +689,86 @@
     },
     {
       "text": "无相",
+      "weight": 7
+    },
+    {
+      "text": "炼神",
+      "weight": 7
+    },
+    {
+      "text": "化神",
+      "weight": 7
+    },
+    {
+      "text": "返虚",
+      "weight": 7
+    },
+    {
+      "text": "合真",
+      "weight": 7
+    },
+    {
+      "text": "通玄",
+      "weight": 7
+    },
+    {
+      "text": "悟道",
+      "weight": 7
+    },
+    {
+      "text": "明性",
+      "weight": 7
+    },
+    {
+      "text": "见心",
+      "weight": 7
+    },
+    {
+      "text": "凝魄",
+      "weight": 7
+    },
+    {
+      "text": "铸魂",
+      "weight": 7
+    },
+    {
+      "text": "养精",
+      "weight": 7
+    },
+    {
+      "text": "固本",
+      "weight": 7
+    },
+    {
+      "text": "培元",
+      "weight": 7
+    },
+    {
+      "text": "洗心",
+      "weight": 7
+    },
+    {
+      "text": "炼形",
+      "weight": 7
+    },
+    {
+      "text": "化气",
+      "weight": 7
+    },
+    {
+      "text": "吞灵",
+      "weight": 7
+    },
+    {
+      "text": "朝真",
+      "weight": 7
+    },
+    {
+      "text": "守中",
+      "weight": 7
+    },
+    {
+      "text": "藏神",
       "weight": 7
     }
   ],
