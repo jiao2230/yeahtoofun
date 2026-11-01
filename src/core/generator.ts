@@ -28,6 +28,7 @@ const RELIGIOUS_MALE_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '
 const RELIGIOUS_FEMALE_CHARS = ['慧', '静', '妙', '徽', '宁', '清', '云', '灵', '仙', '贞', '元', '瑶', '慈', '素', '如'] as const;
 const RELIGIOUS_NAME_CHARS = [...new Set([...RELIGIOUS_MALE_CHARS, ...RELIGIOUS_FEMALE_CHARS])];
 const RELIGIOUS_NAME_SET = new Set<string>(RELIGIOUS_NAME_CHARS);
+const RELIGIOUS_WEAK_SINGLE = new Set(['中', '子', '之']);
 const MIN_STYLE_CHARS = 12;
 const MIN_STYLE_GIVEN = 8;
 const EMPTY_SURNAME: NameChar = { text: '', pinyin: '', tone: 0 };
@@ -484,7 +485,8 @@ function pickReligiousGiven(
   );
   if (available.length === 0) return null;
   if (wantSingle) {
-    return [toNameChar(pack, rng.pick(available), [])];
+    const singles = available.filter((ch) => !RELIGIOUS_WEAK_SINGLE.has(ch));
+    return [toNameChar(pack, rng.pick(singles.length > 0 ? singles : available), [])];
   }
 
   const religious = rng.pick(available);

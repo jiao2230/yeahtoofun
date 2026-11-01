@@ -678,6 +678,7 @@ var RELIGIOUS_MALE_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\
 var RELIGIOUS_FEMALE_CHARS = ["\u6167", "\u9759", "\u5999", "\u5FBD", "\u5B81", "\u6E05", "\u4E91", "\u7075", "\u4ED9", "\u8D1E", "\u5143", "\u7476", "\u6148", "\u7D20", "\u5982"];
 var RELIGIOUS_NAME_CHARS = [.../* @__PURE__ */ new Set([...RELIGIOUS_MALE_CHARS, ...RELIGIOUS_FEMALE_CHARS])];
 var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
+var RELIGIOUS_WEAK_SINGLE = /* @__PURE__ */ new Set(["\u4E2D", "\u5B50", "\u4E4B"]);
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;
 var EMPTY_SURNAME = { text: "", pinyin: "", tone: 0 };
@@ -1033,7 +1034,8 @@ function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingl
   );
   if (available.length === 0) return null;
   if (wantSingle) {
-    return [toNameChar(pack, rng.pick(available), [])];
+    const singles = available.filter((ch) => !RELIGIOUS_WEAK_SINGLE.has(ch));
+    return [toNameChar(pack, rng.pick(singles.length > 0 ? singles : available), [])];
   }
   const religious = rng.pick(available);
   const exactGender = pack.chars.filter(

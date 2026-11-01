@@ -347,6 +347,15 @@ test('elegant names exclude colloquial chars', () => {
   }
 });
 
+test('weak religious single names and 房中 are excluded', () => {
+  const people = generateBatch({ gender: 'male', style: ['宗教'], givenLength: 1, count: 60, seed: 21 }, pack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.ok(!['中', '子', '之'].includes(person.given[0]!.text), person.fullName);
+  }
+  assert.equal(checkName('房中', pack).valid, false);
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
