@@ -126,6 +126,15 @@ test('religious style includes one of the nine chars and keeps gender imagery se
 });
 
 test('俗人 class uses colloquial name patterns and gender-appropriate tails', () => {
+  const locked = resolveProfile({
+    class: '俗人',
+    era: 'xianxia',
+    style: ['宗教'],
+    generation: { preset: 'generic-a', index: 3 },
+  });
+  assert.equal(locked.era, 'tangsong');
+  assert.deepEqual(locked.style, []);
+  assert.equal(locked.generation, null);
   const maleTails = new Set('郎毛柱根锁蛋狗牛马白宝福贵财喜来有铁顺'.split(''));
   const femaleTails = new Set('娘丫花兰秀英妹娣妞娃白宝福贵喜来有'.split(''));
   const numerals = new Set('大小二三四五六七八九十'.split(''));

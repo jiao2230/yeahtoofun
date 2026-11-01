@@ -702,10 +702,11 @@ var DEFAULT_PROFILE = {
   mode: "stable"
 };
 function resolveProfile(input = {}) {
-  const era = input.era && ERAS.includes(input.era) ? input.era : DEFAULT_PROFILE.era;
-  const gender = input.gender && GENDERS.includes(input.gender) ? input.gender : DEFAULT_PROFILE.gender;
-  const style = (input.style ?? []).filter((s) => STYLES.includes(s));
   const socialClass = input.class && CLASSES.includes(input.class) ? input.class : DEFAULT_PROFILE.class;
+  const commoner = socialClass === "\u4FD7\u4EBA";
+  const era = commoner ? DEFAULT_PROFILE.era : input.era && ERAS.includes(input.era) ? input.era : DEFAULT_PROFILE.era;
+  const gender = input.gender && GENDERS.includes(input.gender) ? input.gender : DEFAULT_PROFILE.gender;
+  const style = commoner ? [] : (input.style ?? []).filter((s) => STYLES.includes(s));
   const givenLength = input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : "auto";
   const mode = input.mode === "diverse" ? "diverse" : "stable";
   const surname = typeof input.surname === "string" ? input.surname.trim() : void 0;
@@ -720,7 +721,7 @@ function resolveProfile(input = {}) {
     surname: surname || void 0,
     givenLength,
     allusion: input.allusion === "chuci" || input.allusion === "shijing" || input.allusion === "lunyu" || input.allusion === "all" ? input.allusion : void 0,
-    generation: input.generation ?? null,
+    generation: commoner ? null : input.generation ?? null,
     restraint: clamp(input.restraint ?? DEFAULT_PROFILE.restraint, 0, 1),
     seed: input.seed ?? (Date.now() ^ Math.floor(Math.random() * 4294967295)) >>> 0,
     count: normalizeCount(input.count),

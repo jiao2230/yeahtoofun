@@ -152,6 +152,7 @@ v0.6 起不再生成表字（字）；修仙与历史项目都只用姓名，必
 - `雅士`：默认路径，走现有的字频、性别、风格、音形义打分；
 - `俗人`：独立路径，使用通俗常见字和排行/小名式组合，例如 `三毛`、`五四`、`二`、`大郎`、`小白`、`三娘`；
 - 俗人男性用 `郎/毛/柱/根/锁/蛋/狗/牛/马` 等尾字，女性用 `娘/丫/花/兰/秀/英` 等尾字；
+- Web UI 切到俗人时，时代、风格、字辈选择器会禁用并锁定；API 同样忽略这三项；
 - 原 `僧道` 阶层已删除，宗教命名改由 `style=宗教` 承担。
 
 ### 经典用典（楚辞 / 诗经 / 论语）
@@ -279,7 +280,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 51.8 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 51.9 KB）
 ```
 
 ```js
@@ -415,7 +416,7 @@ minglu/
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 51.8 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 51.9 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -639,7 +640,7 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 51.8 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 51.9 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
 | 测试 | ✅ 51 项（45 core ＋ 6 M3；`npm test`） |

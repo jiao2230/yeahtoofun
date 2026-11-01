@@ -20,6 +20,7 @@
     .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
     label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
     select, input { width:100%; padding:7px 8px; border:1px solid var(--line); border-radius:6px; background:#12140f; color:var(--ink); font:inherit; }
     button.primary { margin-top:14px; padding:9px 20px; border:1px solid var(--accent); border-radius:6px; background:transparent; color:var(--accent); font:inherit; cursor:pointer; }
     button.primary:hover { background:rgba(201,168,106,.12); }
@@ -76,6 +77,7 @@
         </select></div>
         <div><label for="index">字辈序号</label><input id="index" type="number" min="1" value="1"></div>
       </div>
+      <div id="lock-person" class="hint" hidden></div>
       <button class="primary" type="submit">生成姓名</button>
       <div id="status-person" class="status"></div>
       <div id="names-person" class="results"></div>
@@ -191,6 +193,23 @@ function packLine(generator) {
   return `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
 }
 
+const lockedPersonFields = ['era', 'style', 'preset', 'index'];
+function syncClassLocks() {
+  const commoner = $('klass').value === '俗人';
+  for (const id of lockedPersonFields) $(id).disabled = commoner;
+  if (commoner) {
+    $('era').value = 'tangsong';
+    $('style').value = '';
+    $('preset').value = '';
+    $('index').value = '1';
+  }
+  const hint = $('lock-person');
+  hint.hidden = !commoner;
+  hint.textContent = commoner ? '俗人模式：时代、风格、字辈固定不启用' : '';
+}
+$('klass').addEventListener('change', syncClassLocks);
+syncClassLocks();
+
 $('form-person').addEventListener('submit', async (event) => {
   event.preventDefault();
   const status = $('status-person');
@@ -203,12 +222,16 @@ $('form-person').addEventListener('submit', async (event) => {
     return;
   }
   const profile = {
-    era: $('era').value,
     gender: $('gender').value,
     class: $('klass').value,
-    ...(style ? { style: [style] } : {}),
+    ...($('klass').value !== '俗人'
+      ? {
+          era: $('era').value,
+          ...(style ? { style: [style] } : {}),
+          ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
+        }
+      : {}),
     ...(surname ? { surname } : {}),
-    ...($('preset').value ? { generation: { preset: $('preset').value, index: Number($('index').value) || 1, position: 'first' } } : {}),
   };
   try {
     const generator = await ensureGenerator(status);

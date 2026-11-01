@@ -59,10 +59,15 @@ export const DEFAULT_PROFILE: ResolvedProfile = {
 };
 
 export function resolveProfile(input: Profile = {}): ResolvedProfile {
-  const era = input.era && ERAS.includes(input.era) ? input.era : DEFAULT_PROFILE.era;
-  const gender = input.gender && GENDERS.includes(input.gender) ? input.gender : DEFAULT_PROFILE.gender;
-  const style = (input.style ?? []).filter((s) => STYLES.includes(s));
   const socialClass = input.class && CLASSES.includes(input.class) ? input.class : DEFAULT_PROFILE.class;
+  const commoner = socialClass === '俗人';
+  const era = commoner
+    ? DEFAULT_PROFILE.era
+    : input.era && ERAS.includes(input.era)
+      ? input.era
+      : DEFAULT_PROFILE.era;
+  const gender = input.gender && GENDERS.includes(input.gender) ? input.gender : DEFAULT_PROFILE.gender;
+  const style = commoner ? [] : (input.style ?? []).filter((s) => STYLES.includes(s));
   const givenLength: GivenLength =
     input.givenLength === 1 || input.givenLength === 2 ? input.givenLength : 'auto';
   const mode: BatchMode = input.mode === 'diverse' ? 'diverse' : 'stable';
@@ -84,7 +89,7 @@ export function resolveProfile(input: Profile = {}): ResolvedProfile {
       input.allusion === 'all'
         ? input.allusion
         : undefined,
-    generation: input.generation ?? null,
+    generation: commoner ? null : (input.generation ?? null),
     restraint: clamp(input.restraint ?? DEFAULT_PROFILE.restraint, 0, 1),
     seed: input.seed ?? ((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0),
     count: normalizeCount(input.count),
