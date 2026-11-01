@@ -23,8 +23,10 @@ def main() -> int:
 
     index: dict[str, list[dict[str, str]]] = {}
 
-    def add(phrase: str, corpus: str, source: str, line: str) -> None:
-        if len(phrase) != 2 or any(ch in STOP_CHARS for ch in phrase):
+    def add(phrase: str, corpus: str, source: str, line: str, allow_stop: bool = False) -> None:
+        if len(phrase) != 2:
+            return
+        if not allow_stop and any(ch in STOP_CHARS for ch in phrase):
             return
         hits = index.setdefault(phrase, [])
         if len(hits) >= 5:
@@ -37,6 +39,12 @@ def main() -> int:
         clean = "".join(ch for ch in line if "\u4e00" <= ch <= "\u9fa5")
         for i in range(len(clean) - 1):
             add(clean[i : i + 2], corpus, source, line)
+
+    def add_words(corpus: str, source: str, lines: list[str], words: list[str]) -> None:
+        for word in words:
+            line = next((item for item in lines if word in item), "")
+            if line:
+                add(word, corpus, source, line, allow_stop=True)
 
     chuci = json.loads((args.dir / "chuci.json").read_text(encoding="utf-8"))
     for poem in chuci:
@@ -73,14 +81,24 @@ def main() -> int:
     tangshi = json.loads((args.dir / "tangshi.json").read_text(encoding="utf-8"))
     for poem in tangshi:
         source = "唐诗·" + str(poem.get("title") or "")
-        for line in poem.get("content") or []:
-            add_line("tangshi", source, line)
+        lines = poem.get("content") or []
+        words = poem.get("words") or []
+        if words:
+            add_words("tangshi", source, lines, words)
+        else:
+            for line in lines:
+                add_line("tangshi", source, line)
 
     songci = json.loads((args.dir / "songci.json").read_text(encoding="utf-8"))
     for poem in songci:
         source = "宋词·" + str(poem.get("title") or "")
-        for line in poem.get("content") or []:
-            add_line("songci", source, line)
+        lines = poem.get("content") or []
+        words = poem.get("words") or []
+        if words:
+            add_words("songci", source, lines, words)
+        else:
+            for line in lines:
+                add_line("songci", source, line)
 
     index = {phrase: hits for phrase, hits in sorted(index.items()) if hits}
     args.out.parent.mkdir(parents=True, exist_ok=True)
