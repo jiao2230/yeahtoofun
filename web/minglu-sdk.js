@@ -946,6 +946,10 @@ function resolveGeneration(profile, pack, warnings) {
 function normalizePoem(raw) {
   return raw.replace(/[^\u4e00-\u9fa5]/g, "");
 }
+function surnamesForEra(pack, era) {
+  if (era === "mingqing") return pack.surnames;
+  return pack.surnames.filter((s) => s.text.length <= 2);
+}
 function pickSurname(profile, pack, rng, generationChar) {
   if (profile.surname) {
     const known = pack.surnames.find((s) => s.text === profile.surname);
@@ -956,15 +960,16 @@ function pickSurname(profile, pack, rng, generationChar) {
       sources: ["user"]
     };
   }
-  let candidates = pack.surnames;
+  const surnames = surnamesForEra(pack, profile.era);
+  let candidates = surnames;
   for (let attempt = 0; attempt < 6; attempt++) {
     const picked2 = rng.weightedPick(candidates, (s) => s.weight);
     if (!generationChar || !picked2.text.includes(generationChar)) {
       return { text: picked2.text, pinyin: picked2.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
     }
   }
-  const fallback = pack.surnames.find((s) => !generationChar || !s.text.includes(generationChar));
-  const picked = fallback ?? pack.surnames[0];
+  const fallback = surnames.find((s) => !generationChar || !s.text.includes(generationChar));
+  const picked = fallback ?? surnames[0];
   return { text: picked.text, pinyin: picked.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
 }
 function pickGiven(profile, pack, rng, generation, warnings, surname) {

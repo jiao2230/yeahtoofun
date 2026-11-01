@@ -288,6 +288,18 @@ test('tangshi and songci allusions are selectable', () => {
   assert.ok(songci[0]?.allusion?.source.includes('宋词'));
 });
 
+test('xianxia does not generate long historical surnames', () => {
+  const longPack = {
+    ...pack,
+    surnames: [...pack.surnames, { text: '爱新觉罗', pinyin: 'ai', weight: 1000, compound: true }],
+  };
+  const people = generateBatch({ era: 'xianxia', count: 50, seed: 7 }, longPack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.ok(person.surname.text.length <= 2, person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

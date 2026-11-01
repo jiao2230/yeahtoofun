@@ -347,6 +347,11 @@ function normalizePoem(raw: string): string {
   return raw.replace(/[^\u4e00-\u9fa5]/g, '');
 }
 
+function surnamesForEra(pack: SeedPack, era: Era): SeedPack['surnames'] {
+  if (era === 'mingqing') return pack.surnames;
+  return pack.surnames.filter((s) => s.text.length <= 2);
+}
+
 function pickSurname(
   profile: ResolvedProfile,
   pack: SeedPack,
@@ -362,15 +367,16 @@ function pickSurname(
       sources: ['user'],
     };
   }
-  let candidates = pack.surnames;
+  const surnames = surnamesForEra(pack, profile.era);
+  let candidates = surnames;
   for (let attempt = 0; attempt < 6; attempt++) {
     const picked = rng.weightedPick(candidates, (s) => s.weight);
     if (!generationChar || !picked.text.includes(generationChar)) {
       return { text: picked.text, pinyin: picked.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
     }
   }
-  const fallback = pack.surnames.find((s) => !generationChar || !s.text.includes(generationChar));
-  const picked = fallback ?? pack.surnames[0]!;
+  const fallback = surnames.find((s) => !generationChar || !s.text.includes(generationChar));
+  const picked = fallback ?? surnames[0]!;
   return { text: picked.text, pinyin: picked.pinyin, tone: 0, sources: [`${pack.id}:surname`] };
 }
 
