@@ -678,6 +678,7 @@ var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\
 var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;
+var EMPTY_SURNAME = { text: "", pinyin: "", tone: 0 };
 var COLLOQUIAL_NUMERALS = ["\u5927", "\u5C0F", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"];
 var COLLOQUIAL_MALE_TAILS = ["\u90CE", "\u6BDB", "\u67F1", "\u6839", "\u9501", "\u86CB", "\u72D7", "\u725B", "\u9A6C", "\u767D", "\u826F", "\u751F", "\u77F3", "\u864E", "\u957F", "\u4FDD", "\u9F99", "\u65FA", "\u5B58", "\u5B89", "\u5B9D", "\u798F", "\u8D35", "\u8D22", "\u559C", "\u6765", "\u6709", "\u94C1", "\u987A"];
 var COLLOQUIAL_FEMALE_TAILS = ["\u5A18", "\u4E2B", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u6843", "\u674F", "\u83CA", "\u6625", "\u6EE1", "\u7389", "\u679D", "\u6842", "\u83B2", "\u7231", "\u59B9", "\u5A23", "\u599E", "\u5A03", "\u767D", "\u5B9D", "\u798F", "\u8D35", "\u559C", "\u6765", "\u6709"];
@@ -756,7 +757,7 @@ function generateOne5(input, pack, index = 0, seedOverride) {
   }
   const styleTags = Array.from(new Set(given.flatMap((c) => findChar(pack, c.text)?.styles ?? [])));
   const pattern = profile.class === "\u4FD7\u4EBA" ? "colloquial" : void 0;
-  const score = scoreName(pack, given, rng, surname, profile);
+  const score = scoreName(pack, given, rng, profile);
   return {
     schemaVersion: "1.0",
     fullName,
@@ -968,7 +969,7 @@ function pickSurname(profile, pack, rng, generationChar) {
 function pickGiven(profile, pack, rng, generation, warnings, surname) {
   for (let attempt = 0; attempt < 4; attempt++) {
     const chars = pickGivenOnce(profile, pack, rng, generation, warnings, surname);
-    const issues = phoneticIssues(surname, chars);
+    const issues = phoneticIssues(EMPTY_SURNAME, chars);
     if (issues.length === 0 || attempt === 3) {
       if (issues.length > 0) {
         warnings.push({
@@ -1025,7 +1026,7 @@ function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingl
   const sampled = sampleSubset(companionPool, rng, 96);
   const scored = sampled.map((entry) => ({
     item: entry.char,
-    score: scoreGiven(pack, surname, plainChars(pack, entry.char), profile)
+    score: scoreGiven(pack, plainChars(pack, entry.char), profile)
   }));
   const companion = sampleTopK(scored, rng, 24);
   const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
@@ -1081,7 +1082,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       const sampled = sampleSubset(pool2, rng, 128);
       const scored = sampled.map((entry) => ({
         item: entry.text,
-        score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+        score: scoreGiven(pack, plainChars(pack, entry.text), profile)
       }));
       return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
     }
@@ -1111,7 +1112,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     const sampled = sampleSubset(pool, rng, 128);
     const scored = sampled.map((entry) => ({
       item: entry.text,
-      score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+      score: scoreGiven(pack, plainChars(pack, entry.text), profile)
     }));
     return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
   }
@@ -1131,7 +1132,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   const sampled = sampleSubset(pool, rng, 128);
   const scored = sampled.map((entry) => ({
     item: entry.text,
-    score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
+    score: scoreGiven(pack, plainChars(pack, entry.text), profile)
   }));
   return sampleTopK(scored, rng, 24);
 }
@@ -1148,7 +1149,7 @@ function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__
   const sampled = sampleSubset(source, rng, 96);
   const scored = sampled.map((c) => ({
     item: c.char,
-    score: scoreGiven(pack, surname, plainChars(pack, c.char), profile)
+    score: scoreGiven(pack, plainChars(pack, c.char), profile)
   }));
   return sampleTopK(scored, rng, 24);
 }
@@ -1213,7 +1214,7 @@ function plainChars(pack, text) {
     return meta ? { text: meta.char, pinyin: meta.pinyin, tone: meta.tone, meaning: meta.meaning } : { text: ch, pinyin: "", tone: 0 };
   });
 }
-function scoreGiven(pack, surname, given, profile) {
+function scoreGiven(pack, given, profile) {
   const metas = given.map((c) => findChar(pack, c.text)).filter((c) => Boolean(c));
   const weight = metas.reduce((sum, c) => sum + c.weight, 0);
   const base = 0.55 + Math.min(0.3, weight / 300);
@@ -1222,7 +1223,7 @@ function scoreGiven(pack, surname, given, profile) {
     0
   );
   const genderHits = profile.gender === "any" ? 0 : metas.filter((c) => c.gender === "neutral" || c.gender === profile.gender).length / Math.max(1, metas.length);
-  const issues = phoneticIssues(surname, given).length;
+  const issues = phoneticIssues(EMPTY_SURNAME, given).length;
   const strokes = metas.reduce((sum, c) => sum + (c.strokes ?? 0), 0);
   const givenText = given.map((c) => c.text).join("");
   const allusionBonus = pack.allusions[givenText]?.length ? 0.05 : 0;
@@ -1254,8 +1255,8 @@ function sampleTopK(scored, rng, k, temperature = 0.8) {
   }
   return top[top.length - 1].item;
 }
-function scoreName(pack, given, rng, surname, profile) {
-  return Number((scoreGiven(pack, surname, given, profile) + rng.next() * 0.05).toFixed(4));
+function scoreName(pack, given, rng, profile) {
+  return Number((scoreGiven(pack, given, profile) + rng.next() * 0.05).toFixed(4));
 }
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));

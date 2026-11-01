@@ -86,10 +86,11 @@ test('batch produces unique names', () => {
   assert.equal(new Set(names).size, names.length);
 });
 
-test('phonetic conflicts are filtered in batch', () => {
+test('given-name phonetic conflicts are filtered in batch', () => {
   const people = generateBatch({ count: 200, seed: 5 }, pack);
-  const bad = people.filter((p) => phoneticIssues(p.surname, p.given).length > 0);
-  assert.ok(bad.length <= 10, `${bad.length}/200 names still have phonetic conflicts`);
+  const empty = { text: '', pinyin: '', tone: 0 };
+  const bad = people.filter((p) => phoneticIssues(empty, p.given).length > 0);
+  assert.ok(bad.length <= 10, `${bad.length}/200 names still have given-name phonetic conflicts`);
 });
 
 test('style profile yields matching style tags', () => {

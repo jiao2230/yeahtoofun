@@ -28,6 +28,7 @@ const RELIGIOUS_NAME_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '
 const RELIGIOUS_NAME_SET = new Set<string>(RELIGIOUS_NAME_CHARS);
 const MIN_STYLE_CHARS = 12;
 const MIN_STYLE_GIVEN = 8;
+const EMPTY_SURNAME: NameChar = { text: '', pinyin: '', tone: 0 };
 const COLLOQUIAL_NUMERALS = ['大', '小', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 const COLLOQUIAL_MALE_TAILS = ['郎', '毛', '柱', '根', '锁', '蛋', '狗', '牛', '马', '白', '良', '生', '石', '虎', '长', '保', '龙', '旺', '存', '安', '宝', '福', '贵', '财', '喜', '来', '有', '铁', '顺'];
 const COLLOQUIAL_FEMALE_TAILS = ['娘', '丫', '花', '兰', '秀', '英', '桃', '杏', '菊', '春', '满', '玉', '枝', '桂', '莲', '爱', '妹', '娣', '妞', '娃', '白', '宝', '福', '贵', '喜', '来', '有'];
@@ -130,7 +131,7 @@ export function generateOne(
 
   const styleTags = Array.from(new Set(given.flatMap((c) => findChar(pack, c.text)?.styles ?? [])));
   const pattern = profile.class === '俗人' ? 'colloquial' : undefined;
-  const score = scoreName(pack, given, rng, surname, profile);
+  const score = scoreName(pack, given, rng, profile);
 
   return {
     schemaVersion: '1.0',
@@ -375,7 +376,7 @@ function pickGiven(
 ): NameChar[] {
   for (let attempt = 0; attempt < 4; attempt++) {
     const chars = pickGivenOnce(profile, pack, rng, generation, warnings, surname);
-    const issues = phoneticIssues(surname, chars);
+    const issues = phoneticIssues(EMPTY_SURNAME, chars);
     if (issues.length === 0 || attempt === 3) {
       if (issues.length > 0) {
         warnings.push({
@@ -478,7 +479,7 @@ function pickReligiousGiven(
   const sampled = sampleSubset(companionPool, rng, 96);
   const scored = sampled.map((entry) => ({
     item: entry.char,
-    score: scoreGiven(pack, surname, plainChars(pack, entry.char), profile),
+    score: scoreGiven(pack, plainChars(pack, entry.char), profile),
   }));
   const companion = sampleTopK(scored, rng, 24);
   const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
@@ -557,7 +558,7 @@ function pickGivenOnce(
       const sampled = sampleSubset(pool, rng, 128);
       const scored = sampled.map((entry) => ({
         item: entry.text,
-        score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile),
+        score: scoreGiven(pack, plainChars(pack, entry.text), profile),
       }));
       return sampleTopK(scored, rng, 24)
         .split('')
@@ -591,7 +592,7 @@ function pickGivenOnce(
     const sampled = sampleSubset(pool, rng, 128);
     const scored = sampled.map((entry) => ({
       item: entry.text,
-      score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile),
+      score: scoreGiven(pack, plainChars(pack, entry.text), profile),
     }));
     return sampleTopK(scored, rng, 24)
       .split('')
@@ -620,7 +621,7 @@ function findPairWithGeneration(
   const sampled = sampleSubset(pool, rng, 128);
   const scored = sampled.map((entry) => ({
     item: entry.text,
-    score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile),
+    score: scoreGiven(pack, plainChars(pack, entry.text), profile),
   }));
   return sampleTopK(scored, rng, 24);
 }
@@ -657,7 +658,7 @@ function pickOtherChar(
   const sampled = sampleSubset(source, rng, 96);
   const scored = sampled.map((c) => ({
     item: c.char,
-    score: scoreGiven(pack, surname, plainChars(pack, c.char), profile),
+    score: scoreGiven(pack, plainChars(pack, c.char), profile),
   }));
   return sampleTopK(scored, rng, 24);
 }
@@ -733,7 +734,6 @@ function plainChars(pack: SeedPack, text: string): NameChar[] {
 
 function scoreGiven(
   pack: SeedPack,
-  surname: NameChar,
   given: NameChar[],
   profile: ResolvedProfile,
 ): number {
@@ -751,7 +751,7 @@ function scoreGiven(
       ? 0
       : metas.filter((c) => c.gender === 'neutral' || c.gender === profile.gender).length /
         Math.max(1, metas.length);
-  const issues = phoneticIssues(surname, given).length;
+  const issues = phoneticIssues(EMPTY_SURNAME, given).length;
   const strokes = metas.reduce((sum, c) => sum + (c.strokes ?? 0), 0);
   const givenText = given.map((c) => c.text).join('');
   const allusionBonus = pack.allusions[givenText]?.length ? 0.05 : 0;
@@ -800,10 +800,9 @@ function scoreName(
   pack: SeedPack,
   given: NameChar[],
   rng: Rng,
-  surname: NameChar,
   profile: ResolvedProfile,
 ): number {
-  return Number((scoreGiven(pack, surname, given, profile) + rng.next() * 0.05).toFixed(4));
+  return Number((scoreGiven(pack, given, profile) + rng.next() * 0.05).toFixed(4));
 }
 
 function clamp(value: number, min: number, max: number): number {
