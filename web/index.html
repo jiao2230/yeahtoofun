@@ -46,6 +46,7 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
       <button class="tab" type="button" data-tab="sect">宗门</button>
       <button class="tab" type="button" data-tab="pill">丹药</button>
       <button class="tab" type="button" data-tab="technique">功法</button>
+      <button class="tab" type="button" data-tab="artifact">法宝</button>
     </nav>
     <label class="token" for="token">Token（局域网时）<input id="token" placeholder="可空"></label>
   </div>
@@ -146,6 +147,19 @@ select:disabled, input:disabled { opacity:.55; cursor:not-allowed; }
       <div class="hint">结构：A + B + C；B 为空时显示 ∅，不会生成「无」</div>
       <div id="status-technique" class="status"></div>
       <div id="names-technique" class="results"></div>
+    </form>
+  </section>
+
+  <section id="panel-artifact" class="panel" data-panel="artifact" hidden>
+    <form id="form-artifact">
+      <div class="grid">
+        <div><label for="count-artifact">数量 1–30</label><input id="count-artifact" type="number" min="1" max="30" value="6"></div>
+        <div><label for="seed-artifact">种子（可空）</label><input id="seed-artifact" placeholder="如 42"></div>
+      </div>
+      <button class="primary" type="submit">生成法宝</button>
+      <div class="hint">结构：材质 / 意象 / 功能 + 器型；不带品阶</div>
+      <div id="status-artifact" class="status"></div>
+      <div id="names-artifact" class="results"></div>
     </form>
   </section>
 </main>
@@ -324,6 +338,27 @@ $('form-technique').addEventListener('submit', async (event) => {
       const tags = (technique.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
       const structure = `${technique.head} + ${technique.middle ?? '∅'} + ${technique.suffix}`;
       return `<div class="name"><b>${esc(technique.fullName)}</b>${tags}<div class="chars">${esc(structure)} · ${esc(technique.description)}</div></div>`;
+    }).join('');
+  } catch (error) {
+    status.textContent = '失败：' + error.message;
+  }
+});
+
+$('form-artifact').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const status = $('status-artifact');
+  const results = $('names-artifact');
+  status.textContent = '生成中…'; results.innerHTML = '';
+  try {
+    const generator = await ensureGenerator(status);
+    const artifacts = generator.artifacts({
+      count: Number($('count-artifact').value) || 6,
+      ...(seedOf('seed-artifact') !== undefined ? { seed: seedOf('seed-artifact') } : {}),
+    });
+    status.textContent = `已生成 ${artifacts.length} 个法宝 · ${packLine(generator)}`;
+    results.innerHTML = artifacts.map((artifact) => {
+      const tags = (artifact.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+      return `<div class="name"><b>${esc(artifact.name)}</b><span class="tag">${esc(artifact.modifierKind)}</span>${tags}<div class="chars">${esc(artifact.modifier)} + ${esc(artifact.form)}</div></div>`;
     }).join('');
   } catch (error) {
     status.textContent = '失败：' + error.message;
