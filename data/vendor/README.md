@@ -16,7 +16,8 @@
 | `classics/zhuangzi.json` | [维基文库·庄子](https://zh.wikisource.org/wiki/莊子) | 公版；站点 CC BY-SA 4.0 | 逍遥游选段 |
 | `classics/tangshi.json` | 唐诗名篇选段（静夜思、春晓、登鹳雀楼等） | 公版 | 10 首 |
 | `classics/songci.json` | 宋词名篇选段（水调歌头、念奴娇、声声慢等） | 公版 | 10 首 |
-| `classics/allusions.json` | 由 `tools/build_allusions.py` 生成 | MIT | 23,570 个双字 → 出处索引（楚辞/诗经/论语/周易/庄子/唐诗/宋词） |
+| `classics/female-allusions.json` | 人工核对女性名 → 诗经/楚辞/宋词出处 | 公版 | 36 条 |
+| `classics/allusions.json` | 由 `tools/build_allusions.py` 生成 | MIT | 23,573 个双字 → 出处索引（楚辞/诗经/论语/周易/庄子/唐诗/宋词） |
 | `lexicons/ATTRIBUTION.md` | 人工筛选的扩展词来源登记 | 见文件内逐项说明 | 2026-11-01 第一批宗门/丹药/功法/法宝扩展词 |
 
 > 两份拼音表都是**部分抓取**（web fetch 有长度上限）。构建期只保留有调号的字，所以最终 pack 内 100% 有调号；完整表可在本地用 `pinyin-data` 重新生成。

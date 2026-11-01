@@ -382,6 +382,33 @@ test('female xianxia/writeyi pools use supplemented names', () => {
   }
 });
 
+test('female allusion pool can use name-level female entries', () => {
+  const femaleNames = ['静姝', '清婉', '婉清', '姝宁', '娴雅'];
+  const allusions = Object.fromEntries(
+    femaleNames.map((name) => [
+      name,
+      [{ corpus: 'shijing' as const, source: '诗经·邶风·静女', line: '静女其姝，俟我于城隅。' }],
+    ]),
+  );
+  const femalePack = {
+    ...pack,
+    givenNames: [],
+    femaleGivenNamesByStyle: {
+      写意: femaleNames.map((text) => ({ text, weight: 1, gender: 'female' as const })),
+    },
+    allusions,
+  };
+  const people = generateBatch(
+    { era: 'xianxia', style: ['写意'], gender: 'female', allusion: 'shijing', givenLength: 2, count: 5, seed: 8 },
+    femalePack,
+  );
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.ok(femaleNames.includes(person.given.map((c) => c.text).join('')), person.fullName);
+    assert.ok(person.allusion?.source.includes('诗经'), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

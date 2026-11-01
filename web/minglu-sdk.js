@@ -1079,7 +1079,10 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     if (colloquial) return colloquial;
   }
   if (profile.allusion && profile.givenLength !== 1) {
-    let pool2 = pack.givenNames.filter((entry) => {
+    const baseNames = [...new Map(
+      [...pack.givenNames, ...givenNamesForProfile(pack, profile)].map((entry) => [entry.text, entry])
+    ).values()];
+    let pool2 = baseNames.filter((entry) => {
       if (entry.text.length !== 2) return false;
       const hits = pack.allusions[entry.text];
       if (!hits?.length) return false;
@@ -1091,6 +1094,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
       if (profile.gender === "any") return true;
+      if (entry.gender) return entry.gender === "neutral" || entry.gender === profile.gender;
       return entry.text.split("").every((c) => {
         const meta = findChar(pack, c);
         return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
@@ -1209,7 +1213,10 @@ function isElegantGivenAllowed(text, profile) {
 function givenNamesForProfile(pack, profile) {
   const femaleStylePool = profile.style.includes("\u5199\u610F") ? pack.femaleGivenNamesByStyle?.\u5199\u610F : void 0;
   const femaleEraPool = pack.femaleGivenNamesByEra?.[profile.era];
-  const femalePool = femaleStylePool && femaleStylePool.length >= 5 ? femaleStylePool : femaleEraPool;
+  const rawFemalePool = femaleStylePool && femaleStylePool.length >= 5 ? femaleStylePool : femaleEraPool;
+  const femalePool = rawFemalePool?.filter(
+    (entry) => Array.from(entry.text).every((char) => Boolean(findChar(pack, char)))
+  );
   if (profile.gender === "female" && femalePool && femalePool.length >= 5) return femalePool;
   const extras = [];
   if (profile.era === "xianxia") extras.push(...pack.givenNamesByEra?.xianxia ?? []);

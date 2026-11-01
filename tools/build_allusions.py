@@ -100,6 +100,16 @@ def main() -> int:
             for line in lines:
                 add_line("songci", source, line)
 
+    female = json.loads((args.dir / "female-allusions.json").read_text(encoding="utf-8"))
+    for item in female:
+        add(
+            str(item.get("name") or ""),
+            str(item.get("corpus") or ""),
+            str(item.get("source") or ""),
+            str(item.get("line") or ""),
+            allow_stop=True,
+        )
+
     index = {phrase: hits for phrase, hits in sorted(index.items()) if hits}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(index, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
