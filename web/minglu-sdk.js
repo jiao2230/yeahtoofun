@@ -694,6 +694,7 @@ var SINGLE_RATE = {
   mingqing: 0.25,
   xianxia: 0.3
 };
+var SINGLE_NAME_STOP = /* @__PURE__ */ new Set(["\u5C0F", "\u963F", "\u8001", "\u513F", "\u6C0F", "\u67D0", "\u5A18", "\u59D1", "\u4E2B", "\u599E", "\u5A03", "\u59B9", "\u5A23"]);
 var DEFAULT_PROFILE = {
   era: "tangsong",
   gender: "any",
@@ -1106,7 +1107,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     }
   }
   if (wantSingle) {
-    const char = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars);
+    const char = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars, true);
     return [toNameChar(pack, char, warnings)];
   }
   let pool = givenNamesForProfile(pack, profile).filter((entry) => {
@@ -1154,15 +1155,16 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   }));
   return sampleTopK(scored, rng, 24);
 }
-function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set()) {
+function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set(), single = false) {
+  const blocked = (c) => single && SINGLE_NAME_STOP.has(c.char);
   const base = pack.chars.filter((c) => {
-    if (c.char === avoid) return false;
+    if (c.char === avoid || blocked(c)) return false;
     if (surnameChars.has(c.char)) return false;
     if (profile.gender !== "any" && c.gender !== "neutral" && c.gender !== profile.gender) return false;
     return true;
   });
   const styled = profile.style.length > 0 ? base.filter((c) => c.styles.some((s) => profile.style.includes(s))) : [];
-  const fallback = pack.chars.filter((c) => c.char !== avoid && !surnameChars.has(c.char));
+  const fallback = pack.chars.filter((c) => c.char !== avoid && !blocked(c) && !surnameChars.has(c.char));
   const source = profile.style.length > 0 ? styled.length >= MIN_STYLE_CHARS ? styled : base.length > 0 ? base : fallback : base.length > 0 ? base : fallback;
   const sampled = sampleSubset(source, rng, 96);
   const scored = sampled.map((c) => ({

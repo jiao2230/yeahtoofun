@@ -46,6 +46,10 @@ const SINGLE_RATE: Record<Era, number> = {
   xianxia: 0.3,
 };
 
+// Prefixes/address terms that are acceptable inside double names but not as a
+// standalone given name (e.g. 小英 is fine, 赵小 is not).
+const SINGLE_NAME_STOP = new Set(['小', '阿', '老', '儿', '氏', '某', '娘', '姑', '丫', '妞', '娃', '妹', '娣']);
+
 export const DEFAULT_PROFILE: ResolvedProfile = {
   era: 'tangsong',
   gender: 'any',
@@ -593,7 +597,7 @@ function pickGivenOnce(
   }
 
   if (wantSingle) {
-    const char = pickOtherChar(pack, profile, rng, surname, undefined, surnameChars);
+    const char = pickOtherChar(pack, profile, rng, surname, undefined, surnameChars, true);
     return [toNameChar(pack, char, warnings)];
   }
 
@@ -659,9 +663,11 @@ function pickOtherChar(
   surname: NameChar,
   avoid?: string,
   surnameChars: Set<string> = new Set(),
+  single = false,
 ): string {
+  const blocked = (c: CharEntry) => single && SINGLE_NAME_STOP.has(c.char);
   const base = pack.chars.filter((c) => {
-    if (c.char === avoid) return false;
+    if (c.char === avoid || blocked(c)) return false;
     if (surnameChars.has(c.char)) return false;
     if (profile.gender !== 'any' && c.gender !== 'neutral' && c.gender !== profile.gender) return false;
     return true;
@@ -670,7 +676,7 @@ function pickOtherChar(
     profile.style.length > 0
       ? base.filter((c) => c.styles.some((s) => profile.style.includes(s)))
       : [];
-  const fallback = pack.chars.filter((c) => c.char !== avoid && !surnameChars.has(c.char));
+  const fallback = pack.chars.filter((c) => c.char !== avoid && !blocked(c) && !surnameChars.has(c.char));
   const source =
     profile.style.length > 0
       ? styled.length >= MIN_STYLE_CHARS

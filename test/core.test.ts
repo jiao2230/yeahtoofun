@@ -326,6 +326,15 @@ test('placeholder surnames are never generated', () => {
   assert.throws(() => generate({ surname: '某', seed: 1 }, placeholderPack), /E_SURNAME_INVALID/);
 });
 
+test('single-character names do not use standalone prefixes', () => {
+  const people = generateBatch({ era: 'tangsong', gender: 'female', givenLength: 1, count: 60, seed: 5 }, pack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    assert.equal(person.given.length, 1);
+    assert.ok(!['小', '阿', '老', '儿', '氏', '某', '娘', '姑', '丫', '妞', '娃', '妹', '娣'].includes(person.given[0]!.text), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
