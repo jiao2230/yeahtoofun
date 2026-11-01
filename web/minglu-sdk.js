@@ -674,7 +674,9 @@ var INITIALS = [
   "y",
   "w"
 ];
-var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F", "\u5B97", "\u771F", "\u4E4B", "\u5F18", "\u4FEE", "\u609F", "\u5B50", "\u667A", "\u8D24", "\u7EAF", "\u4E2D"];
+var RELIGIOUS_MALE_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F", "\u5B97", "\u771F", "\u4E4B", "\u5F18", "\u4FEE", "\u609F", "\u5B50", "\u667A", "\u8D24", "\u7EAF", "\u4E2D"];
+var RELIGIOUS_FEMALE_CHARS = ["\u6167", "\u9759", "\u5999", "\u5FBD", "\u5B81", "\u6E05", "\u4E91", "\u7075", "\u4ED9", "\u8D1E", "\u5143", "\u7476", "\u6148", "\u7D20", "\u5982"];
+var RELIGIOUS_NAME_CHARS = [.../* @__PURE__ */ new Set([...RELIGIOUS_MALE_CHARS, ...RELIGIOUS_FEMALE_CHARS])];
 var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;
@@ -1025,8 +1027,9 @@ function pickColloquialGiven(profile, pack, rng, surnameChars, wantSingle, warni
   return [first, second].map((ch) => toNameChar(pack, ch, warnings));
 }
 function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle) {
-  const available = RELIGIOUS_NAME_CHARS.filter(
-    (ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch) && (profile.gender !== "female" || ch !== "\u50E7")
+  const pool = profile.gender === "female" ? RELIGIOUS_FEMALE_CHARS : profile.gender === "male" ? RELIGIOUS_MALE_CHARS : RELIGIOUS_NAME_CHARS;
+  const available = pool.filter(
+    (ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch)
   );
   if (available.length === 0) return null;
   if (wantSingle) {

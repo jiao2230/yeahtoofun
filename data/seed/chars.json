@@ -19,7 +19,8 @@
     "gender": "neutral",
     "styles": [
       "写意",
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 30
   },
@@ -42,7 +43,8 @@
     "meaning": "云气；高远",
     "gender": "neutral",
     "styles": [
-      "写意"
+      "写意",
+      "宗教"
     ],
     "weight": 28
   },
@@ -494,7 +496,8 @@
     "meaning": "灵秀；灵性",
     "gender": "neutral",
     "styles": [
-      "写意"
+      "写意",
+      "宗教"
     ],
     "weight": 18
   },
@@ -819,7 +822,8 @@
     "gender": "female",
     "styles": [
       "写意",
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 12
   },
@@ -830,7 +834,8 @@
     "meaning": "贞静；坚贞",
     "gender": "female",
     "styles": [
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 8
   },
@@ -864,7 +869,8 @@
     "gender": "female",
     "styles": [
       "史实",
-      "写意"
+      "写意",
+      "宗教"
     ],
     "weight": 12
   },
@@ -1041,7 +1047,8 @@
     "meaning": "慈爱；慈悲",
     "gender": "neutral",
     "styles": [
-      "史实"
+      "史实",
+      "宗教"
     ],
     "weight": 8
   },
@@ -2047,5 +2054,89 @@
       "宗教"
     ],
     "weight": 12
+  },
+  {
+    "char": "慧",
+    "pinyin": "huì",
+    "tone": 4,
+    "meaning": "聪慧；智慧",
+    "gender": "female",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 20
+  },
+  {
+    "char": "妙",
+    "pinyin": "miào",
+    "tone": 4,
+    "meaning": "妙善；微妙",
+    "gender": "female",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 20
+  },
+  {
+    "char": "徽",
+    "pinyin": "huī",
+    "tone": 1,
+    "meaning": "美好；徽音",
+    "gender": "female",
+    "styles": [
+      "史实",
+      "宗教"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "仙",
+    "pinyin": "xiān",
+    "tone": 1,
+    "meaning": "仙逸；仙人",
+    "gender": "female",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 30
+  },
+  {
+    "char": "瑶",
+    "pinyin": "yáo",
+    "tone": 2,
+    "meaning": "美玉；瑶华",
+    "gender": "female",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 20
+  },
+  {
+    "char": "素",
+    "pinyin": "sù",
+    "tone": 4,
+    "meaning": "素雅；朴素",
+    "gender": "female",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 25
+  },
+  {
+    "char": "如",
+    "pinyin": "rú",
+    "tone": 2,
+    "meaning": "如意；如如",
+    "gender": "neutral",
+    "styles": [
+      "写意",
+      "宗教"
+    ],
+    "weight": 20
   }
 ]

@@ -110,15 +110,18 @@ test('sparse style pools do not collapse to a few chars', () => {
   }
 });
 
-test('religious style includes one of the religious chars and keeps gender imagery separate', () => {
-  const religious = new Set('道僧法德正元玄承景宗真之弘修悟子智贤纯中');
+test('religious style uses gender-specific pools and keeps imagery separate', () => {
+  const male = new Set('道僧法德正元玄承景宗真之弘修悟子智贤纯中');
+  const female = new Set('慧静妙徽宁清云灵仙贞元瑶慈素如');
+  const allReligious = new Set([...male, ...female]);
   const byChar = new Map(pack.chars.map((c) => [c.char, c]));
   for (const gender of ['male', 'female'] as const) {
+    const expected = gender === 'male' ? male : female;
     const people = generateBatch({ count: 60, gender, style: ['宗教'], seed: 12 }, pack);
     for (const person of people) {
-      assert.ok(person.given.some((c) => religious.has(c.text)), person.fullName);
+      assert.ok(person.given.some((c) => expected.has(c.text)), person.fullName);
       for (const c of person.given) {
-        if (religious.has(c.text)) continue;
+        if (allReligious.has(c.text)) continue;
         const meta = byChar.get(c.text);
         assert.ok(!meta || meta.gender === 'neutral' || meta.gender === gender, person.fullName);
       }
