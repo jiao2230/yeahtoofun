@@ -143,6 +143,9 @@ def main() -> int:
     write(args.out / "given-names.json", given)
     if given_by_era:
         write(args.out / "given-names-by-era.json", given_by_era)
+    extra_path = seed_dir / "given-names-extra.json"
+    if extra_path.exists():
+        write(args.out / "given-names-extra.json", json.loads(extra_path.read_text(encoding="utf-8")))
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)

@@ -261,6 +261,7 @@ export interface SeedPack {
   chars: CharEntry[];
   givenNames: GivenEntry[];
   givenNamesByEra?: Partial<Record<Era, GivenEntry[]>>;
+  givenNamesByStyle?: Partial<Record<Style, GivenEntry[]>>;
   femaleGivenNamesByEra?: Partial<Record<Era, GivenEntry[]>>;
   generations: GenerationPreset[];
   allusions: Record<string, AllusionEntry[]>;

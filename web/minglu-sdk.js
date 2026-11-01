@@ -1205,10 +1205,17 @@ function isElegantGivenAllowed(text, profile) {
   return !Array.from(text).some((char) => ELEGANT_BANNED_CHARS.has(char));
 }
 function givenNamesForProfile(pack, profile) {
-  const eraPool = pack.givenNamesByEra?.[profile.era];
   const femalePool = pack.femaleGivenNamesByEra?.[profile.era];
-  const pool = profile.gender === "female" && femalePool && femalePool.length >= 50 ? femalePool : eraPool;
-  return pool && pool.length >= 50 ? pool : pack.givenNames;
+  if (profile.gender === "female" && femalePool && femalePool.length >= 50) return femalePool;
+  const extras = [];
+  if (profile.era === "xianxia") extras.push(...pack.givenNamesByEra?.xianxia ?? []);
+  if (profile.style.includes("\u5199\u610F")) extras.push(...pack.givenNamesByStyle?.\u5199\u610F ?? []);
+  const validExtras = [...new Map(
+    extras.filter((entry) => Array.from(entry.text).every((char) => Boolean(findChar(pack, char)))).map((entry) => [entry.text, entry])
+  ).values()];
+  if (validExtras.length >= 5) return validExtras;
+  const eraPool = pack.givenNamesByEra?.[profile.era];
+  return eraPool && eraPool.length >= 50 ? eraPool : pack.givenNames;
 }
 function findChar(pack, char) {
   let index = charIndexCache.get(pack);

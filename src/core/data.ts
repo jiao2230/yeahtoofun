@@ -51,6 +51,9 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
   const manifest = existsSync(new URL('pack.json', dir))
     ? readJson<PackManifest>('pack.json', dir)
     : null;
+  const extra = existsSync(new URL('given-names-extra.json', dir))
+    ? readJson<{ xianxia?: GivenEntry[]; 写意?: GivenEntry[] }>('given-names-extra.json', dir)
+    : null;
   const pack: SeedPack = {
     id: manifest?.id ?? packId,
     version: manifest?.version ?? '0.1.0',
@@ -59,9 +62,13 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
     surnames: readJson<SurnameEntry[]>('surnames.json', dir),
     chars: readJson<CharEntry[]>('chars.json', dir),
     givenNames: readJson<GivenEntry[]>('given-names.json', dir),
-    givenNamesByEra: existsSync(new URL('given-names-by-era.json', dir))
-      ? readJson<SeedPack['givenNamesByEra']>('given-names-by-era.json', dir)
-      : undefined,
+    givenNamesByEra: {
+      ...(existsSync(new URL('given-names-by-era.json', dir))
+        ? readJson<SeedPack['givenNamesByEra']>('given-names-by-era.json', dir)
+        : {}),
+      ...(extra?.xianxia ? { xianxia: extra.xianxia } : {}),
+    },
+    givenNamesByStyle: extra?.['写意'] ? { 写意: extra['写意'] } : undefined,
     femaleGivenNamesByEra: existsSync(new URL('female-given-names-by-era.json', dir))
       ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
       : undefined,

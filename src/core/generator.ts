@@ -740,12 +740,21 @@ function isElegantGivenAllowed(text: string, profile: ResolvedProfile): boolean 
 }
 
 function givenNamesForProfile(pack: SeedPack, profile: ResolvedProfile): SeedPack['givenNames'] {
-  const eraPool = pack.givenNamesByEra?.[profile.era];
   const femalePool = pack.femaleGivenNamesByEra?.[profile.era];
-  const pool = profile.gender === 'female' && femalePool && femalePool.length >= 50
-    ? femalePool
-    : eraPool;
-  return pool && pool.length >= 50 ? pool : pack.givenNames;
+  if (profile.gender === 'female' && femalePool && femalePool.length >= 50) return femalePool;
+
+  const extras: SeedPack['givenNames'] = [];
+  if (profile.era === 'xianxia') extras.push(...(pack.givenNamesByEra?.xianxia ?? []));
+  if (profile.style.includes('写意')) extras.push(...(pack.givenNamesByStyle?.写意 ?? []));
+  const validExtras = [...new Map(
+    extras
+      .filter((entry) => Array.from(entry.text).every((char) => Boolean(findChar(pack, char))))
+      .map((entry) => [entry.text, entry]),
+  ).values()];
+  if (validExtras.length >= 5) return validExtras;
+
+  const eraPool = pack.givenNamesByEra?.[profile.era];
+  return eraPool && eraPool.length >= 50 ? eraPool : pack.givenNames;
 }
 
 function findChar(pack: SeedPack, char: string): CharEntry | undefined {
