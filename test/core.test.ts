@@ -335,6 +335,15 @@ test('single-character names do not use standalone prefixes', () => {
   }
 });
 
+test('elegant names exclude colloquial chars', () => {
+  const people = generateBatch({ class: '雅士', count: 80, seed: 13 }, pack);
+  assert.ok(people.length > 0);
+  for (const person of people) {
+    const given = person.given.map((c) => c.text).join('');
+    assert.ok(!/[大小丫娘郎]/.test(given), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

@@ -695,6 +695,7 @@ var SINGLE_RATE = {
   xianxia: 0.3
 };
 var SINGLE_NAME_STOP = /* @__PURE__ */ new Set(["\u5C0F", "\u963F", "\u8001", "\u513F", "\u6C0F", "\u67D0", "\u5A18", "\u59D1", "\u4E2B", "\u599E", "\u5A03", "\u59B9", "\u5A23"]);
+var ELEGANT_BANNED_CHARS = /* @__PURE__ */ new Set(["\u5927", "\u5C0F", "\u4E2B", "\u5A18", "\u90CE"]);
 var DEFAULT_PROFILE = {
   era: "tangsong",
   gender: "any",
@@ -1033,13 +1034,13 @@ function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingl
   }
   const religious = rng.pick(available);
   const exactGender = pack.chars.filter(
-    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && c.gender === profile.gender
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && isElegantGivenAllowed(c.char, profile) && c.gender === profile.gender
   );
   const neutral = pack.chars.filter(
-    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && c.gender === "neutral"
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && isElegantGivenAllowed(c.char, profile) && c.gender === "neutral"
   );
   const companionPool = profile.gender === "any" ? pack.chars.filter(
-    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char)
+    (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char) && isElegantGivenAllowed(c.char, profile)
   ) : exactGender.length > 0 ? exactGender : neutral;
   if (companionPool.length === 0) return null;
   const sampled = sampleSubset(companionPool, rng, 96);
@@ -1083,6 +1084,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       if (entry.text[0] === entry.text[1]) return false;
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+      if (!isElegantGivenAllowed(entry.text, profile)) return false;
       if (profile.gender === "any") return true;
       return entry.text.split("").every((c) => {
         const meta = findChar(pack, c);
@@ -1113,6 +1115,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
   let pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+    if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === "any") return true;
     return entry.text.split("").every((c) => {
       const meta = findChar(pack, c);
@@ -1143,6 +1146,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   const pos = generation.position === "first" ? 0 : 1;
   const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
+    if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === "any") return true;
     const meta = findChar(pack, entry.text[1 - pos]);
     return !meta || meta.gender === "neutral" || meta.gender === profile.gender;
@@ -1156,7 +1160,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
   return sampleTopK(scored, rng, 24);
 }
 function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set(), single = false) {
-  const blocked = (c) => single && SINGLE_NAME_STOP.has(c.char);
+  const blocked = (c) => single && SINGLE_NAME_STOP.has(c.char) || profile.class === "\u96C5\u58EB" && ELEGANT_BANNED_CHARS.has(c.char);
   const base = pack.chars.filter((c) => {
     if (c.char === avoid || blocked(c)) return false;
     if (surnameChars.has(c.char)) return false;
@@ -1191,6 +1195,10 @@ function toNameChar(pack, char, warnings) {
   };
 }
 var charIndexCache = /* @__PURE__ */ new WeakMap();
+function isElegantGivenAllowed(text, profile) {
+  if (profile.class !== "\u96C5\u58EB") return true;
+  return !Array.from(text).some((char) => ELEGANT_BANNED_CHARS.has(char));
+}
 function givenNamesForProfile(pack, profile) {
   const eraPool = pack.givenNamesByEra?.[profile.era];
   const femalePool = pack.femaleGivenNamesByEra?.[profile.era];

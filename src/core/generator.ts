@@ -49,6 +49,7 @@ const SINGLE_RATE: Record<Era, number> = {
 // Prefixes/address terms that are acceptable inside double names but not as a
 // standalone given name (e.g. 小英 is fine, 赵小 is not).
 const SINGLE_NAME_STOP = new Set(['小', '阿', '老', '儿', '氏', '某', '娘', '姑', '丫', '妞', '娃', '妹', '娣']);
+const ELEGANT_BANNED_CHARS = new Set(['大', '小', '丫', '娘', '郎']);
 
 export const DEFAULT_PROFILE: ResolvedProfile = {
   era: 'tangsong',
@@ -487,6 +488,7 @@ function pickReligiousGiven(
       c.char !== religious &&
       !RELIGIOUS_NAME_SET.has(c.char) &&
       !surnameChars.has(c.char) &&
+      isElegantGivenAllowed(c.char, profile) &&
       c.gender === profile.gender,
   );
   const neutral = pack.chars.filter(
@@ -494,12 +496,17 @@ function pickReligiousGiven(
       c.char !== religious &&
       !RELIGIOUS_NAME_SET.has(c.char) &&
       !surnameChars.has(c.char) &&
+      isElegantGivenAllowed(c.char, profile) &&
       c.gender === 'neutral',
   );
   const companionPool =
     profile.gender === 'any'
       ? pack.chars.filter(
-          (c) => c.char !== religious && !RELIGIOUS_NAME_SET.has(c.char) && !surnameChars.has(c.char),
+          (c) =>
+            c.char !== religious &&
+            !RELIGIOUS_NAME_SET.has(c.char) &&
+            !surnameChars.has(c.char) &&
+            isElegantGivenAllowed(c.char, profile),
         )
       : exactGender.length > 0
         ? exactGender
@@ -570,6 +577,7 @@ function pickGivenOnce(
       if (entry.text[0] === entry.text[1]) return false;
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+      if (!isElegantGivenAllowed(entry.text, profile)) return false;
       if (profile.gender === 'any') return true;
       return entry.text.split('').every((c) => {
         const meta = findChar(pack, c);
@@ -604,6 +612,7 @@ function pickGivenOnce(
   let pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
+    if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     return entry.text.split('').every((c) => {
       const meta = findChar(pack, c);
@@ -643,6 +652,7 @@ function findPairWithGeneration(
   const pos = generation.position === 'first' ? 0 : 1;
   const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
+    if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     const meta = findChar(pack, entry.text[1 - pos]!);
     return !meta || meta.gender === 'neutral' || meta.gender === profile.gender;
@@ -665,7 +675,9 @@ function pickOtherChar(
   surnameChars: Set<string> = new Set(),
   single = false,
 ): string {
-  const blocked = (c: CharEntry) => single && SINGLE_NAME_STOP.has(c.char);
+  const blocked = (c: CharEntry) =>
+    (single && SINGLE_NAME_STOP.has(c.char)) ||
+    (profile.class === '雅士' && ELEGANT_BANNED_CHARS.has(c.char));
   const base = pack.chars.filter((c) => {
     if (c.char === avoid || blocked(c)) return false;
     if (surnameChars.has(c.char)) return false;
@@ -714,6 +726,11 @@ function toNameChar(pack: SeedPack, char: string, warnings: Warning[]): NameChar
 }
 
 const charIndexCache = new WeakMap<SeedPack, Map<string, CharEntry>>();
+
+function isElegantGivenAllowed(text: string, profile: ResolvedProfile): boolean {
+  if (profile.class !== '雅士') return true;
+  return !Array.from(text).some((char) => ELEGANT_BANNED_CHARS.has(char));
+}
 
 function givenNamesForProfile(pack: SeedPack, profile: ResolvedProfile): SeedPack['givenNames'] {
   const eraPool = pack.givenNamesByEra?.[profile.era];
