@@ -428,8 +428,8 @@ function printPeople(people: PersonName[], flags: Record<string, string | boolea
     if (person.generation) {
       console.log(`  字辈：${person.generation.char}（${person.generation.preset ?? '自定义'}，第 ${person.generation.index} 字，${person.generation.position}）`);
     }
-    if (person.pattern === 'religious-prefix') {
-      console.log('  式：僧道法名式（道/法/僧 + 名）');
+    if (person.pattern === 'colloquial') {
+      console.log('  式：俗人常见名');
     }
     if (person.allusion) {
       console.log(`  典：${person.allusion.source}「${person.allusion.line}」`);
@@ -463,7 +463,7 @@ gen 选项：
   --era qinhan|weijin|tangsong|mingqing|xianxia  时代
   --gender male|female|any      性别
   --style 史实,写意,宗教          风格（逗号分隔）
-  --class 士族|寒门|...          阶层
+  --class 雅士|俗人            阶层
   --surname 沈                   指定姓氏
   --given-length auto|1|2        名字长度
   --allusion chuci|shijing|lunyu|all  只取对应经典用典名
@@ -477,7 +477,7 @@ gen 选项：
   --json                         输出 JSON
 
 示例：
-  minglu gen --era tangsong --gender male --class 士族 --seed 42 --json
+  minglu gen --era tangsong --gender male --class 雅士 --seed 42 --json
   minglu gen --surname 沈 --generation ming-imperial --generation-index 8
   minglu sect gen --count 9 --seed 42
   minglu pill gen --count 8 --seed 42

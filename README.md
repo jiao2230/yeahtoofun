@@ -26,15 +26,15 @@
 ```bash
 cd minglu
 
-# 默认 seed 包：生成一个唐宋士族男性
-node src/cli.ts gen --era tangsong --gender male --class 士族 --seed 42 --json
+# 默认 seed 包：生成一个唐宋雅士男性
+node src/cli.ts gen --era tangsong --gender male --class 雅士 --seed 42 --json
 
 # 真实 CBDB 包（个人自用，CC BY-NC-SA）
-MINGLU_PACK=cbdb node src/cli.ts gen --era tangsong --gender male --class 士族 --seed 42 --json
+MINGLU_PACK=cbdb node src/cli.ts gen --era tangsong --gender male --class 雅士 --seed 42 --json
 # PowerShell: $env:MINGLU_PACK='cbdb'; node src/cli.ts gen ...
 
 # CNC core 包（Apache-2.0，偏现代/可读性）
-MINGLU_PACK=core node src/cli.ts gen --era tangsong --gender male --class 士族 --seed 42 --json
+MINGLU_PACK=core node src/cli.ts gen --era tangsong --gender male --class 雅士 --seed 42 --json
 
 # 字辈：明皇室第 8 字「翊」
 node src/cli.ts gen --surname 沈 --era mingqing --generation ming-imperial --generation-index 8
@@ -64,13 +64,13 @@ npm run typecheck
 npm run bundle:web
 ```
 
-> `data/seed/` 是手工测试包；`data/packs/cbdb/` 是真实 CBDB 包（500 姓 / 1,781 字 / 25,000 双字名 / 418,076 碰撞名），**CC BY-NC-SA，个人自用**；`data/packs/core/` 是 CNC + seed 的 Apache-2.0 包（500 姓 / 1,446 字 / 23,177 名）。审计数字见 [reports/data-audit-20261031.md](reports/data-audit-20261031.md)，构建细节见 [reports/pack-build-20261031.md](reports/pack-build-20261031.md)。
+> `data/seed/` 是手工测试包；`data/packs/cbdb/` 是真实 CBDB 包（500 姓 / 1,787 字 / 25,000 双字名 / 418,076 碰撞名），**CC BY-NC-SA，个人自用**；`data/packs/core/` 是 CNC + seed 的 Apache-2.0 包（500 姓 / 1,452 字 / 23,178 名）。审计数字见 [reports/data-audit-20261031.md](reports/data-audit-20261031.md)，构建细节见 [reports/pack-build-20261031.md](reports/pack-build-20261031.md)。
 
 ---
 
 ## 它生成什么
 
-以「唐宋 · 士族 · 男 · 史实」为例：
+以「唐宋 · 雅士 · 男 · 史实」为例：
 
 | 姓 | 名 | 字 | 说明 |
 |---|---|---|---|
@@ -96,7 +96,7 @@ v0.6 起不再生成表字（字）；修仙与历史项目都只用姓名，必
 |---|---|
 | 时代 | 秦汉 / 魏晋 / 唐宋 / 明清 / 仙侠 |
 | 风格 | 史实 / 写意 / 宗教 |
-| 阶层 | 士族 / 寒门 / 僧道 / 江湖 / 宫闱 / 仙门 |
+| 阶层 | 雅士 / 俗人 |
 | 性别 | male / female / any |
 | 克制度 | 0（网文）– 1（史传） |
 | 名字长度 | auto / 1 字 / 2 字 |
@@ -137,7 +137,7 @@ v0.6 起不再生成表字（字）；修仙与历史项目都只用姓名，必
 ### 风格标签
 
 - 三种：`史实` / `写意` / `宗教`；
-- 来源：seed 的 126 字 ＋ `data/lexicons/styles.json` 手工词表；
+- 来源：seed 的 160 字 ＋ `data/lexicons/styles.json` 手工词表；
 - `史实`、`写意` 是软约束：候选不足时回退到同性别全字池，风格只保留评分偏好；
 - `宗教` 是硬约束：单字或双字名至少包含 `道/僧/法/德/正/元/玄/承/景` 之一；
 - 宗教双字名的另一字按性别取意象：男性优先男性字，女性优先女性字，不足时用中性字。
@@ -147,14 +147,12 @@ v0.6 起不再生成表字（字）；修仙与历史项目都只用姓名，必
 
 > 明皇室模板是历史参考，不表示生成结果与明代宗室有关。
 
-### 僧道法名式
+### 俗人 / 雅士
 
-- 只在 `class=僧道` 时启用，默认 35% 概率；
-- 形式：`道 / 法 / 僧 + 名`，例如 `道兴`、`法全`、`僧律`；
-- 其他阶层不变；`之`、`伯仲叔` 没有塞进僧道，仍按普通名处理；
-- 字辈启用时优先字辈，不套法名式。
-
-> 这是题材约定，不是历史统计；当前只覆盖“前缀式”，没有完整法名/道名词典。
+- `雅士`：默认路径，走现有的字频、性别、风格、音形义打分；
+- `俗人`：独立路径，使用通俗常见字和排行/小名式组合，例如 `三毛`、`五四`、`二`、`大郎`、`小白`、`三娘`；
+- 俗人男性用 `郎/毛/柱/根/锁/蛋/狗/牛/马` 等尾字，女性用 `娘/丫/花/兰/秀/英` 等尾字；
+- 原 `僧道` 阶层已删除，宗教命名改由 `style=宗教` 承担。
 
 ### 经典用典（楚辞 / 诗经 / 论语）
 
@@ -178,7 +176,7 @@ node src/cli.ts gen --allusion all --count 5
 
 名箓的做法是：
 
-1. **姓氏有时代和阶层**——宋代士族和明代军户的姓氏分布不一样；复姓在魏晋和仙侠里的权重也不一样。
+1. **姓氏有时代和阶层**——古代世家和明代军户的姓氏分布不一样；复姓在魏晋和仙侠里的权重也不一样。
 2. **名字从真实共现里学**——不是「玄 ＋ 清」两个好字硬拼，而是看六十万历史人物和一百二十万现代姓名里，哪些字真的会放在一起。
 3. **音形义过滤**——平仄/声调、声母韵母、偏旁/笔画、生僻字、不雅谐音，逐项扣分或重掷。
 4. **批量去重**——一千个 NPC 不能像一家人；`diverse` 模式用 MMR ＋ 姓氏/首字/末字配额拉开距离，`stable` 模式保证追加/删除人物不影响其他人。
@@ -195,8 +193,8 @@ node src/cli.ts gen --allusion all --count 5
 ```bash
 npm i -g minglu
 
-# 生成 5 个宋代士族男性的名字
-minglu gen --era tangsong --gender male --class 士族 --style 史实 --count 5 --seed 42
+# 生成 5 个唐宋雅士男性的名字
+minglu gen --era tangsong --gender male --class 雅士 --style 史实 --count 5 --seed 42
 
 # 指定姓氏，输出 JSON
 minglu gen --surname 沈 --given-length 2 --json
@@ -219,7 +217,7 @@ minglu check 沈玄清 --against famous,cbdb --phonetic
 ```json
 {
   "era": "xianxia",
-  "class": "仙门",
+  "class": "雅士",
   "style": ["写意"],
   "restraint": 0.6,
   "generation": { "preset": "generic-a", "index": 3, "position": "first" },
@@ -239,7 +237,7 @@ minglu serve --allow-lan --token change-me --port 5178
 ```bash
 curl -s http://127.0.0.1:5178/v1/names \
   -H 'content-type: application/json' \
-  -d '{"profile":{"era":"tangsong","gender":"male","class":"士族","style":["史实"]},"count":3,"seed":42}'
+  -d '{"profile":{"era":"tangsong","gender":"male","class":"雅士","style":["史实"]},"count":3,"seed":42}'
 ```
 
 默认只绑定 `127.0.0.1`，不对外网开放；局域网访问需要显式 `--allow-lan` 并带 token。
@@ -254,7 +252,7 @@ const gen = createGenerator()   // 默认 MINGLU_PACK=seed；core/cbdb 见下
 const person = gen.generate({
   era: 'tangsong',
   gender: 'male',
-  class: '士族',
+  class: '雅士',
   style: ['史实'],
   seed: 42,
 })
@@ -281,7 +279,7 @@ MINGLU_PACK=cbdb node --input-type=module -e "import {createGenerator} from './s
 ### 浏览器 SDK
 
 ```bash
-npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 49.9 KB）
+npm run bundle:web   # 需要本地有 esbuild；输出 web/minglu-sdk.js（约 51.8 KB）
 ```
 
 ```js
@@ -338,7 +336,7 @@ Chinese-Names-Corpus 里有大量**真实现代姓名**。名箓只取聚合统�
 **P0（M1–M4）**
 
 - ✅ 姓 ＋ 名（单字/双字），5 个时代/题材档案：秦汉、魏晋、唐宋、明清、仙侠
-- ✅ 性别、3 种风格、6 种阶层
+- ✅ 性别、3 种风格、2 种阶层
 - ✅ 字辈（用户输入 / 明皇室 20 字 / 2 个通用模板；指定辈分与位置）
 - 🟡 音形义校验：声调/声母/韵母、偏旁/笔画、生僻字、不雅谐音
 - ✅ 重名提示：内置敏感名单（手工维护）＋ 自定义黑名单；装 cbdb 包后可查历史人物全库
@@ -417,7 +415,7 @@ minglu/
     bundle-web.mjs # esbuild 浏览器 bundle
   web/
     index.html     # 四标签页 Web UI（姓名/宗门/丹药/功法）
-    minglu-sdk.js  # 浏览器 bundle（约 49.9 KB）
+    minglu-sdk.js  # 浏览器 bundle（约 51.8 KB）
   tools/
     audit_sources.py  # M0 数据审计
     build_pack.py     # CBDB/CNC → cbdb pack
@@ -590,7 +588,7 @@ minglu/
 ## 已知限制
 
 1. **统计可信 ≠ 史实考据**：名字符合语料分布，不等于历史上真的有人这么叫。
-2. **CBDB 偏置**：收录以精英、男性、有传记者为主；平民、女性样本偏少。寒门/女性 profile 会用诗词与人工词典补，但仍不完美。
+2. **CBDB 偏置**：收录以精英、男性、有传记者为主；平民、女性样本偏少。俗人/女性 profile 会用通俗字与人工词典补，但仍不完美。
 3. **现代语料偏置**：120 万现代姓名只能提供「可读性」和「字频」，不能提供「古风」；古风主要靠 CBDB ＋ 时代档案。
 4. **不做命理**：没有八字、五行、五格、生肖。想要这些请用别的工具。
 5. **只有普通话读音**：没有中古音、方言、平水韵默认校验（P1 才做韵部）。
@@ -600,16 +598,16 @@ minglu/
 9. **繁简/异体**：OpenCC 转换个别姓名用字会有异体差异。
 10. **字体**：默认字表在 Noto Serif SC / 思源宋体下应全部可显示；冷门字体可能缺字。默认不生成《通用规范汉字表》以外的字，极生僻的历史用字需自定义词典（P1）。
 11. **字辈模板**：明皇室模板只覆盖燕王系；通用 A/B 是项目自建，不保证对应你的家谱，正式用请粘贴自己的字辈诗。
-12. **seed 原型规模很小**：126 个用字、50 个双字名、72 个姓氏；重复率高，只用于验证接口与管线，不代表最终质量。
+12. **seed 原型规模很小**：160 个用字、50 个双字名、72 个姓氏；重复率高，只用于验证接口与管线，不代表最终质量。
 13. **法宝 seed 原型**：51 个修饰词、20 个器型；只验证组合规则，不代表最终词表。
-14. **cbdb pack 的简繁/拼音**：已用 OpenCC 单字映射做简繁；词组/异体可能残留。**包内 1,781 个字全部有调号**；1,780 个在 GB2312 内，`祐` 是明皇室字辈的显式例外。无调号、非 GB2312、极冷门的字已在构建期剔除（显式字辈除外）。
-15. **cbdb pack 的风格标签**：325/1,781 个字有标签（seed 126 ＋ 手工词表）；其余无标签，风格过滤会退化。
+14. **cbdb pack 的简繁/拼音**：已用 OpenCC 单字映射做简繁；词组/异体可能残留。**包内 1,787 个字全部有调号**；1,786 个在 GB2312 内，`祐` 是明皇室字辈的显式例外。无调号、非 GB2312、极冷门的字已在构建期剔除（显式字辈除外）。
+15. **cbdb pack 的风格标签**：325/1,787 个字有标签（seed 160 ＋ 手工词表）；其余无标签，风格过滤会退化。
 16. **碰撞索引**：`check` 已查 CBDB 418,076 条历史姓名；生成时仍只硬拒绝 seed 名人名单，不做全库硬拒绝。
 17. **core pack 偏现代**：CNC 是 120 万现代姓名分布，core 只是数据分层，不代表商用计划；历史风格请用 cbdb 包。
 18. **core pack 姓氏拼音**：只覆盖 seed 的 72 个同姓，其余姓氏拼音为空；名用字拼音来自拼音表。
 19. **M2 未完成项**：盲评未做；偏旁/笔画已从 Unihan 18.0 导入（102,999 字，pack 内全量覆盖）；楚辞/诗经/论语合并 23,217 个双字索引已接入，`文澜` 不在其中。softmax/top-K 与 MMR 已实现。
 20. **M3 状态**：CI 6/6 全绿；AC-58 OpenCC 往返 100/100；静态 pack、RSS/泄漏、OpenAPI、`tsc`、bundle 均已完成。Web UI 已扩展为姓名/宗门/丹药/功法四标签页。
-21. **僧道法名式**：只覆盖 `道/法/僧 + 名` 前缀式，没有完整法名/道名词典；`之`、`伯仲叔` 没有特判。
+21. **俗人命名**：俗人走独立常见字/排行路径，不套雅士的经典用典；名字更通俗，可能有“二”“三毛”“大郎”这类口语名。宗教名不再由阶层启用，而是 `style=宗教`。
 22. **宗门 seed 原型**：194 个双字前缀、5 个后缀；只做“前缀 + 宗/门/派/宫/教”，没有四字前缀、驻地、传承、职阶体系。正道/魔道/中立是手工标签，不是语义模型判断。
 23. **丹药 seed 原型**：49 个天地修饰词、70 个功效、74 个高级意象、4 个后缀、17×9 毒丹组合；普通丹 3/5 字，高级丹 5 字；不做完整药性/丹方体系。
 24. **功法 seed 原型**：97 个起手词、71 个中段、13 个后缀；只做 A+B+C / A+∅+C，没有品阶、修炼阶段、威力数值。B 槽为空时输出中 `middle` 为 `null`，不会写成「无」。程度词只保留单字「大」作前缀；`极/至` 不再单独当前缀，`洗髓` 不与程度词搭配。
@@ -641,18 +639,18 @@ minglu/
 | 本地 HTTP | ✅ 17 个 JSON API ＋ `/v1/batch` 流式 JSONL ＋ `/openapi.json` |
 | Web UI | ✅ `/` 四标签页（姓名/宗门/丹药/功法）；首次生成时加载 `/v1/pack`，之后走浏览器 SDK |
 | TypeScript SDK | ✅ Node `createGenerator`；`tsc --noEmit` 通过（本地 shim） |
-| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 49.9 KB，esbuild） |
+| 浏览器 SDK | ✅ `web/minglu-sdk.js`（约 51.8 KB，esbuild） |
 | OpenAPI | ✅ 3.1；6 项结构/ref/路由/零网络/AC-58 测试 |
 | CI | ✅ GitHub Actions 6/6 全绿（Ubuntu/Windows/macOS × Node 22/24） |
 | 测试 | ✅ 51 项（45 core ＋ 6 M3；`npm test`） |
 | 音形过滤 | 🟡 双三声/同调/同声母/同韵母/姓—名冲突重掷；偏旁/笔画已计入打分 |
-| 风格标签 | 🟡 cbdb 325/1,781 字有标签（seed ＋ 手工词表） |
+| 风格标签 | 🟡 cbdb 325/1,787 字有标签（seed ＋ 手工词表） |
 | 采样/多样性 | ✅ 候选子集 top-K softmax；diverse 有 MMR ＋ 配额 |
 | 法宝 seed 原型 | 🟡 材质/意象/功能 + 器型；无品阶 |
 | 宗门 seed 原型 | 🟡 194 个双字前缀 + 5 个后缀；正道/魔道/中立 + 气质标签 |
 | 丹药 seed 原型 | 🟡 49 天地修饰 + 70 功效 + 74 高级意象 + 4 后缀 + 17×9 毒丹；普通/高级/毒丹三模式 |
 | 功法 seed 原型 | 🟡 97 个起手词 + 71 个中段 + 13 个后缀；B 槽可为空 |
-| 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,781 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
+| 数据包 | ✅ `core`（CNC+seed, Apache-2.0）；🟡 `cbdb`（500 姓 / 1,787 字 / 25,000 名 / 418,076 碰撞名, CC BY-NC-SA） |
 | M0 审计 | ✅ CBDB/CNC 实测；chinese-poetry 的楚辞/诗经/论语已接入 |
 | M1/M2 验收 | ⬜ 未逐条验收，当前是 seed/core/cbdb 原型 |
 | M3 验收 | ✅ CI 6/6 全绿；AC-58 往返 100/100；Web UI 四标签页 |

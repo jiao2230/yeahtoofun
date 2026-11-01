@@ -20,7 +20,7 @@ import type {
 const ERAS = ['qinhan', 'weijin', 'tangsong', 'mingqing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'];
 const STYLES = ['史实', '写意', '宗教'];
-const CLASSES = ['士族', '寒门', '僧道', '江湖', '宫闱', '仙门'];
+const CLASSES = ['俗人', '雅士'];
 
 export interface ServerOptions {
   port?: number;

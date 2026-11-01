@@ -4,7 +4,7 @@ export type Gender = 'male' | 'female' | 'any';
 
 export type Style = '史实' | '写意' | '宗教';
 
-export type SocialClass = '士族' | '寒门' | '僧道' | '江湖' | '宫闱' | '仙门';
+export type SocialClass = '俗人' | '雅士';
 
 export type GivenLength = 'auto' | 1 | 2;
 

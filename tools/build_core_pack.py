@@ -16,6 +16,7 @@ from pathlib import Path
 
 HAN = re.compile(r"^[\u4e00-\u9fa5]{1,4}$")
 MIN_FREQ = 20
+COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马']
 TONE_MARKS = {
     "ā": 1, "á": 2, "ǎ": 3, "à": 4,
     "ē": 1, "é": 2, "ě": 3, "è": 4,
@@ -182,6 +183,25 @@ def main() -> int:
         )
 
     for ch in sorted(template_chars):
+        if any(entry["char"] == ch for entry in chars):
+            continue
+        seed = seed_chars.get(ch)
+        if not seed or not seed.get("pinyin") or seed.get("tone", 0) <= 0:
+            continue
+        chars.append(
+            {
+                "char": ch,
+                "pinyin": seed["pinyin"],
+                "tone": seed["tone"],
+                "meaning": seed.get("meaning", ""),
+                "gender": seed.get("gender", "neutral"),
+                "styles": sorted(set(seed.get("styles", [])) | style_map.get(ch, set())),
+                "weight": 0,
+                **(unihan.get(ch) or {}),
+            }
+        )
+
+    for ch in COLLOQUIAL_EXTRA:
         if any(entry["char"] == ch for entry in chars):
             continue
         seed = seed_chars.get(ch)

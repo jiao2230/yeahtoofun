@@ -19,17 +19,20 @@ import type {
 const ERAS: Era[] = ['qinhan', 'weijin', 'tangsong', 'mingqing', 'xianxia'];
 const GENDERS = ['male', 'female', 'any'] as const;
 const STYLES: Style[] = ['史实', '写意', '宗教'];
-const CLASSES = ['士族', '寒门', '僧道', '江湖', '宫闱', '仙门'] as const;
+const CLASSES = ['俗人', '雅士'] as const;
 const INITIALS = [
   'zh', 'ch', 'sh', 'b', 'p', 'm', 'f', 'd', 't', 'n', 'l',
   'g', 'k', 'h', 'j', 'q', 'x', 'r', 'z', 'c', 's', 'y', 'w',
 ];
-const RELIGIOUS_PREFIXES = ['道', '法', '僧'];
 const RELIGIOUS_NAME_CHARS = ['道', '僧', '法', '德', '正', '元', '玄', '承', '景'] as const;
 const RELIGIOUS_NAME_SET = new Set<string>(RELIGIOUS_NAME_CHARS);
-const RELIGIOUS_PATTERN_CHANCE = 0.35;
 const MIN_STYLE_CHARS = 12;
 const MIN_STYLE_GIVEN = 8;
+const COLLOQUIAL_NUMERALS = ['大', '小', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+const COLLOQUIAL_MALE_TAILS = ['郎', '毛', '柱', '根', '锁', '蛋', '狗', '牛', '马', '白', '宝', '福', '贵', '财', '喜', '来', '有', '铁', '顺'];
+const COLLOQUIAL_FEMALE_TAILS = ['娘', '丫', '花', '兰', '秀', '英', '妹', '娣', '妞', '娃', '白', '宝', '福', '贵', '喜', '来', '有'];
+const COLLOQUIAL_SINGLE_MALE = ['大', '二', '三', '四', '五', '六', '七', '八', '九', '十', '毛', '柱', '根', '锁', '蛋', '狗', '牛', '马', '福', '贵', '财', '喜', '来', '有', '铁', '顺'];
+const COLLOQUIAL_SINGLE_FEMALE = ['大', '二', '三', '四', '五', '六', '七', '八', '九', '十', '丫', '娘', '花', '兰', '秀', '英', '妹', '娣', '妞', '娃'];
 const ALLUSION_STOP_CHARS = new Set(
   '之兮而其所以不无有为与则乃于乎哉夫何然者也矣可能将欲既亦皆各自相见使令从来上去中外出前后左右大小多少长短高低我尔汝女曰谓云是人十百千万',
 );
@@ -46,7 +49,7 @@ export const DEFAULT_PROFILE: ResolvedProfile = {
   era: 'tangsong',
   gender: 'any',
   style: [],
-  class: '寒门',
+  class: '雅士',
   givenLength: 'auto',
   generation: null,
   restraint: 0.7,
@@ -121,12 +124,7 @@ export function generateOne(
   }
 
   const styleTags = Array.from(new Set(given.flatMap((c) => findChar(pack, c.text)?.styles ?? [])));
-  const pattern =
-    profile.class === '僧道' &&
-    given.length === 2 &&
-    RELIGIOUS_PREFIXES.includes(given[0]!.text)
-      ? 'religious-prefix'
-      : undefined;
+  const pattern = profile.class === '俗人' ? 'colloquial' : undefined;
   const score = scoreName(pack, given, rng, surname, profile);
 
   return {
@@ -371,6 +369,48 @@ function pickGiven(
   return pickGivenOnce(profile, pack, rng, generation, warnings, surname);
 }
 
+function pickColloquialGiven(
+  profile: ResolvedProfile,
+  pack: SeedPack,
+  rng: Rng,
+  surnameChars: Set<string>,
+  wantSingle: boolean,
+  warnings: Warning[],
+): NameChar[] | null {
+  const available = (values: string[]) =>
+    values.filter((ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch));
+  const numerals = available(COLLOQUIAL_NUMERALS);
+  const tails =
+    profile.gender === 'female'
+      ? available(COLLOQUIAL_FEMALE_TAILS)
+      : profile.gender === 'male'
+        ? available(COLLOQUIAL_MALE_TAILS)
+        : available([...COLLOQUIAL_MALE_TAILS, ...COLLOQUIAL_FEMALE_TAILS]);
+  const single =
+    profile.gender === 'female'
+      ? available(COLLOQUIAL_SINGLE_FEMALE)
+      : profile.gender === 'male'
+        ? available(COLLOQUIAL_SINGLE_MALE)
+        : available([...COLLOQUIAL_SINGLE_MALE, ...COLLOQUIAL_SINGLE_FEMALE]);
+  if (wantSingle) {
+    if (single.length === 0) return null;
+    return [toNameChar(pack, rng.pick(single), warnings)];
+  }
+  if (numerals.length === 0 || tails.length === 0) return null;
+
+  let first: string;
+  let second: string;
+  if (numerals.length >= 2 && rng.next() < 0.25) {
+    first = rng.pick(numerals);
+    second = rng.pick(numerals.filter((ch) => ch !== first));
+  } else {
+    first = rng.pick([...numerals, '大', '小'].filter((ch) => available([ch]).length > 0));
+    second = rng.pick(tails.filter((ch) => ch !== first));
+  }
+  if (!first || !second || first === second) return null;
+  return [first, second].map((ch) => toNameChar(pack, ch, warnings));
+}
+
 function pickReligiousGiven(
   profile: ResolvedProfile,
   pack: SeedPack,
@@ -457,6 +497,11 @@ function pickGivenOnce(
     if (religious) return religious;
   }
 
+  if (profile.class === '俗人') {
+    const colloquial = pickColloquialGiven(profile, pack, rng, surnameChars, wantSingle, warnings);
+    if (colloquial) return colloquial;
+  }
+
   if (
     profile.allusion &&
     profile.givenLength !== 1
@@ -497,19 +542,6 @@ function pickGivenOnce(
       return sampleTopK(scored, rng, 24)
         .split('')
         .map((c) => toNameChar(pack, c, warnings));
-    }
-  }
-
-  if (
-    profile.class === '僧道' &&
-    profile.givenLength !== 1 &&
-    rng.next() < RELIGIOUS_PATTERN_CHANCE
-  ) {
-    const prefixes = RELIGIOUS_PREFIXES.filter((ch) => Boolean(findChar(pack, ch)));
-    if (prefixes.length > 0) {
-      const prefix = rng.pick(prefixes);
-      const other = pickOtherChar(pack, profile, rng, surname, prefix, surnameChars);
-      return [prefix, other].map((c) => toNameChar(pack, c, warnings));
     }
   }
 

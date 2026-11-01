@@ -25,6 +25,7 @@ HAN = re.compile(r"^[\u4e00-\u9fa5]{1,4}$")
 HAN_CHAR = re.compile(r"[\u4e00-\u9fa5]")
 BAD_NAME_CHARS = set("氏某女娘婦妇姑姐妹嫂婆奴婢")
 MIN_FREQ = 20
+COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马']
 
 
 def is_common(text: str) -> bool:
@@ -308,6 +309,24 @@ def build_chars(
         out.append(entry)
         meta[ch] = entry
     for ch in sorted(template_chars):
+        if ch in meta:
+            continue
+        seed = seed_chars.get(ch)
+        if not seed or not seed.get("pinyin") or seed.get("tone", 0) <= 0:
+            continue
+        entry = {
+            "char": ch,
+            "pinyin": seed["pinyin"],
+            "tone": seed["tone"],
+            "meaning": seed.get("meaning", ""),
+            "gender": seed.get("gender", "neutral"),
+            "styles": sorted(set(seed.get("styles", [])) | style_map.get(ch, set())),
+            "weight": 0,
+            **(unihan.get(ch) or {}),
+        }
+        out.append(entry)
+        meta[ch] = entry
+    for ch in COLLOQUIAL_EXTRA:
         if ch in meta:
             continue
         seed = seed_chars.get(ch)

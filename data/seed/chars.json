@@ -1409,5 +1409,379 @@
       "宗教"
     ],
     "weight": 12
+  },
+  {
+    "char": "大",
+    "pinyin": "dà",
+    "tone": 4,
+    "meaning": "大；排行第一",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "小",
+    "pinyin": "xiǎo",
+    "tone": 3,
+    "meaning": "小；年幼",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "二",
+    "pinyin": "èr",
+    "tone": 4,
+    "meaning": "二；排行第二",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "三",
+    "pinyin": "sān",
+    "tone": 1,
+    "meaning": "三；排行第三",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "四",
+    "pinyin": "sì",
+    "tone": 4,
+    "meaning": "四；排行第四",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "五",
+    "pinyin": "wǔ",
+    "tone": 3,
+    "meaning": "五；排行第五",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "六",
+    "pinyin": "liù",
+    "tone": 4,
+    "meaning": "六；排行第六",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "七",
+    "pinyin": "qī",
+    "tone": 1,
+    "meaning": "七；排行第七",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "八",
+    "pinyin": "bā",
+    "tone": 1,
+    "meaning": "八；排行第八",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "九",
+    "pinyin": "jiǔ",
+    "tone": 3,
+    "meaning": "九；排行第九",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "十",
+    "pinyin": "shí",
+    "tone": 2,
+    "meaning": "十；排行第十",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "毛",
+    "pinyin": "máo",
+    "tone": 2,
+    "meaning": "毛；小儿名",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "郎",
+    "pinyin": "láng",
+    "tone": 2,
+    "meaning": "郎；青年男子",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "娘",
+    "pinyin": "niáng",
+    "tone": 2,
+    "meaning": "娘；女子",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "丫",
+    "pinyin": "yā",
+    "tone": 1,
+    "meaning": "丫；女孩",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "柱",
+    "pinyin": "zhù",
+    "tone": 4,
+    "meaning": "柱；顶梁柱",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "根",
+    "pinyin": "gēn",
+    "tone": 1,
+    "meaning": "根；扎根",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "锁",
+    "pinyin": "suǒ",
+    "tone": 3,
+    "meaning": "锁；锁住",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "蛋",
+    "pinyin": "dàn",
+    "tone": 4,
+    "meaning": "蛋；小名",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "狗",
+    "pinyin": "gǒu",
+    "tone": 3,
+    "meaning": "狗；贱名",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "白",
+    "pinyin": "bái",
+    "tone": 2,
+    "meaning": "白；明亮",
+    "gender": "neutral",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "牛",
+    "pinyin": "niú",
+    "tone": 2,
+    "meaning": "牛；牲畜",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "马",
+    "pinyin": "mǎ",
+    "tone": 3,
+    "meaning": "马；牲畜",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "花",
+    "pinyin": "huā",
+    "tone": 1,
+    "meaning": "花；花草",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "兰",
+    "pinyin": "lán",
+    "tone": 2,
+    "meaning": "兰；兰草",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "秀",
+    "pinyin": "xiù",
+    "tone": 4,
+    "meaning": "秀；秀丽",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "宝",
+    "pinyin": "bǎo",
+    "tone": 3,
+    "meaning": "宝；珍宝",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "福",
+    "pinyin": "fú",
+    "tone": 2,
+    "meaning": "福；福气",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "贵",
+    "pinyin": "guì",
+    "tone": 4,
+    "meaning": "贵；富贵",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "财",
+    "pinyin": "cái",
+    "tone": 2,
+    "meaning": "财；财气",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "喜",
+    "pinyin": "xǐ",
+    "tone": 3,
+    "meaning": "喜；喜庆",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "来",
+    "pinyin": "lái",
+    "tone": 2,
+    "meaning": "来；到来",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "有",
+    "pinyin": "yǒu",
+    "tone": 3,
+    "meaning": "有；富足",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
+  },
+  {
+    "char": "铁",
+    "pinyin": "tiě",
+    "tone": 3,
+    "meaning": "铁；坚硬",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8
   }
 ]

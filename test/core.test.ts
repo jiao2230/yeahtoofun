@@ -125,14 +125,19 @@ test('religious style includes one of the nine chars and keeps gender imagery se
   }
 });
 
-test('僧道 class uses 道/法/僧 prefix pattern', () => {
-  const people = generateBatch({ class: '僧道', count: 100, seed: 3 }, pack);
-  const religious = people.filter((p) => p.pattern === 'religious-prefix');
-  if (pack.chars.some((c) => ['道', '法', '僧'].includes(c.char))) {
-    assert.ok(religious.length > 0, 'no religious-prefix names generated');
-  }
-  for (const person of religious) {
-    assert.ok(['道', '法', '僧'].includes(person.given[0]!.text));
+test('俗人 class uses colloquial name patterns and gender-appropriate tails', () => {
+  const maleTails = new Set('郎毛柱根锁蛋狗牛马白宝福贵财喜来有铁顺'.split(''));
+  const femaleTails = new Set('娘丫花兰秀英妹娣妞娃白宝福贵喜来有'.split(''));
+  const numerals = new Set('大小二三四五六七八九十'.split(''));
+  const people = generateBatch({ class: '俗人', count: 200, seed: 4 }, pack);
+  for (const person of people) {
+    assert.equal(person.pattern, 'colloquial');
+    for (const c of person.given) {
+      assert.ok(numerals.has(c.text) || maleTails.has(c.text) || femaleTails.has(c.text), person.fullName);
+    }
+    if (person.gender === 'female') {
+      for (const c of person.given) assert.ok(!['郎', '蛋', '狗', '牛', '马', '铁'].includes(c.text), person.fullName);
+    }
   }
 });
 
@@ -175,6 +180,7 @@ test('check catches blacklist and famous collision', () => {
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
+  assert.equal(profile.class, '雅士');
   assert.equal(profile.mode, 'stable');
   assert.equal(profile.generation, null);
 });

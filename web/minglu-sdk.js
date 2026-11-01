@@ -644,7 +644,7 @@ function pickWithLength(rng, items, length, fallbackLength) {
 var ERAS = ["qinhan", "weijin", "tangsong", "mingqing", "xianxia"];
 var GENDERS = ["male", "female", "any"];
 var STYLES = ["\u53F2\u5B9E", "\u5199\u610F", "\u5B97\u6559"];
-var CLASSES = ["\u58EB\u65CF", "\u5BD2\u95E8", "\u50E7\u9053", "\u6C5F\u6E56", "\u5BAB\u95F1", "\u4ED9\u95E8"];
+var CLASSES = ["\u4FD7\u4EBA", "\u96C5\u58EB"];
 var INITIALS = [
   "zh",
   "ch",
@@ -670,12 +670,15 @@ var INITIALS = [
   "y",
   "w"
 ];
-var RELIGIOUS_PREFIXES = ["\u9053", "\u6CD5", "\u50E7"];
 var RELIGIOUS_NAME_CHARS = ["\u9053", "\u50E7", "\u6CD5", "\u5FB7", "\u6B63", "\u5143", "\u7384", "\u627F", "\u666F"];
 var RELIGIOUS_NAME_SET = new Set(RELIGIOUS_NAME_CHARS);
-var RELIGIOUS_PATTERN_CHANCE = 0.35;
 var MIN_STYLE_CHARS = 12;
 var MIN_STYLE_GIVEN = 8;
+var COLLOQUIAL_NUMERALS = ["\u5927", "\u5C0F", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"];
+var COLLOQUIAL_MALE_TAILS = ["\u90CE", "\u6BDB", "\u67F1", "\u6839", "\u9501", "\u86CB", "\u72D7", "\u725B", "\u9A6C", "\u767D", "\u5B9D", "\u798F", "\u8D35", "\u8D22", "\u559C", "\u6765", "\u6709", "\u94C1", "\u987A"];
+var COLLOQUIAL_FEMALE_TAILS = ["\u5A18", "\u4E2B", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u59B9", "\u5A23", "\u599E", "\u5A03", "\u767D", "\u5B9D", "\u798F", "\u8D35", "\u559C", "\u6765", "\u6709"];
+var COLLOQUIAL_SINGLE_MALE = ["\u5927", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u6BDB", "\u67F1", "\u6839", "\u9501", "\u86CB", "\u72D7", "\u725B", "\u9A6C", "\u798F", "\u8D35", "\u8D22", "\u559C", "\u6765", "\u6709", "\u94C1", "\u987A"];
+var COLLOQUIAL_SINGLE_FEMALE = ["\u5927", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u4E2B", "\u5A18", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u59B9", "\u5A23", "\u599E", "\u5A03"];
 var ALLUSION_STOP_CHARS = new Set(
   "\u4E4B\u516E\u800C\u5176\u6240\u4EE5\u4E0D\u65E0\u6709\u4E3A\u4E0E\u5219\u4E43\u4E8E\u4E4E\u54C9\u592B\u4F55\u7136\u8005\u4E5F\u77E3\u53EF\u80FD\u5C06\u6B32\u65E2\u4EA6\u7686\u5404\u81EA\u76F8\u89C1\u4F7F\u4EE4\u4ECE\u6765\u4E0A\u53BB\u4E2D\u5916\u51FA\u524D\u540E\u5DE6\u53F3\u5927\u5C0F\u591A\u5C11\u957F\u77ED\u9AD8\u4F4E\u6211\u5C14\u6C5D\u5973\u66F0\u8C13\u4E91\u662F\u4EBA\u5341\u767E\u5343\u4E07"
 );
@@ -690,7 +693,7 @@ var DEFAULT_PROFILE = {
   era: "tangsong",
   gender: "any",
   style: [],
-  class: "\u5BD2\u95E8",
+  class: "\u96C5\u58EB",
   givenLength: "auto",
   generation: null,
   restraint: 0.7,
@@ -747,7 +750,7 @@ function generateOne5(input, pack, index = 0, seedOverride) {
     warnings.push({ code: "famous_collision", message: "\u4E0E\u5185\u7F6E\u5386\u53F2\u540D\u4EBA\u91CD\u540D" });
   }
   const styleTags = Array.from(new Set(given.flatMap((c) => findChar(pack, c.text)?.styles ?? [])));
-  const pattern = profile.class === "\u50E7\u9053" && given.length === 2 && RELIGIOUS_PREFIXES.includes(given[0].text) ? "religious-prefix" : void 0;
+  const pattern = profile.class === "\u4FD7\u4EBA" ? "colloquial" : void 0;
   const score = scoreName(pack, given, rng, surname, profile);
   return {
     schemaVersion: "1.0",
@@ -960,6 +963,28 @@ function pickGiven(profile, pack, rng, generation, warnings, surname) {
   }
   return pickGivenOnce(profile, pack, rng, generation, warnings, surname);
 }
+function pickColloquialGiven(profile, pack, rng, surnameChars, wantSingle, warnings) {
+  const available = (values) => values.filter((ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch));
+  const numerals = available(COLLOQUIAL_NUMERALS);
+  const tails = profile.gender === "female" ? available(COLLOQUIAL_FEMALE_TAILS) : profile.gender === "male" ? available(COLLOQUIAL_MALE_TAILS) : available([...COLLOQUIAL_MALE_TAILS, ...COLLOQUIAL_FEMALE_TAILS]);
+  const single = profile.gender === "female" ? available(COLLOQUIAL_SINGLE_FEMALE) : profile.gender === "male" ? available(COLLOQUIAL_SINGLE_MALE) : available([...COLLOQUIAL_SINGLE_MALE, ...COLLOQUIAL_SINGLE_FEMALE]);
+  if (wantSingle) {
+    if (single.length === 0) return null;
+    return [toNameChar(pack, rng.pick(single), warnings)];
+  }
+  if (numerals.length === 0 || tails.length === 0) return null;
+  let first;
+  let second;
+  if (numerals.length >= 2 && rng.next() < 0.25) {
+    first = rng.pick(numerals);
+    second = rng.pick(numerals.filter((ch) => ch !== first));
+  } else {
+    first = rng.pick([...numerals, "\u5927", "\u5C0F"].filter((ch) => available([ch]).length > 0));
+    second = rng.pick(tails.filter((ch) => ch !== first));
+  }
+  if (!first || !second || first === second) return null;
+  return [first, second].map((ch) => toNameChar(pack, ch, warnings));
+}
 function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle) {
   const available = RELIGIOUS_NAME_CHARS.filter(
     (ch) => Boolean(findChar(pack, ch)) && !surnameChars.has(ch) && (profile.gender !== "female" || ch !== "\u50E7")
@@ -1005,6 +1030,10 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
     const religious = pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingle);
     if (religious) return religious;
   }
+  if (profile.class === "\u4FD7\u4EBA") {
+    const colloquial = pickColloquialGiven(profile, pack, rng, surnameChars, wantSingle, warnings);
+    if (colloquial) return colloquial;
+  }
   if (profile.allusion && profile.givenLength !== 1) {
     let pool2 = pack.givenNames.filter((entry) => {
       if (entry.text.length !== 2) return false;
@@ -1037,14 +1066,6 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
         score: scoreGiven(pack, surname, plainChars(pack, entry.text), profile)
       }));
       return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
-    }
-  }
-  if (profile.class === "\u50E7\u9053" && profile.givenLength !== 1 && rng.next() < RELIGIOUS_PATTERN_CHANCE) {
-    const prefixes = RELIGIOUS_PREFIXES.filter((ch) => Boolean(findChar(pack, ch)));
-    if (prefixes.length > 0) {
-      const prefix = rng.pick(prefixes);
-      const other = pickOtherChar(pack, profile, rng, surname, prefix, surnameChars);
-      return [prefix, other].map((c) => toNameChar(pack, c, warnings));
     }
   }
   if (wantSingle) {
