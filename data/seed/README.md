@@ -10,7 +10,7 @@
 | `generations.json` | 字辈模板 | 3 |
 | `artifacts.json` | 法宝修饰词 + 器型 | 51 + 20 |
 | `sects.json` | 宗门前缀 + 后缀 | 194 + 5 |
-| `pills.json` | 丹药修饰词 + 功效 + 高级意象 + 后缀 | 29 + 48 + 54 + 4 |
+| `pills.json` | 丹药修饰词 + 功效 + 高级意象 + 毒丹字 + 后缀 | 29 + 48 + 54 + 17+9 + 4 |
 | `techniques.json` | 功法起手 + 中段 + 后缀 | 77 + 51 + 13 |
 | `blacklist.json` | 不雅谐音/黑名单 | 7 |
 | `famous.json` | 历史名人碰撞示例 | 10 |

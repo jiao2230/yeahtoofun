@@ -86,9 +86,9 @@ export const openapi = {
                 properties: {
                   count: { type: 'integer', minimum: 1, maximum: 10000 },
                   seed: { oneOf: [{ type: 'number' }, { type: 'string' }] },
-                  kind: { type: 'string', enum: ['突破', '疗伤', '淬体', '神魂', '通用', 'any'] },
+                  kind: { type: 'string', enum: ['突破', '疗伤', '淬体', '神魂', '通用', '毒', 'any'] },
                   suffix: { type: 'string', enum: ['丹', '膏', '散', '露', 'any'] },
-                  mode: { type: 'string', enum: ['function', 'high', 'any'] },
+                  mode: { type: 'string', enum: ['function', 'high', 'poison', 'any'] },
                 },
               },
             },

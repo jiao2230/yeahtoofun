@@ -177,7 +177,7 @@ export function startServer(options: ServerOptions = {}): Server {
               : String(body.suffix)) as PillSuffixText | 'any',
             mode: (body.mode === undefined
               ? 'any'
-              : String(body.mode)) as 'function' | 'high' | 'any',
+              : String(body.mode)) as 'function' | 'high' | 'poison' | 'any',
           },
           pack,
         );

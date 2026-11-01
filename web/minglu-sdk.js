@@ -311,14 +311,15 @@ function generatePills(options = {}, pack) {
   if (count === 0) return [];
   const kind = options.kind ?? "any";
   if (kind === "\u5929\u5730") {
-    throw new Error("E_PILL_KIND: \u5929\u5730\u662F\u4FEE\u9970\u8BCD\u7C7B\u522B\uFF0C\u4E0D\u662F\u529F\u6548\uFF1B\u53EF\u9009\u7A81\u7834/\u7597\u4F24/\u6DEC\u4F53/\u795E\u9B42/\u901A\u7528");
+    throw new Error("E_PILL_KIND: \u5929\u5730\u662F\u4FEE\u9970\u8BCD\u7C7B\u522B\uFF0C\u4E0D\u662F\u529F\u6548\uFF1B\u53EF\u9009\u7A81\u7834/\u7597\u4F24/\u6DEC\u4F53/\u795E\u9B42/\u901A\u7528/\u6BD2");
   }
   const suffixText = options.suffix ?? "any";
   const mode = options.mode ?? "any";
-  if (!["function", "high", "any"].includes(mode)) {
-    throw new Error("E_PILL_MODE: --mode \u53EA\u652F\u6301 function/high/any");
+  if (!["function", "high", "poison", "any"].includes(mode)) {
+    throw new Error("E_PILL_MODE: --mode \u53EA\u652F\u6301 function/high/poison/any");
   }
-  const effectiveMode = mode === "any" && kind !== "any" ? "function" : mode;
+  const poisonMode = mode === "poison" || kind === "\u6BD2";
+  const effectiveMode = poisonMode ? "poison" : mode === "any" && kind !== "any" ? "function" : mode;
   const modifiers = pack.pills.modifiers;
   const cores = pack.pills.cores.filter((core) => kind === "any" || core.kind === kind);
   const suffixes = pack.pills.suffixes.filter(
@@ -326,9 +327,12 @@ function generatePills(options = {}, pack) {
   );
   const highModifiers = pack.pills.highModifiers;
   if (modifiers.length === 0) throw new Error("E_PILL_PACK: \u4FEE\u9970\u8BCD\u4E3A\u7A7A");
-  if (cores.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u529F\u6548`);
+  if (!poisonMode && cores.length === 0) throw new Error(`E_PILL_KIND: \u6CA1\u6709\u300C${kind}\u300D\u529F\u6548`);
   if (suffixes.length === 0) throw new Error(`E_PILL_SUFFIX: \u672A\u77E5\u540E\u7F00\u300C${suffixText}\u300D`);
   if (highModifiers.length === 0) throw new Error("E_PILL_PACK: \u9AD8\u7EA7\u4FEE\u9970\u8BCD\u4E3A\u7A7A");
+  if (poisonMode && (pack.pills.poisonHeads.length === 0 || pack.pills.poisonTargets.length === 0)) {
+    throw new Error("E_PILL_PACK: \u6BD2\u4E39\u5B57\u8868\u4E3A\u7A7A");
+  }
   const baseSeed = seedFrom(options.seed);
   const pills = [];
   const seen = /* @__PURE__ */ new Set();
@@ -354,8 +358,35 @@ function generatePills(options = {}, pack) {
 }
 function generateOne3(seed, pack, modifiers, cores, highModifiers, suffixes, requestedMode) {
   const rng = new Rng(seed);
+  if (requestedMode === "poison") {
+    return generatePoison(seed, pack, rng, suffixes);
+  }
   const high = requestedMode === "high" || requestedMode === "any" && rng.next() < HIGH_GRADE_CHANCE;
   return high ? generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes) : generateFunction(seed, pack, rng, modifiers, cores, suffixes);
+}
+function generatePoison(seed, pack, rng, suffixes) {
+  const head = rng.pick(pack.pills.poisonHeads);
+  const target = rng.pick(pack.pills.poisonTargets);
+  const core = `${head}${target}`;
+  const suffixPool = suffixes.filter((item) => item.text !== core);
+  const suffix = rng.weightedPick(suffixPool, (item) => item.weight);
+  return {
+    schemaVersion: "1.0",
+    fullName: `${core}${suffix.text}`,
+    mode: "poison",
+    tier: "\u6BD2",
+    modifier: "",
+    core,
+    suffix: suffix.text,
+    kind: "\u6BD2",
+    tags: ["\u6BD2", "\u6BD2\u4E39", suffix.text],
+    description: `\u4EE5\u300C${head}\u300D\u4E4B\u6027\u4FB5\u300C${target}\u300D\uFF0C\u70BC\u4E3A\u6BD2${suffix.text}\u3002`,
+    score: Number((0.6 + rng.next() * 0.3).toFixed(4)),
+    seed,
+    warnings: [],
+    pack: packManifest(pack),
+    license: pack.license
+  };
 }
 function generateFunction(seed, pack, rng, modifiers, cores, suffixes) {
   const modifierPool = modifiers.filter((item) => item.text.length === 2);

@@ -134,7 +134,7 @@ export interface SectOptions {
   alignment?: SectAlignment | 'any';
 }
 
-export type PillKind = '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用';
+export type PillKind = '天地' | '突破' | '疗伤' | '淬体' | '神魂' | '通用' | '毒';
 export type PillSuffixText = '丹' | '膏' | '散' | '露';
 
 export interface PillModifier {
@@ -165,6 +165,8 @@ export interface PillPack {
   modifiers: PillModifier[];
   cores: PillCore[];
   highModifiers: PillHighModifier[];
+  poisonHeads: string[];
+  poisonTargets: string[];
   suffixes: PillSuffix[];
   blacklist: string[];
 }
@@ -172,8 +174,8 @@ export interface PillPack {
 export interface PillName {
   schemaVersion: '1.0';
   fullName: string;
-  mode: 'function' | 'high';
-  tier: '普通' | '高级';
+  mode: 'function' | 'high' | 'poison';
+  tier: '普通' | '高级' | '毒';
   modifier: string;
   core: string;
   suffix: PillSuffixText;
@@ -192,7 +194,7 @@ export interface PillOptions {
   seed?: number | string;
   kind?: PillKind | 'any';
   suffix?: PillSuffixText | 'any';
-  mode?: 'function' | 'high' | 'any';
+  mode?: 'function' | 'high' | 'poison' | 'any';
 }
 
 export type TechniqueKind = '意象' | '动作' | '程度';

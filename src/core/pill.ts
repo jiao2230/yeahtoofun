@@ -20,14 +20,19 @@ export function generatePills(options: PillOptions = {}, pack: SeedPack): PillNa
   if (count === 0) return [];
   const kind = options.kind ?? 'any';
   if (kind === '天地') {
-    throw new Error('E_PILL_KIND: 天地是修饰词类别，不是功效；可选突破/疗伤/淬体/神魂/通用');
+    throw new Error('E_PILL_KIND: 天地是修饰词类别，不是功效；可选突破/疗伤/淬体/神魂/通用/毒');
   }
   const suffixText = options.suffix ?? 'any';
   const mode = options.mode ?? 'any';
-  if (!['function', 'high', 'any'].includes(mode)) {
-    throw new Error('E_PILL_MODE: --mode 只支持 function/high/any');
+  if (!['function', 'high', 'poison', 'any'].includes(mode)) {
+    throw new Error('E_PILL_MODE: --mode 只支持 function/high/poison/any');
   }
-  const effectiveMode = mode === 'any' && kind !== 'any' ? 'function' : mode;
+  const poisonMode = mode === 'poison' || kind === '毒';
+  const effectiveMode = poisonMode
+    ? 'poison'
+    : mode === 'any' && kind !== 'any'
+      ? 'function'
+      : mode;
 
   const modifiers = pack.pills.modifiers;
   const cores = pack.pills.cores.filter((core) => kind === 'any' || core.kind === kind);
@@ -36,9 +41,12 @@ export function generatePills(options: PillOptions = {}, pack: SeedPack): PillNa
   );
   const highModifiers = pack.pills.highModifiers;
   if (modifiers.length === 0) throw new Error('E_PILL_PACK: 修饰词为空');
-  if (cores.length === 0) throw new Error(`E_PILL_KIND: 没有「${kind}」功效`);
+  if (!poisonMode && cores.length === 0) throw new Error(`E_PILL_KIND: 没有「${kind}」功效`);
   if (suffixes.length === 0) throw new Error(`E_PILL_SUFFIX: 未知后缀「${suffixText}」`);
   if (highModifiers.length === 0) throw new Error('E_PILL_PACK: 高级修饰词为空');
+  if (poisonMode && (pack.pills.poisonHeads.length === 0 || pack.pills.poisonTargets.length === 0)) {
+    throw new Error('E_PILL_PACK: 毒丹字表为空');
+  }
 
   const baseSeed = seedFrom(options.seed);
   const pills: PillName[] = [];
@@ -72,13 +80,46 @@ function generateOne(
   cores: PillPack['cores'],
   highModifiers: PillPack['highModifiers'],
   suffixes: PillPack['suffixes'],
-  requestedMode: 'function' | 'high' | 'any',
+  requestedMode: 'function' | 'high' | 'poison' | 'any',
 ): PillName {
   const rng = new Rng(seed);
+  if (requestedMode === 'poison') {
+    return generatePoison(seed, pack, rng, suffixes);
+  }
   const high = requestedMode === 'high' || (requestedMode === 'any' && rng.next() < HIGH_GRADE_CHANCE);
   return high
     ? generateHighGrade(seed, pack, rng, modifiers, highModifiers, suffixes)
     : generateFunction(seed, pack, rng, modifiers, cores, suffixes);
+}
+
+function generatePoison(
+  seed: number,
+  pack: SeedPack,
+  rng: Rng,
+  suffixes: PillPack['suffixes'],
+): PillName {
+  const head = rng.pick(pack.pills.poisonHeads);
+  const target = rng.pick(pack.pills.poisonTargets);
+  const core = `${head}${target}`;
+  const suffixPool = suffixes.filter((item) => item.text !== core);
+  const suffix = rng.weightedPick(suffixPool, (item) => item.weight);
+  return {
+    schemaVersion: '1.0',
+    fullName: `${core}${suffix.text}`,
+    mode: 'poison',
+    tier: '毒',
+    modifier: '',
+    core,
+    suffix: suffix.text,
+    kind: '毒',
+    tags: ['毒', '毒丹', suffix.text],
+    description: `以「${head}」之性侵「${target}」，炼为毒${suffix.text}。`,
+    score: Number((0.6 + rng.next() * 0.3).toFixed(4)),
+    seed,
+    warnings: [],
+    pack: packManifest(pack),
+    license: pack.license,
+  };
 }
 
 function generateFunction(

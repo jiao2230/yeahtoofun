@@ -248,6 +248,23 @@ test('high-grade pills use two modifiers and are marked 高级', () => {
   }
 });
 
+test('poison pills use poison mode and poison word combinations', () => {
+  const pills = generatePills({ count: 60, seed: 42, mode: 'poison' }, pack);
+  assert.equal(pills.length, 60);
+  for (const pill of pills) {
+    assert.equal(pill.mode, 'poison');
+    assert.equal(pill.tier, '毒');
+    assert.equal(pill.kind, '毒');
+    assert.equal(pill.modifier, '');
+    assert.equal(pill.fullName, pill.core + pill.suffix);
+    assert.equal(pill.fullName.length, 3);
+    assert.equal(pill.core.length, 2);
+    assert.ok(pack.pills.poisonHeads.includes(pill.core[0]!));
+    assert.ok(pack.pills.poisonTargets.includes(pill.core[1]!));
+    assert.ok(['丹', '膏', '散', '露'].includes(pill.suffix));
+  }
+});
+
 test('pill kind and suffix filters are respected', () => {
   const pills = generatePills({ count: 20, seed: 9, kind: '疗伤', suffix: '膏' }, pack);
   assert.ok(pills.length > 0);
