@@ -52,7 +52,7 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
     ? readJson<PackManifest>('pack.json', dir)
     : null;
   const extra = existsSync(new URL('given-names-extra.json', dir))
-    ? readJson<{ xianxia?: GivenEntry[]; 写意?: GivenEntry[] }>('given-names-extra.json', dir)
+    ? readJson<{ xianxia?: GivenEntry[]; 写意?: GivenEntry[]; xianxiaFemale?: GivenEntry[]; writeyiFemale?: GivenEntry[] }>('given-names-extra.json', dir)
     : null;
   const pack: SeedPack = {
     id: manifest?.id ?? packId,
@@ -69,9 +69,13 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
       ...(extra?.xianxia ? { xianxia: extra.xianxia } : {}),
     },
     givenNamesByStyle: extra?.['写意'] ? { 写意: extra['写意'] } : undefined,
-    femaleGivenNamesByEra: existsSync(new URL('female-given-names-by-era.json', dir))
-      ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
-      : undefined,
+    femaleGivenNamesByEra: {
+      ...(existsSync(new URL('female-given-names-by-era.json', dir))
+        ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
+        : {}),
+      ...(extra?.xianxiaFemale ? { xianxia: extra.xianxiaFemale } : {}),
+    },
+    femaleGivenNamesByStyle: extra?.writeyiFemale ? { 写意: extra.writeyiFemale } : undefined,
     generations: readJson<GenerationPreset[]>('generations.json', dir),
     allusions: existsSync(new URL('allusions.json', dir))
       ? readJson<Record<string, AllusionEntry[]>>('allusions.json', dir)

@@ -621,6 +621,7 @@ function pickGivenOnce(
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
+    if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
     return entry.text.split('').every((c) => {
       const meta = findChar(pack, c);
       return !meta || meta.gender === 'neutral' || meta.gender === profile.gender;
@@ -661,6 +662,7 @@ function findPairWithGeneration(
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
+    if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
     const meta = findChar(pack, entry.text[1 - pos]!);
     return !meta || meta.gender === 'neutral' || meta.gender === profile.gender;
   });
@@ -740,8 +742,14 @@ function isElegantGivenAllowed(text: string, profile: ResolvedProfile): boolean 
 }
 
 function givenNamesForProfile(pack: SeedPack, profile: ResolvedProfile): SeedPack['givenNames'] {
-  const femalePool = pack.femaleGivenNamesByEra?.[profile.era];
-  if (profile.gender === 'female' && femalePool && femalePool.length >= 50) return femalePool;
+  const femaleStylePool = profile.style.includes('写意')
+    ? pack.femaleGivenNamesByStyle?.写意
+    : undefined;
+  const femaleEraPool = pack.femaleGivenNamesByEra?.[profile.era];
+  const femalePool = femaleStylePool && femaleStylePool.length >= 5
+    ? femaleStylePool
+    : femaleEraPool;
+  if (profile.gender === 'female' && femalePool && femalePool.length >= 5) return femalePool;
 
   const extras: SeedPack['givenNames'] = [];
   if (profile.era === 'xianxia') extras.push(...(pack.givenNamesByEra?.xianxia ?? []));

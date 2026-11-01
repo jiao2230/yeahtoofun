@@ -2138,5 +2138,170 @@
       "宗教"
     ],
     "weight": 20
+  },
+  {
+    "char": "姝",
+    "pinyin": "shū",
+    "tone": 1,
+    "meaning": "美好；姝丽",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "娴",
+    "pinyin": "xián",
+    "tone": 2,
+    "meaning": "娴静；娴雅",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "妍",
+    "pinyin": "yán",
+    "tone": 2,
+    "meaning": "妍丽；美好",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "嫣",
+    "pinyin": "yān",
+    "tone": 1,
+    "meaning": "嫣然；美好",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "姗",
+    "pinyin": "shān",
+    "tone": 1,
+    "meaning": "姗姗；从容",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "娇",
+    "pinyin": "jiāo",
+    "tone": 1,
+    "meaning": "娇美；娇柔",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "婕",
+    "pinyin": "jié",
+    "tone": 2,
+    "meaning": "婕妤；美好",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "柔",
+    "pinyin": "róu",
+    "tone": 2,
+    "meaning": "柔和；温柔",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "梦",
+    "pinyin": "mèng",
+    "tone": 4,
+    "meaning": "梦寐；梦想",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "舒",
+    "pinyin": "shū",
+    "tone": 1,
+    "meaning": "舒展；从容",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "晴",
+    "pinyin": "qíng",
+    "tone": 2,
+    "meaning": "晴朗；晴和",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "瑾",
+    "pinyin": "jǐn",
+    "tone": 3,
+    "meaning": "美玉；瑾瑜",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "雅",
+    "pinyin": "yǎ",
+    "tone": 3,
+    "meaning": "雅正；高雅",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "菡",
+    "pinyin": "hàn",
+    "tone": 4,
+    "meaning": "菡萏；荷花",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18
+  },
+  {
+    "char": "瑜",
+    "pinyin": "yú",
+    "tone": 2,
+    "meaning": "美玉；瑾瑜",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
   }
 ]

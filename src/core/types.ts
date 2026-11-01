@@ -33,6 +33,7 @@ export interface CharEntry {
 export interface GivenEntry {
   text: string;
   weight: number;
+  gender?: 'male' | 'female' | 'neutral';
 }
 
 export interface AllusionEntry {
@@ -263,6 +264,7 @@ export interface SeedPack {
   givenNamesByEra?: Partial<Record<Era, GivenEntry[]>>;
   givenNamesByStyle?: Partial<Record<Style, GivenEntry[]>>;
   femaleGivenNamesByEra?: Partial<Record<Era, GivenEntry[]>>;
+  femaleGivenNamesByStyle?: Partial<Record<Style, GivenEntry[]>>;
   generations: GenerationPreset[];
   allusions: Record<string, AllusionEntry[]>;
   artifacts: ArtifactPack;

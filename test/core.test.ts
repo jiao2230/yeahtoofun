@@ -359,14 +359,26 @@ test('weak religious single names and 房中 are excluded', () => {
 test('xianxia and writeyi use supplemented double-name pools', () => {
   const xianxia = generateBatch({ era: 'xianxia', givenLength: 2, count: 20, seed: 8 }, pack);
   const writeyi = generateBatch({ style: ['写意'], givenLength: 2, count: 20, seed: 8 }, pack);
-  const xianxiaPool = new Set(['云舟', '星澜', '玄清', '月白', '霜华', '清霄', '玄霜', '瑶光', '松月', '兰舟']);
-  const writeyiPool = new Set(['明月', '春山', '远山', '白云', '青松', '桂华', '望云']);
+  const xianxiaPool = new Set((pack.givenNamesByEra?.xianxia ?? []).map((entry) => entry.text));
+  const writeyiPool = new Set((pack.givenNamesByStyle?.['写意'] ?? []).map((entry) => entry.text));
   assert.ok(xianxia.length > 0 && writeyi.length > 0);
   for (const person of xianxia) {
     assert.ok(xianxiaPool.has(person.given.map((c) => c.text).join('')), person.fullName);
   }
   for (const person of writeyi) {
     assert.ok(writeyiPool.has(person.given.map((c) => c.text).join('')), person.fullName);
+  }
+});
+
+test('female xianxia/writeyi pools use supplemented names', () => {
+  const people = generateBatch(
+    { era: 'xianxia', style: ['写意'], gender: 'female', givenLength: 2, count: 30, seed: 8 },
+    pack,
+  );
+  const allowed = new Set((pack.femaleGivenNamesByStyle?.['写意'] ?? []).map((entry) => entry.text));
+  assert.ok(people.length > 0 && allowed.size >= 5);
+  for (const person of people) {
+    assert.ok(allowed.has(person.given.map((c) => c.text).join('')), person.fullName);
   }
 });
 

@@ -1,98 +1,593 @@
 {
   "xianxia": [
-    {"text": "云舟", "weight": 3},
-    {"text": "星澜", "weight": 3},
-    {"text": "玄清", "weight": 3},
-    {"text": "紫霄", "weight": 2},
-    {"text": "青冥", "weight": 2},
-    {"text": "灵墟", "weight": 2},
-    {"text": "太虚", "weight": 2},
-    {"text": "玉衡", "weight": 2},
-    {"text": "天枢", "weight": 2},
-    {"text": "扶摇", "weight": 3},
-    {"text": "沧溟", "weight": 2},
-    {"text": "寒江", "weight": 2},
-    {"text": "孤鸿", "weight": 2},
-    {"text": "烟霞", "weight": 2},
-    {"text": "鹤鸣", "weight": 2},
-    {"text": "松风", "weight": 3},
-    {"text": "月白", "weight": 3},
-    {"text": "霜华", "weight": 3},
-    {"text": "流萤", "weight": 2},
-    {"text": "归鹤", "weight": 2},
-    {"text": "清霄", "weight": 2},
-    {"text": "碧落", "weight": 2},
-    {"text": "玄霜", "weight": 2},
-    {"text": "素问", "weight": 2},
-    {"text": "无尘", "weight": 2},
-    {"text": "若水", "weight": 2},
-    {"text": "长风", "weight": 3},
-    {"text": "星野", "weight": 2},
-    {"text": "云岫", "weight": 2},
-    {"text": "鹤归", "weight": 2},
-    {"text": "青鸾", "weight": 2},
-    {"text": "白鹿", "weight": 2},
-    {"text": "灵犀", "weight": 2},
-    {"text": "瑶光", "weight": 3},
-    {"text": "清越", "weight": 2},
-    {"text": "望舒", "weight": 3},
-    {"text": "羲和", "weight": 2},
-    {"text": "沧海", "weight": 2},
-    {"text": "扶桑", "weight": 2},
-    {"text": "蓬莱", "weight": 2},
-    {"text": "阆苑", "weight": 2},
-    {"text": "玉京", "weight": 2},
-    {"text": "太清", "weight": 2},
-    {"text": "上清", "weight": 2},
-    {"text": "玄都", "weight": 2},
-    {"text": "赤霄", "weight": 2},
-    {"text": "丹霞", "weight": 2},
-    {"text": "烟波", "weight": 2},
-    {"text": "松月", "weight": 3},
-    {"text": "竹影", "weight": 3},
-    {"text": "梅雪", "weight": 3},
-    {"text": "兰舟", "weight": 3}
+    {
+      "text": "云舟",
+      "weight": 3
+    },
+    {
+      "text": "星澜",
+      "weight": 3
+    },
+    {
+      "text": "玄清",
+      "weight": 3
+    },
+    {
+      "text": "紫霄",
+      "weight": 2
+    },
+    {
+      "text": "青冥",
+      "weight": 2
+    },
+    {
+      "text": "灵墟",
+      "weight": 2
+    },
+    {
+      "text": "太虚",
+      "weight": 2
+    },
+    {
+      "text": "玉衡",
+      "weight": 2
+    },
+    {
+      "text": "天枢",
+      "weight": 2
+    },
+    {
+      "text": "扶摇",
+      "weight": 3
+    },
+    {
+      "text": "沧溟",
+      "weight": 2
+    },
+    {
+      "text": "寒江",
+      "weight": 2
+    },
+    {
+      "text": "孤鸿",
+      "weight": 2
+    },
+    {
+      "text": "烟霞",
+      "weight": 2
+    },
+    {
+      "text": "鹤鸣",
+      "weight": 2
+    },
+    {
+      "text": "松风",
+      "weight": 3
+    },
+    {
+      "text": "月白",
+      "weight": 3
+    },
+    {
+      "text": "霜华",
+      "weight": 3
+    },
+    {
+      "text": "流萤",
+      "weight": 2
+    },
+    {
+      "text": "归鹤",
+      "weight": 2
+    },
+    {
+      "text": "清霄",
+      "weight": 2
+    },
+    {
+      "text": "碧落",
+      "weight": 2
+    },
+    {
+      "text": "玄霜",
+      "weight": 2
+    },
+    {
+      "text": "素问",
+      "weight": 2
+    },
+    {
+      "text": "无尘",
+      "weight": 2
+    },
+    {
+      "text": "若水",
+      "weight": 2
+    },
+    {
+      "text": "长风",
+      "weight": 3
+    },
+    {
+      "text": "星野",
+      "weight": 2
+    },
+    {
+      "text": "云岫",
+      "weight": 2
+    },
+    {
+      "text": "鹤归",
+      "weight": 2
+    },
+    {
+      "text": "青鸾",
+      "weight": 2
+    },
+    {
+      "text": "白鹿",
+      "weight": 2
+    },
+    {
+      "text": "灵犀",
+      "weight": 2
+    },
+    {
+      "text": "瑶光",
+      "weight": 3
+    },
+    {
+      "text": "清越",
+      "weight": 2
+    },
+    {
+      "text": "望舒",
+      "weight": 3
+    },
+    {
+      "text": "羲和",
+      "weight": 2
+    },
+    {
+      "text": "沧海",
+      "weight": 2
+    },
+    {
+      "text": "扶桑",
+      "weight": 2
+    },
+    {
+      "text": "蓬莱",
+      "weight": 2
+    },
+    {
+      "text": "阆苑",
+      "weight": 2
+    },
+    {
+      "text": "玉京",
+      "weight": 2
+    },
+    {
+      "text": "太清",
+      "weight": 2
+    },
+    {
+      "text": "上清",
+      "weight": 2
+    },
+    {
+      "text": "玄都",
+      "weight": 2
+    },
+    {
+      "text": "赤霄",
+      "weight": 2
+    },
+    {
+      "text": "丹霞",
+      "weight": 2
+    },
+    {
+      "text": "烟波",
+      "weight": 2
+    },
+    {
+      "text": "松月",
+      "weight": 3
+    },
+    {
+      "text": "竹影",
+      "weight": 3
+    },
+    {
+      "text": "梅雪",
+      "weight": 3
+    },
+    {
+      "text": "兰舟",
+      "weight": 3
+    }
   ],
   "写意": [
-    {"text": "清风", "weight": 3},
-    {"text": "明月", "weight": 3},
-    {"text": "疏影", "weight": 2},
-    {"text": "暗香", "weight": 2},
-    {"text": "烟雨", "weight": 3},
-    {"text": "江南", "weight": 3},
-    {"text": "春山", "weight": 3},
-    {"text": "秋水", "weight": 3},
-    {"text": "落花", "weight": 2},
-    {"text": "流水", "weight": 3},
-    {"text": "孤舟", "weight": 2},
-    {"text": "远山", "weight": 3},
-    {"text": "白云", "weight": 3},
-    {"text": "青松", "weight": 3},
-    {"text": "竹影", "weight": 3},
-    {"text": "梅香", "weight": 2},
-    {"text": "兰心", "weight": 2},
-    {"text": "荷风", "weight": 2},
-    {"text": "桂华", "weight": 2},
-    {"text": "霜天", "weight": 2},
-    {"text": "雪夜", "weight": 2},
-    {"text": "寒烟", "weight": 2},
-    {"text": "斜阳", "weight": 3},
-    {"text": "归雁", "weight": 2},
-    {"text": "听雨", "weight": 2},
-    {"text": "临风", "weight": 2},
-    {"text": "望云", "weight": 2},
-    {"text": "枕月", "weight": 2},
-    {"text": "寻梅", "weight": 2},
-    {"text": "采薇", "weight": 2},
-    {"text": "泛舟", "weight": 2},
-    {"text": "垂钓", "weight": 2},
-    {"text": "抚琴", "weight": 2},
-    {"text": "煮茶", "weight": 2},
-    {"text": "题诗", "weight": 2},
-    {"text": "看山", "weight": 2},
-    {"text": "听泉", "weight": 2},
-    {"text": "观澜", "weight": 2},
-    {"text": "云水", "weight": 2},
-    {"text": "林泉", "weight": 2}
+    {
+      "text": "清风",
+      "weight": 3
+    },
+    {
+      "text": "明月",
+      "weight": 3
+    },
+    {
+      "text": "疏影",
+      "weight": 2
+    },
+    {
+      "text": "暗香",
+      "weight": 2
+    },
+    {
+      "text": "烟雨",
+      "weight": 3
+    },
+    {
+      "text": "江南",
+      "weight": 3
+    },
+    {
+      "text": "春山",
+      "weight": 3
+    },
+    {
+      "text": "秋水",
+      "weight": 3
+    },
+    {
+      "text": "落花",
+      "weight": 2
+    },
+    {
+      "text": "流水",
+      "weight": 3
+    },
+    {
+      "text": "孤舟",
+      "weight": 2
+    },
+    {
+      "text": "远山",
+      "weight": 3
+    },
+    {
+      "text": "白云",
+      "weight": 3
+    },
+    {
+      "text": "青松",
+      "weight": 3
+    },
+    {
+      "text": "竹影",
+      "weight": 3
+    },
+    {
+      "text": "梅香",
+      "weight": 2
+    },
+    {
+      "text": "兰心",
+      "weight": 2
+    },
+    {
+      "text": "荷风",
+      "weight": 2
+    },
+    {
+      "text": "桂华",
+      "weight": 2
+    },
+    {
+      "text": "霜天",
+      "weight": 2
+    },
+    {
+      "text": "雪夜",
+      "weight": 2
+    },
+    {
+      "text": "寒烟",
+      "weight": 2
+    },
+    {
+      "text": "斜阳",
+      "weight": 3
+    },
+    {
+      "text": "归雁",
+      "weight": 2
+    },
+    {
+      "text": "听雨",
+      "weight": 2
+    },
+    {
+      "text": "临风",
+      "weight": 2
+    },
+    {
+      "text": "望云",
+      "weight": 2
+    },
+    {
+      "text": "枕月",
+      "weight": 2
+    },
+    {
+      "text": "寻梅",
+      "weight": 2
+    },
+    {
+      "text": "采薇",
+      "weight": 2
+    },
+    {
+      "text": "泛舟",
+      "weight": 2
+    },
+    {
+      "text": "垂钓",
+      "weight": 2
+    },
+    {
+      "text": "抚琴",
+      "weight": 2
+    },
+    {
+      "text": "煮茶",
+      "weight": 2
+    },
+    {
+      "text": "题诗",
+      "weight": 2
+    },
+    {
+      "text": "看山",
+      "weight": 2
+    },
+    {
+      "text": "听泉",
+      "weight": 2
+    },
+    {
+      "text": "观澜",
+      "weight": 2
+    },
+    {
+      "text": "云水",
+      "weight": 2
+    },
+    {
+      "text": "林泉",
+      "weight": 2
+    }
+  ],
+  "xianxiaFemale": [
+    {
+      "text": "姝婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "星姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "云姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "灵姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "姝宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "婉清",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "婉柔",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "娴雅",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "静姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "梦姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "舒晴",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "晴宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "瑾瑜",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "雅宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "清菡",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "菡宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "柔婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "梦晴",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "云舒",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "清婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "妙嫣",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "姗宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "婕宁",
+      "weight": 3,
+      "gender": "female"
+    }
+  ],
+  "writeyiFemale": [
+    {
+      "text": "婉清",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "娴静",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "妍雅",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "嫣宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "梦舒",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "柔婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "晴宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "瑾瑜",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "云舒",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "清菡",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "灵秀",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "梦婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "舒雅",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "宁婉",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "清妍",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "姝妍",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "婉婷",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "静姝",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "妙宁",
+      "weight": 3,
+      "gender": "female"
+    },
+    {
+      "text": "菡清",
+      "weight": 3,
+      "gender": "female"
+    }
   ]
 }
