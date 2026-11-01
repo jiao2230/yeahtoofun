@@ -1783,5 +1783,181 @@
       "史实"
     ],
     "weight": 8
+  },
+  {
+    "char": "良",
+    "pinyin": "liáng",
+    "tone": 2,
+    "meaning": "良善；贤良",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "生",
+    "pinyin": "shēng",
+    "tone": 1,
+    "meaning": "生发；生计",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "虎",
+    "pinyin": "hǔ",
+    "tone": 3,
+    "meaning": "虎；勇猛",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "保",
+    "pinyin": "bǎo",
+    "tone": 3,
+    "meaning": "保护；平安",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "龙",
+    "pinyin": "lóng",
+    "tone": 2,
+    "meaning": "龙；祥瑞",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "旺",
+    "pinyin": "wàng",
+    "tone": 4,
+    "meaning": "兴旺；旺盛",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "存",
+    "pinyin": "cún",
+    "tone": 2,
+    "meaning": "存续；留存",
+    "gender": "male",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "桃",
+    "pinyin": "táo",
+    "tone": 2,
+    "meaning": "桃；桃花",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "杏",
+    "pinyin": "xìng",
+    "tone": 4,
+    "meaning": "杏；杏花",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "菊",
+    "pinyin": "jú",
+    "tone": 2,
+    "meaning": "菊；菊花",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "春",
+    "pinyin": "chūn",
+    "tone": 1,
+    "meaning": "春；春天",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "满",
+    "pinyin": "mǎn",
+    "tone": 3,
+    "meaning": "满；圆满",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "枝",
+    "pinyin": "zhī",
+    "tone": 1,
+    "meaning": "枝；花枝",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "桂",
+    "pinyin": "guì",
+    "tone": 4,
+    "meaning": "桂；桂香",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "莲",
+    "pinyin": "lián",
+    "tone": 2,
+    "meaning": "莲；莲花",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
+  },
+  {
+    "char": "爱",
+    "pinyin": "ài",
+    "tone": 4,
+    "meaning": "爱；慈爱",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 10
   }
 ]
