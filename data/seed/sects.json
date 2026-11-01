@@ -1473,6 +1473,336 @@
       ],
       "note": "",
       "weight": 6
+    },
+    {
+      "text": "凌霄",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "太乙",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "紫阳",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "道门"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "云台",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "金阙",
+      "alignment": "正道",
+      "tone": "堂皇",
+      "tags": [
+        "堂皇",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "血煞",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "阴煞",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "尸罗",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "鬼庭",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "魔渊",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "夜摩",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "蚀骨",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "黑莲",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "堕天",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "冥府",
+      "alignment": "魔道",
+      "tone": "凛冽",
+      "tags": [
+        "凛冽",
+        "魔道"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "星海",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "云汉",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "太荒",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "玄洲",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "瀛洲",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "方壶",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "员峤",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "岱舆",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "仙山"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "流霞",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "素月",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "空桑",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "若木",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "归藏",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "古仙"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "太微",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
+    },
+    {
+      "text": "紫垣",
+      "alignment": "中立",
+      "tone": "苍茫",
+      "tags": [
+        "苍茫",
+        "天象"
+      ],
+      "note": "",
+      "weight": 6
     }
   ],
   "suffixes": [
