@@ -265,6 +265,9 @@ def main() -> int:
     extra_path = seed_dir / "given-names-extra.json"
     if extra_path.exists():
         (args.out / "given-names-extra.json").write_text(extra_path.read_text(encoding="utf-8"), encoding="utf-8")
+    cnc_path = seed_dir / "given-names-cnc.json"
+    if cnc_path.exists():
+        (args.out / "given-names-cnc.json").write_text(cnc_path.read_text(encoding="utf-8"), encoding="utf-8")
     manifest = {
         "id": args.id,
         "version": args.version,

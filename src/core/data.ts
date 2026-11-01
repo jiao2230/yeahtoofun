@@ -55,6 +55,9 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
   const extra = existsSync(new URL('given-names-extra.json', dir))
     ? readJson<{ xianxia?: GivenEntry[]; 写意?: GivenEntry[]; xianxiaFemale?: GivenEntry[]; writeyiFemale?: GivenEntry[] }>('given-names-extra.json', dir)
     : null;
+  const cnc = existsSync(new URL('given-names-cnc.json', dir))
+    ? readJson<{ writeyiFemale?: GivenEntry[] }>('given-names-cnc.json', dir)
+    : null;
   const pack: SeedPack = {
     id: manifest?.id ?? packId,
     version: manifest?.version ?? '0.1.0',
@@ -76,7 +79,12 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
         : {}),
       ...(extra?.xianxiaFemale ? { xianxia: extra.xianxiaFemale } : {}),
     },
-    femaleGivenNamesByStyle: extra?.writeyiFemale ? { 写意: extra.writeyiFemale } : undefined,
+    femaleGivenNamesByStyle: (() => {
+      const merged = [...new Map(
+        [...(extra?.writeyiFemale ?? []), ...(cnc?.writeyiFemale ?? [])].map((entry) => [entry.text, entry]),
+      ).values()];
+      return merged.length > 0 ? { 写意: merged } : undefined;
+    })(),
     generations: readJson<GenerationPreset[]>('generations.json', dir),
     allusions: existsSync(new URL('allusions.json', dir))
       ? readJson<Record<string, AllusionEntry[]>>('allusions.json', dir)

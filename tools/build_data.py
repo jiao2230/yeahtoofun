@@ -35,6 +35,7 @@ def main() -> int:
     parser.add_argument("--cnc", type=Path, default=ROOT / "Chinese-Names-Corpus-master")
     parser.add_argument("--out", type=Path, default=ROOT / "data" / "packs")
     parser.add_argument("--skip-allusions", action="store_true")
+    parser.add_argument("--skip-cnc", action="store_true")
     parser.add_argument("--with-mqww", action="store_true", help="export MQWW female poets and build the local female pool")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -46,6 +47,21 @@ def main() -> int:
 
     if not args.skip_allusions:
         run("allusions", [sys.executable, "tools/build_allusions.py"], args.dry_run)
+
+    if not args.skip_cnc:
+        gender_file = args.cnc / "Chinese_Names_Corpus" / "Chinese_Names_Corpus_Gender（120W）.txt"
+        if not gender_file.exists():
+            parser.error(f"CNC gender file not found: {gender_file}")
+        run(
+            "CNC female writeyi words",
+            [
+                sys.executable,
+                "tools/build_cnc_female_words.py",
+                "--gender-file",
+                str(gender_file),
+            ],
+            args.dry_run,
+        )
 
     if "core" in packs:
         if not args.cnc.exists():

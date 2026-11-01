@@ -146,6 +146,9 @@ def main() -> int:
     extra_path = seed_dir / "given-names-extra.json"
     if extra_path.exists():
         write(args.out / "given-names-extra.json", json.loads(extra_path.read_text(encoding="utf-8")))
+    cnc_path = seed_dir / "given-names-cnc.json"
+    if cnc_path.exists():
+        write(args.out / "given-names-cnc.json", json.loads(cnc_path.read_text(encoding="utf-8")))
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)
