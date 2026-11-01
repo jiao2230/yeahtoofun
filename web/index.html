@@ -207,6 +207,24 @@ function packLine(generator) {
   return `pack ${generator.pack.id}@${generator.pack.version} · ${generator.pack.license}`;
 }
 
+const RECENT_KEY = 'minglu-recent-names';
+function recentNames() {
+  try {
+    const value = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+    return Array.isArray(value) ? value.filter((x) => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+function rememberNames(names) {
+  try {
+    const merged = [...new Set([...recentNames(), ...names])].slice(-40);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(merged));
+  } catch {
+    // localStorage 不可用时放弃抑制，不影响生成
+  }
+}
+
 const lockedPersonFields = ['era', 'style', 'preset', 'index'];
 function syncClassLocks() {
   const commoner = $('klass').value === '俗人';
@@ -249,13 +267,25 @@ $('form-person').addEventListener('submit', async (event) => {
   };
   try {
     const generator = await ensureGenerator(status);
+    const requested = Number($('count-person').value) || 5;
+    const explicitSeed = seedOf('seed-person') !== undefined;
+    const recent = explicitSeed ? new Set() : new Set(recentNames());
     const people = generator.generateBatch({
       ...profile,
-      count: Number($('count-person').value) || 5,
-      ...(seedOf('seed-person') !== undefined ? { seed: seedOf('seed-person') } : {}),
+      count: explicitSeed ? requested : requested + 20,
+      ...(explicitSeed ? { seed: seedOf('seed-person') } : {}),
     });
-    status.textContent = `已生成 ${people.length} 个 · ${packLine(generator)}`;
-    results.innerHTML = people.map((p) => {
+    const fresh = explicitSeed ? people : people.filter((p) => !recent.has(p.fullName));
+    const selected = fresh.slice(0, requested);
+    if (selected.length < requested) {
+      for (const person of people) {
+        if (selected.length >= requested) break;
+        if (!selected.includes(person)) selected.push(person);
+      }
+    }
+    if (!explicitSeed) rememberNames(selected.map((p) => p.fullName));
+    status.textContent = `已生成 ${selected.length} 个 · ${packLine(generator)}`;
+    results.innerHTML = selected.map((p) => {
       const tags = (p.styleTags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
       const chars = p.given.map((c) => `${esc(c.text)} ${esc(c.pinyin || '')}${c.tone ? ' ' + c.tone : ''}`).join(' · ');
       const genTag = p.generation ? `<span class="tag">字辈 ${esc(p.generation.char)}</span>` : '';
