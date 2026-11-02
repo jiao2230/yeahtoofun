@@ -34,9 +34,12 @@ const MIN_STYLE_GIVEN = 8;
 const EMPTY_SURNAME: NameChar = { text: '', pinyin: '', tone: 0 };
 const COLLOQUIAL_NUMERALS = ['大', '小', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 const COLLOQUIAL_MALE_TAILS = ['郎', '毛', '柱', '根', '锁', '蛋', '狗', '牛', '马', '白', '良', '生', '石', '虎', '长', '保', '龙', '旺', '存', '安', '宝', '福', '贵', '财', '喜', '来', '有', '铁', '顺'];
-const COLLOQUIAL_FEMALE_TAILS = ['娘', '丫', '花', '兰', '秀', '英', '桃', '杏', '菊', '春', '满', '玉', '枝', '桂', '莲', '爱', '妹', '娣', '妞', '娃', '白', '宝', '福', '贵', '喜', '来', '有'];
+const COLLOQUIAL_FEMALE_TAILS = ['娘', '丫', '花', '兰', '秀', '英', '桃', '杏', '菊', '春', '满', '玉', '枝', '桂', '莲', '爱', '妹', '娣', '妞', '娃', '奴', '白', '宝', '福', '贵', '喜', '来', '有'];
 const COLLOQUIAL_SINGLE_MALE = ['大', '二', '三', '四', '五', '六', '七', '八', '九', '十', '毛', '柱', '根', '锁', '蛋', '狗', '牛', '马', '良', '生', '石', '虎', '长', '保', '龙', '旺', '存', '安', '福', '贵', '财', '喜', '来', '有', '铁', '顺'];
 const COLLOQUIAL_SINGLE_FEMALE = ['大', '二', '三', '四', '五', '六', '七', '八', '九', '十', '丫', '娘', '花', '兰', '秀', '英', '桃', '杏', '菊', '春', '满', '玉', '枝', '桂', '莲', '爱', '妹', '娣', '妞', '娃'];
+const COLLOQUIAL_FEMALE_SLAVE_STEMS = ['金', '月', '红', '香', '娇', '柔', '庆', '宜', '星', '富', '元', '馨', '均'];
+const COLLOQUIAL_FEMALE_A_STEMS = ['珍', '巧', '红', '月', '香', '娇', '柔', '庆', '宜', '金', '奴'];
+const COLLOQUIAL_FEMALE_REDUP = ['珠', '拂', '袅', '癸', '巧', '惜', '盈', '安', '端', '怜', '莺', '师', '赛'];
 const ALLUSION_STOP_CHARS = new Set(
   '之兮而其所以不无有为与则乃于乎哉夫何然者也矣可能将欲既亦皆各自相见使令从来上去中外出前后左右大小多少短高低我尔汝女曰谓是人十百万',
 );
@@ -459,6 +462,22 @@ function pickColloquialGiven(
   if (wantSingle) {
     if (single.length === 0) return null;
     return [toNameChar(pack, rng.pick(single), warnings)];
+  }
+  if (profile.gender === 'female') {
+    const slaveStems = available(COLLOQUIAL_FEMALE_SLAVE_STEMS);
+    const aStems = available(COLLOQUIAL_FEMALE_A_STEMS);
+    const redup = available(COLLOQUIAL_FEMALE_REDUP);
+    const roll = rng.next();
+    if (roll < 0.22 && slaveStems.length > 0) {
+      return [toNameChar(pack, rng.pick(slaveStems), warnings), toNameChar(pack, '奴', warnings)];
+    }
+    if (roll < 0.44 && aStems.length > 0) {
+      return [toNameChar(pack, '阿', warnings), toNameChar(pack, rng.pick(aStems), warnings)];
+    }
+    if (roll < 0.62 && redup.length > 0) {
+      const ch = rng.pick(redup);
+      return [toNameChar(pack, ch, warnings), toNameChar(pack, ch, warnings)];
+    }
   }
   if (numerals.length === 0 || tails.length === 0) return null;
 

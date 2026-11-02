@@ -143,11 +143,12 @@ test('俗人 class uses colloquial name patterns and gender-appropriate tails', 
   const maleTails = new Set('郎毛柱根锁蛋狗牛马白良生石虎长保龙旺存安宝福贵财喜来有铁顺'.split(''));
   const femaleTails = new Set('娘丫花兰秀英桃杏菊春满玉枝桂莲爱妹娣妞娃白宝福贵喜来有'.split(''));
   const numerals = new Set('大小二三四五六七八九十'.split(''));
+  const special = new Set('奴阿金月红香娇柔庆宜星富元馨均珍巧珠拂袅癸惜盈安端怜莺师赛'.split(''));
   const people = generateBatch({ class: '俗人', count: 200, seed: 4 }, pack);
   for (const person of people) {
     assert.equal(person.pattern, 'colloquial');
     for (const c of person.given) {
-      assert.ok(numerals.has(c.text) || maleTails.has(c.text) || femaleTails.has(c.text), person.fullName);
+      assert.ok(numerals.has(c.text) || maleTails.has(c.text) || femaleTails.has(c.text) || special.has(c.text), person.fullName);
     }
     if (person.gender === 'female') {
       for (const c of person.given) assert.ok(!['郎', '蛋', '狗', '牛', '马', '铁'].includes(c.text), person.fullName);
@@ -477,6 +478,14 @@ test('male writeyi character supplements are available', () => {
   }
   const pool = (pack.givenNamesByStyle?.['写意'] ?? []).map((entry) => entry.text).join('');
   for (const char of required) assert.ok(pool.includes(char), char);
+});
+
+test('female colloquial names support 奴/阿/reduplication', () => {
+  const people = generateBatch({ class: '俗人', gender: 'female', count: 300, seed: 18 }, pack);
+  const givens = people.map((p) => p.given.map((c) => c.text).join(''));
+  assert.ok(givens.some((g) => g.endsWith('奴')));
+  assert.ok(givens.some((g) => g.startsWith('阿')));
+  assert.ok(givens.some((g) => g.length === 2 && g[0] === g[1]));
 });
 
 test('defaults are resolved', () => {

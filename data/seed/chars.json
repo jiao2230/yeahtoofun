@@ -2790,5 +2790,27 @@
       "写意"
     ],
     "weight": 16
+  },
+  {
+    "char": "阿",
+    "pinyin": "ā",
+    "tone": 1,
+    "meaning": "阿；昵称",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "奴",
+    "pinyin": "nú",
+    "tone": 2,
+    "meaning": "奴；婢妾",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
   }
 ]

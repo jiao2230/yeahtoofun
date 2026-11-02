@@ -684,9 +684,12 @@ var MIN_STYLE_GIVEN = 8;
 var EMPTY_SURNAME = { text: "", pinyin: "", tone: 0 };
 var COLLOQUIAL_NUMERALS = ["\u5927", "\u5C0F", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"];
 var COLLOQUIAL_MALE_TAILS = ["\u90CE", "\u6BDB", "\u67F1", "\u6839", "\u9501", "\u86CB", "\u72D7", "\u725B", "\u9A6C", "\u767D", "\u826F", "\u751F", "\u77F3", "\u864E", "\u957F", "\u4FDD", "\u9F99", "\u65FA", "\u5B58", "\u5B89", "\u5B9D", "\u798F", "\u8D35", "\u8D22", "\u559C", "\u6765", "\u6709", "\u94C1", "\u987A"];
-var COLLOQUIAL_FEMALE_TAILS = ["\u5A18", "\u4E2B", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u6843", "\u674F", "\u83CA", "\u6625", "\u6EE1", "\u7389", "\u679D", "\u6842", "\u83B2", "\u7231", "\u59B9", "\u5A23", "\u599E", "\u5A03", "\u767D", "\u5B9D", "\u798F", "\u8D35", "\u559C", "\u6765", "\u6709"];
+var COLLOQUIAL_FEMALE_TAILS = ["\u5A18", "\u4E2B", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u6843", "\u674F", "\u83CA", "\u6625", "\u6EE1", "\u7389", "\u679D", "\u6842", "\u83B2", "\u7231", "\u59B9", "\u5A23", "\u599E", "\u5A03", "\u5974", "\u767D", "\u5B9D", "\u798F", "\u8D35", "\u559C", "\u6765", "\u6709"];
 var COLLOQUIAL_SINGLE_MALE = ["\u5927", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u6BDB", "\u67F1", "\u6839", "\u9501", "\u86CB", "\u72D7", "\u725B", "\u9A6C", "\u826F", "\u751F", "\u77F3", "\u864E", "\u957F", "\u4FDD", "\u9F99", "\u65FA", "\u5B58", "\u5B89", "\u798F", "\u8D35", "\u8D22", "\u559C", "\u6765", "\u6709", "\u94C1", "\u987A"];
 var COLLOQUIAL_SINGLE_FEMALE = ["\u5927", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u4E2B", "\u5A18", "\u82B1", "\u5170", "\u79C0", "\u82F1", "\u6843", "\u674F", "\u83CA", "\u6625", "\u6EE1", "\u7389", "\u679D", "\u6842", "\u83B2", "\u7231", "\u59B9", "\u5A23", "\u599E", "\u5A03"];
+var COLLOQUIAL_FEMALE_SLAVE_STEMS = ["\u91D1", "\u6708", "\u7EA2", "\u9999", "\u5A07", "\u67D4", "\u5E86", "\u5B9C", "\u661F", "\u5BCC", "\u5143", "\u99A8", "\u5747"];
+var COLLOQUIAL_FEMALE_A_STEMS = ["\u73CD", "\u5DE7", "\u7EA2", "\u6708", "\u9999", "\u5A07", "\u67D4", "\u5E86", "\u5B9C", "\u91D1", "\u5974"];
+var COLLOQUIAL_FEMALE_REDUP = ["\u73E0", "\u62C2", "\u8885", "\u7678", "\u5DE7", "\u60DC", "\u76C8", "\u5B89", "\u7AEF", "\u601C", "\u83BA", "\u5E08", "\u8D5B"];
 var ALLUSION_STOP_CHARS = new Set(
   "\u4E4B\u516E\u800C\u5176\u6240\u4EE5\u4E0D\u65E0\u6709\u4E3A\u4E0E\u5219\u4E43\u4E8E\u4E4E\u54C9\u592B\u4F55\u7136\u8005\u4E5F\u77E3\u53EF\u80FD\u5C06\u6B32\u65E2\u4EA6\u7686\u5404\u81EA\u76F8\u89C1\u4F7F\u4EE4\u4ECE\u6765\u4E0A\u53BB\u4E2D\u5916\u51FA\u524D\u540E\u5DE6\u53F3\u5927\u5C0F\u591A\u5C11\u77ED\u9AD8\u4F4E\u6211\u5C14\u6C5D\u5973\u66F0\u8C13\u662F\u4EBA\u5341\u767E\u4E07"
 );
@@ -1022,6 +1025,22 @@ function pickColloquialGiven(profile, pack, rng, surnameChars, wantSingle, warni
   if (wantSingle) {
     if (single.length === 0) return null;
     return [toNameChar(pack, rng.pick(single), warnings)];
+  }
+  if (profile.gender === "female") {
+    const slaveStems = available(COLLOQUIAL_FEMALE_SLAVE_STEMS);
+    const aStems = available(COLLOQUIAL_FEMALE_A_STEMS);
+    const redup = available(COLLOQUIAL_FEMALE_REDUP);
+    const roll = rng.next();
+    if (roll < 0.22 && slaveStems.length > 0) {
+      return [toNameChar(pack, rng.pick(slaveStems), warnings), toNameChar(pack, "\u5974", warnings)];
+    }
+    if (roll < 0.44 && aStems.length > 0) {
+      return [toNameChar(pack, "\u963F", warnings), toNameChar(pack, rng.pick(aStems), warnings)];
+    }
+    if (roll < 0.62 && redup.length > 0) {
+      const ch = rng.pick(redup);
+      return [toNameChar(pack, ch, warnings), toNameChar(pack, ch, warnings)];
+    }
   }
   if (numerals.length === 0 || tails.length === 0) return null;
   let first;

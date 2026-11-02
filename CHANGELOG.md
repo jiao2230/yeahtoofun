@@ -49,6 +49,7 @@
 - 新增 `blockedChars`：雅士/普通生成拦截叹词、文言助词、疑问/程度/方位/言语动词等；俗人豁免；月份全名进黑名单。问/言/议/与/若/为/则/夫/益/愈/太 因历史人名用例移出；颇、其也移出，人称代词不纳入。
 - 功能字黑名单补亲属/身份称谓：翁叟妪媪老婿媳嫂侄婶甥奴婢官吏皇帝父母妾仆臣妃等。
 - 写意补 12 个男性用字（劭穆淳徽桢攸昭朗端霄瀚华）及 12 个男性双字名。
+- 俗人女性增加 `X奴`、`阿X`、女性叠字模式；补阿/奴字。
 - 典故出处上限 5→10，批量同名上限 + 重掷 32 次，避免稀疏唐诗池整批重复。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
@@ -73,7 +74,7 @@
 
 ### Verification
 
-- `npm test`：67 core ＋ 6 M3 = 73 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：68 core ＋ 6 M3 = 74 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。
