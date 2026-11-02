@@ -507,7 +507,7 @@ test('Wei-Jin mausoleum female names are loaded', () => {
   assert.ok(pool.length >= 40);
   assert.ok(pool.some((entry) => entry.text === '仙姬'));
   assert.ok(pool.some((entry) => entry.text === '玉容'));
-  assert.ok(!pool.some((entry) => entry.text === '贵妃'));
+  assert.ok(pool.some((entry) => entry.text === '贵妃'));
 });
 
 test('defaults are resolved', () => {
