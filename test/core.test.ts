@@ -488,6 +488,13 @@ test('female colloquial names support 奴/阿/reduplication', () => {
   assert.ok(givens.some((g) => g.length === 2 && g[0] === g[1]));
 });
 
+test('Ming female high-frequency names are loaded', () => {
+  const pool = new Set((pack.femaleGivenNamesByStyle?.['写意'] ?? []).map((entry) => entry.text));
+  for (const name of ['妙安', '妙善', '淑清', '素贞', '善真', '秀兰', '琼瑛', '毓琳', '文琛']) {
+    assert.ok(pool.has(name), name);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

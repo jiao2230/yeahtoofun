@@ -2,8 +2,63 @@
   "source": "Chinese-Names-Corpus Gender 120W; female-only, 2-char given names, 写意 chars",
   "writeyiFemale": [
     {
+      "text": "红梅",
+      "weight": 280,
+      "gender": "female"
+    },
+    {
+      "text": "雪梅",
+      "weight": 257,
+      "gender": "female"
+    },
+    {
+      "text": "玉梅",
+      "weight": 237,
+      "gender": "female"
+    },
+    {
+      "text": "玉兰",
+      "weight": 231,
+      "gender": "female"
+    },
+    {
       "text": "玉华",
       "weight": 223,
+      "gender": "female"
+    },
+    {
+      "text": "玉珍",
+      "weight": 208,
+      "gender": "female"
+    },
+    {
+      "text": "秀珍",
+      "weight": 201,
+      "gender": "female"
+    },
+    {
+      "text": "秀梅",
+      "weight": 200,
+      "gender": "female"
+    },
+    {
+      "text": "秀娟",
+      "weight": 199,
+      "gender": "female"
+    },
+    {
+      "text": "桂兰",
+      "weight": 197,
+      "gender": "female"
+    },
+    {
+      "text": "秀兰",
+      "weight": 197,
+      "gender": "female"
+    },
+    {
+      "text": "桂芳",
+      "weight": 184,
       "gender": "female"
     },
     {
@@ -12,8 +67,38 @@
       "gender": "female"
     },
     {
+      "text": "秀云",
+      "weight": 183,
+      "gender": "female"
+    },
+    {
+      "text": "秀芳",
+      "weight": 182,
+      "gender": "female"
+    },
+    {
+      "text": "淑华",
+      "weight": 181,
+      "gender": "female"
+    },
+    {
+      "text": "秀华",
+      "weight": 178,
+      "gender": "female"
+    },
+    {
       "text": "玉芳",
       "weight": 177,
+      "gender": "female"
+    },
+    {
+      "text": "淑芳",
+      "weight": 172,
+      "gender": "female"
+    },
+    {
+      "text": "淑珍",
+      "weight": 168,
       "gender": "female"
     },
     {
@@ -27,8 +112,38 @@
       "gender": "female"
     },
     {
+      "text": "桂香",
+      "weight": 164,
+      "gender": "female"
+    },
+    {
+      "text": "桂珍",
+      "weight": 162,
+      "gender": "female"
+    },
+    {
       "text": "玉娟",
       "weight": 157,
+      "gender": "female"
+    },
+    {
+      "text": "素珍",
+      "weight": 156,
+      "gender": "female"
+    },
+    {
+      "text": "秀琴",
+      "weight": 156,
+      "gender": "female"
+    },
+    {
+      "text": "淑娟",
+      "weight": 154,
+      "gender": "female"
+    },
+    {
+      "text": "桂华",
+      "weight": 154,
       "gender": "female"
     },
     {
@@ -42,7 +157,22 @@
       "gender": "female"
     },
     {
+      "text": "雪莲",
+      "weight": 153,
+      "gender": "female"
+    },
+    {
+      "text": "淑琴",
+      "weight": 148,
+      "gender": "female"
+    },
+    {
       "text": "玉清",
+      "weight": 147,
+      "gender": "female"
+    },
+    {
+      "text": "玉莲",
       "weight": 147,
       "gender": "female"
     },
@@ -82,8 +212,38 @@
       "gender": "female"
     },
     {
+      "text": "淑兰",
+      "weight": 130,
+      "gender": "female"
+    },
+    {
+      "text": "淑梅",
+      "weight": 129,
+      "gender": "female"
+    },
+    {
+      "text": "秀红",
+      "weight": 129,
+      "gender": "female"
+    },
+    {
+      "text": "兰芳",
+      "weight": 129,
+      "gender": "female"
+    },
+    {
       "text": "青云",
       "weight": 125,
+      "gender": "female"
+    },
+    {
+      "text": "秋菊",
+      "weight": 125,
+      "gender": "female"
+    },
+    {
+      "text": "素梅",
+      "weight": 120,
       "gender": "female"
     },
     {
@@ -127,6 +287,16 @@
       "gender": "female"
     },
     {
+      "text": "翠兰",
+      "weight": 114,
+      "gender": "female"
+    },
+    {
+      "text": "秀清",
+      "weight": 113,
+      "gender": "female"
+    },
+    {
       "text": "雅琴",
       "weight": 112,
       "gender": "female"
@@ -152,12 +322,22 @@
       "gender": "female"
     },
     {
+      "text": "淑云",
+      "weight": 110,
+      "gender": "female"
+    },
+    {
       "text": "素娟",
       "weight": 109,
       "gender": "female"
     },
     {
       "text": "婉婷",
+      "weight": 107,
+      "gender": "female"
+    },
+    {
+      "text": "秀莲",
       "weight": 107,
       "gender": "female"
     },
@@ -172,8 +352,23 @@
       "gender": "female"
     },
     {
+      "text": "素兰",
+      "weight": 106,
+      "gender": "female"
+    },
+    {
       "text": "雪婷",
       "weight": 106,
+      "gender": "female"
+    },
+    {
+      "text": "梅芳",
+      "weight": 106,
+      "gender": "female"
+    },
+    {
+      "text": "桂梅",
+      "weight": 105,
       "gender": "female"
     },
     {
@@ -192,13 +387,33 @@
       "gender": "female"
     },
     {
+      "text": "桂琴",
+      "weight": 101,
+      "gender": "female"
+    },
+    {
       "text": "红云",
+      "weight": 101,
+      "gender": "female"
+    },
+    {
+      "text": "桂云",
+      "weight": 101,
+      "gender": "female"
+    },
+    {
+      "text": "桂莲",
       "weight": 101,
       "gender": "female"
     },
     {
       "text": "慧琴",
       "weight": 99,
+      "gender": "female"
+    },
+    {
+      "text": "玉秀",
+      "weight": 97,
       "gender": "female"
     },
     {
@@ -217,8 +432,38 @@
       "gender": "female"
     },
     {
+      "text": "兰香",
+      "weight": 94,
+      "gender": "female"
+    },
+    {
+      "text": "淑清",
+      "weight": 92,
+      "gender": "female"
+    },
+    {
+      "text": "菊芳",
+      "weight": 92,
+      "gender": "female"
+    },
+    {
+      "text": "菊香",
+      "weight": 92,
+      "gender": "female"
+    },
+    {
       "text": "玉娇",
       "weight": 91,
+      "gender": "female"
+    },
+    {
+      "text": "秋梅",
+      "weight": 91,
+      "gender": "female"
+    },
+    {
+      "text": "淑红",
+      "weight": 90,
       "gender": "female"
     },
     {
@@ -242,7 +487,17 @@
       "gender": "female"
     },
     {
+      "text": "慧珍",
+      "weight": 86,
+      "gender": "female"
+    },
+    {
       "text": "玉仙",
+      "weight": 86,
+      "gender": "female"
+    },
+    {
+      "text": "雪珍",
       "weight": 86,
       "gender": "female"
     },
@@ -262,6 +517,11 @@
       "gender": "female"
     },
     {
+      "text": "桂红",
+      "weight": 83,
+      "gender": "female"
+    },
+    {
       "text": "碧云",
       "weight": 82,
       "gender": "female"
@@ -277,12 +537,27 @@
       "gender": "female"
     },
     {
+      "text": "月梅",
+      "weight": 82,
+      "gender": "female"
+    },
+    {
       "text": "玉琼",
       "weight": 80,
       "gender": "female"
     },
     {
+      "text": "淑婷",
+      "weight": 79,
+      "gender": "female"
+    },
+    {
       "text": "青华",
+      "weight": 78,
+      "gender": "female"
+    },
+    {
+      "text": "秋兰",
       "weight": 78,
       "gender": "female"
     },
@@ -297,6 +572,11 @@
       "gender": "female"
     },
     {
+      "text": "菊华",
+      "weight": 76,
+      "gender": "female"
+    },
+    {
       "text": "月仙",
       "weight": 76,
       "gender": "female"
@@ -307,6 +587,11 @@
       "gender": "female"
     },
     {
+      "text": "秀菊",
+      "weight": 74,
+      "gender": "female"
+    },
+    {
       "text": "玉蓉",
       "weight": 74,
       "gender": "female"
@@ -314,291 +599,6 @@
     {
       "text": "清云",
       "weight": 73,
-      "gender": "female"
-    },
-    {
-      "text": "梦雪",
-      "weight": 73,
-      "gender": "female"
-    },
-    {
-      "text": "雪晴",
-      "weight": 72,
-      "gender": "female"
-    },
-    {
-      "text": "碧华",
-      "weight": 71,
-      "gender": "female"
-    },
-    {
-      "text": "舒婷",
-      "weight": 71,
-      "gender": "female"
-    },
-    {
-      "text": "静华",
-      "weight": 69,
-      "gender": "female"
-    },
-    {
-      "text": "雪云",
-      "weight": 69,
-      "gender": "female"
-    },
-    {
-      "text": "风华",
-      "weight": 69,
-      "gender": "female"
-    },
-    {
-      "text": "静芳",
-      "weight": 67,
-      "gender": "female"
-    },
-    {
-      "text": "雅芳",
-      "weight": 66,
-      "gender": "female"
-    },
-    {
-      "text": "华芳",
-      "weight": 66,
-      "gender": "female"
-    },
-    {
-      "text": "风云",
-      "weight": 65,
-      "gender": "female"
-    },
-    {
-      "text": "云香",
-      "weight": 64,
-      "gender": "female"
-    },
-    {
-      "text": "月芳",
-      "weight": 64,
-      "gender": "female"
-    },
-    {
-      "text": "芳华",
-      "weight": 63,
-      "gender": "female"
-    },
-    {
-      "text": "琼芳",
-      "weight": 62,
-      "gender": "female"
-    },
-    {
-      "text": "玉静",
-      "weight": 61,
-      "gender": "female"
-    },
-    {
-      "text": "红华",
-      "weight": 60,
-      "gender": "female"
-    },
-    {
-      "text": "琼华",
-      "weight": 60,
-      "gender": "female"
-    },
-    {
-      "text": "玉云",
-      "weight": 59,
-      "gender": "female"
-    },
-    {
-      "text": "怡婷",
-      "weight": 58,
-      "gender": "female"
-    },
-    {
-      "text": "素红",
-      "weight": 58,
-      "gender": "female"
-    },
-    {
-      "text": "梦华",
-      "weight": 57,
-      "gender": "female"
-    },
-    {
-      "text": "香云",
-      "weight": 57,
-      "gender": "female"
-    },
-    {
-      "text": "碧玉",
-      "weight": 57,
-      "gender": "female"
-    },
-    {
-      "text": "琴芳",
-      "weight": 57,
-      "gender": "female"
-    },
-    {
-      "text": "静娴",
-      "weight": 56,
-      "gender": "female"
-    },
-    {
-      "text": "雪静",
-      "weight": 56,
-      "gender": "female"
-    },
-    {
-      "text": "飞云",
-      "weight": 56,
-      "gender": "female"
-    },
-    {
-      "text": "红琴",
-      "weight": 56,
-      "gender": "female"
-    },
-    {
-      "text": "翠香",
-      "weight": 56,
-      "gender": "female"
-    },
-    {
-      "text": "慧华",
-      "weight": 55,
-      "gender": "female"
-    },
-    {
-      "text": "云娟",
-      "weight": 54,
-      "gender": "female"
-    },
-    {
-      "text": "华云",
-      "weight": 54,
-      "gender": "female"
-    },
-    {
-      "text": "静雅",
-      "weight": 53,
-      "gender": "female"
-    },
-    {
-      "text": "玉翠",
-      "weight": 53,
-      "gender": "female"
-    },
-    {
-      "text": "雪清",
-      "weight": 52,
-      "gender": "female"
-    },
-    {
-      "text": "梦云",
-      "weight": 52,
-      "gender": "female"
-    },
-    {
-      "text": "清芳",
-      "weight": 52,
-      "gender": "female"
-    },
-    {
-      "text": "清风",
-      "weight": 52,
-      "gender": "female"
-    },
-    {
-      "text": "梦婕",
-      "weight": 51,
-      "gender": "female"
-    },
-    {
-      "text": "梦雅",
-      "weight": 51,
-      "gender": "female"
-    },
-    {
-      "text": "素清",
-      "weight": 50,
-      "gender": "female"
-    },
-    {
-      "text": "月香",
-      "weight": 50,
-      "gender": "female"
-    },
-    {
-      "text": "素琼",
-      "weight": 49,
-      "gender": "female"
-    },
-    {
-      "text": "翠琴",
-      "weight": 48,
-      "gender": "female"
-    },
-    {
-      "text": "玉秋",
-      "weight": 48,
-      "gender": "female"
-    },
-    {
-      "text": "锦云",
-      "weight": 48,
-      "gender": "female"
-    },
-    {
-      "text": "如玉",
-      "weight": 47,
-      "gender": "female"
-    },
-    {
-      "text": "云红",
-      "weight": 47,
-      "gender": "female"
-    },
-    {
-      "text": "华琴",
-      "weight": 47,
-      "gender": "female"
-    },
-    {
-      "text": "月清",
-      "weight": 47,
-      "gender": "female"
-    },
-    {
-      "text": "星月",
-      "weight": 46,
-      "gender": "female"
-    },
-    {
-      "text": "梦飞",
-      "weight": 45,
-      "gender": "female"
-    },
-    {
-      "text": "翠娟",
-      "weight": 45,
-      "gender": "female"
-    },
-    {
-      "text": "锦芳",
-      "weight": 45,
-      "gender": "female"
-    },
-    {
-      "text": "月娟",
-      "weight": 45,
-      "gender": "female"
-    },
-    {
-      "text": "华娟",
-      "weight": 45,
       "gender": "female"
     }
   ]

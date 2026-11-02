@@ -811,6 +811,7 @@
     "meaning": "淑静；贤淑",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 10
@@ -1693,6 +1694,7 @@
     "meaning": "兰；兰草",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 8
@@ -1704,6 +1706,7 @@
     "meaning": "秀；秀丽",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 8
@@ -1902,6 +1905,7 @@
     "meaning": "菊；菊花",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 10
@@ -1946,6 +1950,7 @@
     "meaning": "桂；桂香",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 10
@@ -1957,6 +1962,7 @@
     "meaning": "莲；莲花",
     "gender": "female",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 10
@@ -2807,6 +2813,116 @@
     "pinyin": "nú",
     "tone": 2,
     "meaning": "奴；婢妾",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "善",
+    "pinyin": "shàn",
+    "tone": 4,
+    "meaning": "善；善美",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "琳",
+    "pinyin": "lín",
+    "tone": 2,
+    "meaning": "琳；美玉",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "琛",
+    "pinyin": "chēn",
+    "tone": 1,
+    "meaning": "琛；珍宝",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "瑛",
+    "pinyin": "yīng",
+    "tone": 1,
+    "meaning": "瑛；玉光",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "珍",
+    "pinyin": "zhēn",
+    "tone": 1,
+    "meaning": "珍；珍宝",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "柏",
+    "pinyin": "bǎi",
+    "tone": 3,
+    "meaning": "柏；松柏",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "椿",
+    "pinyin": "chūn",
+    "tone": 1,
+    "meaning": "椿；椿树",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "梅",
+    "pinyin": "méi",
+    "tone": 2,
+    "meaning": "梅；梅花",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "玹",
+    "pinyin": "xuán",
+    "tone": 2,
+    "meaning": "玹；美玉",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "毓",
+    "pinyin": "yù",
+    "tone": 4,
+    "meaning": "毓；孕育",
     "gender": "female",
     "styles": [
       "写意"
