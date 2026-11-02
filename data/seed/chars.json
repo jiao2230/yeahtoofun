@@ -2358,5 +2358,347 @@
       "写意"
     ],
     "weight": 18
+  },
+  {
+    "char": "依",
+    "pinyin": "yī",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 999
+  },
+  {
+    "char": "倩",
+    "pinyin": "qiàn",
+    "tone": 4,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 2541
+  },
+  {
+    "char": "凌",
+    "pinyin": "líng",
+    "tone": 2,
+    "meaning": "",
+    "gender": "neutral",
+    "styles": [],
+    "weight": 1572
+  },
+  {
+    "char": "千",
+    "pinyin": "qiān",
+    "tone": 1,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 498
+  },
+  {
+    "char": "君",
+    "pinyin": "jūn",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "史实"
+    ],
+    "weight": 8633
+  },
+  {
+    "char": "妆",
+    "pinyin": "zhuāng",
+    "tone": 1,
+    "meaning": "妆饰；红妆",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "姿",
+    "pinyin": "zī",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 299
+  },
+  {
+    "char": "年",
+    "pinyin": "nián",
+    "tone": 2,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 1181
+  },
+  {
+    "char": "心",
+    "pinyin": "xīn",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 1891
+  },
+  {
+    "char": "怀",
+    "pinyin": "huái",
+    "tone": 2,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 1761
+  },
+  {
+    "char": "昌",
+    "pinyin": "chāng",
+    "tone": 1,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 6138
+  },
+  {
+    "char": "曼",
+    "pinyin": "màn",
+    "tone": 4,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 1170
+  },
+  {
+    "char": "栖",
+    "pinyin": "qī",
+    "tone": 1,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 108
+  },
+  {
+    "char": "滟",
+    "pinyin": "yàn",
+    "tone": 4,
+    "meaning": "滟滟；水光",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "漪",
+    "pinyin": "yī",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 117
+  },
+  {
+    "char": "漱",
+    "pinyin": "shù",
+    "tone": 4,
+    "meaning": "漱玉；漱石",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "澹",
+    "pinyin": "dàn",
+    "tone": 4,
+    "meaning": "",
+    "gender": "male",
+    "styles": [],
+    "weight": 67
+  },
+  {
+    "char": "环",
+    "pinyin": "huán",
+    "tone": 2,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 782
+  },
+  {
+    "char": "琼",
+    "pinyin": "qióng",
+    "tone": 2,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 3488
+  },
+  {
+    "char": "碧",
+    "pinyin": "bì",
+    "tone": 4,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 1921
+  },
+  {
+    "char": "秋",
+    "pinyin": "qiū",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 6540
+  },
+  {
+    "char": "筠",
+    "pinyin": "yún",
+    "tone": 2,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 239
+  },
+  {
+    "char": "簟",
+    "pinyin": "diàn",
+    "tone": 4,
+    "meaning": "竹簟；秋玉",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "红",
+    "pinyin": "hóng",
+    "tone": 2,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 18109
+  },
+  {
+    "char": "翠",
+    "pinyin": "cuì",
+    "tone": 4,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 3563
+  },
+  {
+    "char": "芳",
+    "pinyin": "fāng",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12808
+  },
+  {
+    "char": "莺",
+    "pinyin": "yīng",
+    "tone": 1,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 278
+  },
+  {
+    "char": "萤",
+    "pinyin": "yíng",
+    "tone": 2,
+    "meaning": "萤火；栖萤",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "蕙",
+    "pinyin": "huì",
+    "tone": 4,
+    "meaning": "蕙兰；蕙心",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "语",
+    "pinyin": "yǔ",
+    "tone": 3,
+    "meaning": "",
+    "gender": "female",
+    "styles": [],
+    "weight": 315
+  },
+  {
+    "char": "韶",
+    "pinyin": "sháo",
+    "tone": 2,
+    "meaning": "韶景；韶华",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "飞",
+    "pinyin": "fēi",
+    "tone": 1,
+    "meaning": "飞；雄飞",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "龄",
+    "pinyin": "líng",
+    "tone": 2,
+    "meaning": "年龄；龟龄",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
+  },
+  {
+    "char": "龟",
+    "pinyin": "guī",
+    "tone": 1,
+    "meaning": "龟龄；龟鹤",
+    "gender": "neutral",
+    "styles": [
+      "写意"
+    ],
+    "weight": 15
   }
 ]
