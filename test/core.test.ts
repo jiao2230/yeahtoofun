@@ -510,6 +510,13 @@ test('Wei-Jin mausoleum female names are loaded', () => {
   assert.ok(pool.some((entry) => entry.text === '贵妃'));
 });
 
+test('distinctive Wei-Jin names stay in the era pool', () => {
+  const pool = new Set((pack.femaleGivenNamesByEra?.weijin ?? []).map((entry) => entry.text));
+  for (const name of ['黑女', '信相', '迎男', '僧男', '丑仁', '江女']) {
+    assert.ok(pool.has(name), name);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
