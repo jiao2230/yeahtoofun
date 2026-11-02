@@ -391,6 +391,7 @@
     "meaning": "昭明；光显",
     "gender": "male",
     "styles": [
+      "写意",
       "史实"
     ],
     "weight": 16
@@ -422,7 +423,7 @@
     "pinyin": "huá",
     "tone": 2,
     "meaning": "光华；华美",
-    "gender": "neutral",
+    "gender": "male",
     "styles": [
       "写意",
       "史实"
@@ -2084,8 +2085,9 @@
     "pinyin": "huī",
     "tone": 1,
     "meaning": "美好；徽音",
-    "gender": "female",
+    "gender": "male",
     "styles": [
+      "写意",
       "史实",
       "宗教"
     ],
@@ -2700,5 +2702,93 @@
       "写意"
     ],
     "weight": 15
+  },
+  {
+    "char": "邵",
+    "pinyin": "shào",
+    "tone": 4,
+    "meaning": "邵；高远",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "穆",
+    "pinyin": "mù",
+    "tone": 4,
+    "meaning": "穆；肃穆",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "淳",
+    "pinyin": "chún",
+    "tone": 2,
+    "meaning": "淳厚；淳风",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "桢",
+    "pinyin": "zhēn",
+    "tone": 1,
+    "meaning": "桢干；栋梁",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "攸",
+    "pinyin": "yōu",
+    "tone": 1,
+    "meaning": "攸远；所",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "朗",
+    "pinyin": "lǎng",
+    "tone": 3,
+    "meaning": "朗阔；明朗",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "端",
+    "pinyin": "duān",
+    "tone": 1,
+    "meaning": "端方；端正",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "瀚",
+    "pinyin": "hàn",
+    "tone": 4,
+    "meaning": "瀚海；浩瀚",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
   }
 ]

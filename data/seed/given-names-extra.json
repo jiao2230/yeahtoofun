@@ -369,6 +369,66 @@
     {
       "text": "林泉",
       "weight": 2
+    },
+    {
+      "text": "邵华",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "穆清",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "淳风",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "徽音",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "桢干",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "攸宁",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "昭朗",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "朗月",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "端方",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "霄瀚",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "瀚海",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "华章",
+      "weight": 3,
+      "gender": "male"
     }
   ],
   "xianxiaFemale": [

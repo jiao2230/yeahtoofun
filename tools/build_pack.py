@@ -26,7 +26,7 @@ HAN_CHAR = re.compile(r"[\u4e00-\u9fa5]")
 BAD_NAME_CHARS = set("氏某女娘婦妇姑姐妹嫂婆奴婢")
 MIN_FREQ = 20
 COLLOQUIAL_EXTRA = ['郎', '娘', '丫', '蛋', '狗', '马', '良', '生', '虎', '保', '龙', '旺', '存', '桃', '杏', '菊', '春', '满', '枝', '桂', '莲', '爱', '悟']
-STYLE_EXTRA = ['风', '蓉', '惜', '寒', '羞', '画', '依', '倩', '凌', '千', '君', '妆', '姿', '年', '心', '怀', '昌', '曼', '栖', '滟', '漪', '漱', '澹', '环', '琼', '碧', '秋', '筠', '簟', '红', '翠', '芳', '莺', '萤', '蕙', '语', '韶', '飞', '龄', '龟', '尘', '妍', '晚', '娇', '霜']
+STYLE_EXTRA = ['风', '蓉', '惜', '寒', '羞', '画', '依', '倩', '凌', '千', '君', '妆', '姿', '年', '心', '怀', '昌', '曼', '栖', '滟', '漪', '漱', '澹', '环', '琼', '碧', '秋', '筠', '簟', '红', '翠', '芳', '莺', '萤', '蕙', '语', '韶', '飞', '龄', '龟', '尘', '妍', '晚', '娇', '霜', '邵', '穆', '淳', '徽', '桢', '攸', '昭', '朗', '端', '霄', '瀚', '华']
 ERA_CODES = {
     "qinhan": {1, 2, 25, 29, 46, 61, 83},
     "weijin": {
@@ -327,7 +327,7 @@ def build_chars(
         seed = seed_chars.get(ch, {})
         m, f = male[ch], female[ch]
         ratio = f / (m + f) if (m + f) else 0.5
-        gender = "female" if ratio >= 0.6 else "male" if ratio <= 0.4 else "neutral"
+        gender = seed.get("gender") or ("female" if ratio >= 0.6 else "male" if ratio <= 0.4 else "neutral")
         py, tone = pinyin.get(ch, ("", 0))
         if seed.get("pinyin"):
             py, tone = seed["pinyin"], seed.get("tone", 0)

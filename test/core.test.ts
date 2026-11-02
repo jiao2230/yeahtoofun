@@ -467,6 +467,18 @@ test('functional characters are blocked for elegant names', () => {
   }
 });
 
+test('male writeyi character supplements are available', () => {
+  const required = ['邵', '穆', '淳', '徽', '桢', '攸', '昭', '朗', '端', '霄', '瀚', '华'];
+  for (const char of required) {
+    const entry = pack.chars.find((item) => item.char === char);
+    assert.ok(entry, char);
+    assert.equal(entry!.gender, 'male', char);
+    assert.ok(entry!.styles.includes('写意'), char);
+  }
+  const pool = (pack.givenNamesByStyle?.['写意'] ?? []).map((entry) => entry.text).join('');
+  for (const char of required) assert.ok(pool.includes(char), char);
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
