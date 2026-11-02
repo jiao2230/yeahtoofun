@@ -153,6 +153,9 @@ def main() -> int:
     blocked_path = seed_dir / "blocked-chars.json"
     if blocked_path.exists():
         write(args.out / "blocked-chars.json", json.loads(blocked_path.read_text(encoding="utf-8")))
+    qinhan_path = seed_dir / "qinhan-female-names.json"
+    if qinhan_path.exists():
+        write(args.out / "qinhan-female-names.json", json.loads(qinhan_path.read_text(encoding="utf-8")))
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)

@@ -97,6 +97,13 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
       ...(existsSync(new URL('female-given-names-by-era.json', dir))
         ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
         : {}),
+      ...(existsSync(new URL('qinhan-female-names.json', dir))
+        ? {
+            qinhan: (readJson<Array<{ text: string; count?: number }>>('qinhan-female-names.json', dir))
+              .filter((entry) => entry.text.length === 2)
+              .map((entry) => ({ text: entry.text, weight: entry.count ?? 1, gender: 'female' as const })),
+          }
+        : {}),
       ...(extra?.xianxiaFemale ? { xianxia: extra.xianxiaFemale } : {}),
     },
     femaleGivenNamesByStyle: (() => {

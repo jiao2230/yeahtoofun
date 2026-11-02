@@ -495,6 +495,13 @@ test('Ming female high-frequency names are loaded', () => {
   }
 });
 
+test('Qin-Han female double names are loaded', () => {
+  const pool = pack.femaleGivenNamesByEra?.qinhan ?? [];
+  assert.ok(pool.length >= 300);
+  assert.ok(pool.some((entry) => entry.text === '文姬'));
+  assert.ok(pool.some((entry) => entry.text === '兰芝'));
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
