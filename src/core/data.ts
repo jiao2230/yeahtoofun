@@ -114,6 +114,9 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
     pills: readJson<PillPack>('pills.json', dir),
     techniques: readJson<TechniquePack>('techniques.json', dir),
     blacklist: readJson<string[]>('blacklist.json', dir),
+    blockedChars: existsSync(new URL('blocked-chars.json', dir))
+      ? readJson<string[]>('blocked-chars.json', dir)
+      : [],
     famous: readJson<string[]>('famous.json', dir),
     collision: existsSync(new URL('collision.json', dir))
       ? readJson<string[]>('collision.json', dir)

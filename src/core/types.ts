@@ -65,6 +65,7 @@ export interface ArtifactPack {
   modifiers: ArtifactModifier[];
   forms: ArtifactForm[];
   blacklist: string[];
+  blockedChars?: string[];
 }
 
 export interface ArtifactName {
@@ -104,6 +105,7 @@ export interface SectPack {
   prefixes: SectPrefix[];
   suffixes: SectSuffix[];
   blacklist: string[];
+  blockedChars?: string[];
 }
 
 export interface SectName {
@@ -163,6 +165,7 @@ export interface PillPack {
   poisonTargets: string[];
   suffixes: PillSuffix[];
   blacklist: string[];
+  blockedChars?: string[];
 }
 
 export interface PillName {
@@ -228,6 +231,7 @@ export interface TechniquePack {
   middles: TechniqueMiddle[];
   suffixes: TechniqueSuffix[];
   blacklist: string[];
+  blockedChars?: string[];
 }
 
 export interface TechniqueName {
@@ -272,6 +276,7 @@ export interface SeedPack {
   pills: PillPack;
   techniques: TechniquePack;
   blacklist: string[];
+  blockedChars?: string[];
   famous: string[];
   collision: string[];
 }

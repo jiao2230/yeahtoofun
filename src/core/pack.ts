@@ -106,6 +106,14 @@ export function validatePack(pack: SeedPack): void {
   validateGivenList(pack.givenNames, 'givenNames');
   requireArray(pack.generations, 'generations');
   requireArray(pack.blacklist, 'blacklist');
+  optionalArray(pack.blockedChars, 'blockedChars');
+  if (pack.blockedChars) {
+    for (const char of pack.blockedChars) {
+      if (typeof char !== 'string' || char.length !== 1 || !HAN_TEXT.test(char)) {
+        fail('blockedChars must contain single Han characters');
+      }
+    }
+  }
   requireArray(pack.famous, 'famous');
   optionalArray(pack.collision, 'collision');
   validateAllusions(pack.allusions);

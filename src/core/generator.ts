@@ -607,6 +607,7 @@ function pickGivenOnce(
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isGivenCharBlocked(entry.text, pack, profile)) return false;
       if (isFemaleNameBlocked(entry.text, profile)) return false;
       if (profile.gender === 'any') return true;
       if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
@@ -644,6 +645,7 @@ function pickGivenOnce(
     if (entry.text[0] === entry.text[1]) return false;
     if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isGivenCharBlocked(entry.text, pack, profile)) return false;
       if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
@@ -686,6 +688,7 @@ function findPairWithGeneration(
   const pool = givenNamesForProfile(pack, profile).filter((entry) => {
     if (entry.text.length !== 2 || entry.text[pos] !== generation.char) return false;
     if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (isGivenCharBlocked(entry.text, pack, profile)) return false;
       if (isFemaleNameBlocked(entry.text, profile)) return false;
     if (profile.gender === 'any') return true;
     if (entry.gender) return entry.gender === 'neutral' || entry.gender === profile.gender;
@@ -714,7 +717,8 @@ function pickOtherChar(
 ): string {
   const blocked = (c: CharEntry) =>
     (single && SINGLE_NAME_STOP.has(c.char)) ||
-    (profile.class === '雅士' && ELEGANT_BANNED_CHARS.has(c.char));
+    (profile.class === '雅士' && ELEGANT_BANNED_CHARS.has(c.char)) ||
+    (profile.class !== '俗人' && Boolean(pack.blockedChars?.includes(c.char)));
   const base = pack.chars.filter((c) => {
     if (c.char === avoid || blocked(c)) return false;
     if (surnameChars.has(c.char)) return false;
@@ -766,6 +770,12 @@ const charIndexCache = new WeakMap<SeedPack, Map<string, CharEntry>>();
 
 function isFemaleNameBlocked(text: string, profile: ResolvedProfile): boolean {
   return profile.gender === 'female' && FEMALE_NAME_BLOCKLIST.has(text);
+}
+
+function isGivenCharBlocked(text: string, pack: SeedPack, profile: ResolvedProfile): boolean {
+  if (profile.class === '俗人') return false;
+  const blocked = pack.blockedChars;
+  return Boolean(blocked?.length) && Array.from(text).some((char) => blocked!.includes(char));
 }
 
 function isElegantGivenAllowed(text: string, profile: ResolvedProfile): boolean {

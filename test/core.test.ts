@@ -451,6 +451,15 @@ test('unsuitable poetry names are blacklisted', () => {
   }
 });
 
+test('functional characters are blocked for elegant names', () => {
+  const blocked = new Set(pack.blockedChars ?? []);
+  const people = generateBatch({ class: '雅士', count: 120, seed: 17 }, pack);
+  assert.ok(blocked.size > 0);
+  for (const person of people) {
+    assert.ok(!person.given.some((c) => blocked.has(c.text)), person.fullName);
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

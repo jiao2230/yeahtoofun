@@ -150,6 +150,9 @@ def main() -> int:
     cnc_path = seed_dir / "given-names-cnc.json"
     if cnc_path.exists():
         write(args.out / "given-names-cnc.json", json.loads(cnc_path.read_text(encoding="utf-8")))
+    blocked_path = seed_dir / "blocked-chars.json"
+    if blocked_path.exists():
+        write(args.out / "blocked-chars.json", json.loads(blocked_path.read_text(encoding="utf-8")))
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)

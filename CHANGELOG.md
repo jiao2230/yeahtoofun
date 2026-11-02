@@ -46,6 +46,7 @@
 - 姓名页新增用户“排除字词”过滤；阳关、满天、白发、赤壁、归路入硬黑名单并移出唐宋词表。
 - 唐宋诗词做保留式清洗；按用户提供意象新增唐宋诗词 23 首/句，报告 `reports/tang-song-name-words-20261102.md`。
 - 再补 34 个唐宋意象词/句，补齐尘/妍/晚/娇/霜等字，放开 `千` 停用限制。
+- 新增 `blockedChars`：雅士/普通生成拦截叹词、文言助词、疑问/程度/方位/言语动词等；俗人豁免；月份全名进黑名单。
 - 典故出处上限 5→10，批量同名上限 + 重掷 32 次，避免稀疏唐诗池整批重复。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
@@ -70,7 +71,7 @@
 
 ### Verification
 
-- `npm test`：64 core ＋ 6 M3 = 70 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：65 core ＋ 6 M3 = 71 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。
