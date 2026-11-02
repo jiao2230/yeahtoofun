@@ -104,6 +104,13 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
               .map((entry) => ({ text: entry.text, weight: entry.count ?? 1, gender: 'female' as const })),
           }
         : {}),
+      ...(existsSync(new URL('weijin-muzhi-female-names.json', dir))
+        ? {
+            weijin: (readJson<Array<{ text: string; length?: number }>>('weijin-muzhi-female-names.json', dir))
+              .filter((entry) => (entry.length ?? entry.text.length) === 2)
+              .map((entry) => ({ text: entry.text, weight: 1, gender: 'female' as const })),
+          }
+        : {}),
       ...(extra?.xianxiaFemale ? { xianxia: extra.xianxiaFemale } : {}),
     },
     femaleGivenNamesByStyle: (() => {

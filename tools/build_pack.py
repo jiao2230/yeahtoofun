@@ -156,6 +156,9 @@ def main() -> int:
     qinhan_path = seed_dir / "qinhan-female-names.json"
     if qinhan_path.exists():
         write(args.out / "qinhan-female-names.json", json.loads(qinhan_path.read_text(encoding="utf-8")))
+    weijin_path = seed_dir / "weijin-muzhi-female-names.json"
+    if weijin_path.exists():
+        write(args.out / "weijin-muzhi-female-names.json", json.loads(weijin_path.read_text(encoding="utf-8")))
     write(args.out / "generations.json", generations)
     write(args.out / "allusions.json", allusions)
     write(args.out / "artifacts.json", artifacts)

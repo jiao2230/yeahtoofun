@@ -502,6 +502,14 @@ test('Qin-Han female double names are loaded', () => {
   assert.ok(pool.some((entry) => entry.text === '兰芝'));
 });
 
+test('Wei-Jin mausoleum female names are loaded', () => {
+  const pool = pack.femaleGivenNamesByEra?.weijin ?? [];
+  assert.ok(pool.length >= 40);
+  assert.ok(pool.some((entry) => entry.text === '仙姬'));
+  assert.ok(pool.some((entry) => entry.text === '玉容'));
+  assert.ok(!pool.some((entry) => entry.text === '贵妃'));
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

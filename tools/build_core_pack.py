@@ -275,6 +275,9 @@ def main() -> int:
     qinhan_path = seed_dir / "qinhan-female-names.json"
     if qinhan_path.exists():
         (args.out / "qinhan-female-names.json").write_text(qinhan_path.read_text(encoding="utf-8"), encoding="utf-8")
+    weijin_path = seed_dir / "weijin-muzhi-female-names.json"
+    if weijin_path.exists():
+        (args.out / "weijin-muzhi-female-names.json").write_text(weijin_path.read_text(encoding="utf-8"), encoding="utf-8")
     manifest = {
         "id": args.id,
         "version": args.version,
