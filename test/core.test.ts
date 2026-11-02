@@ -186,6 +186,13 @@ test('surname input only accepts Han characters', () => {
   assert.equal(generate({ surname: ' 沈 ' }, pack).surname.text, '沈');
 });
 
+test('functional char blocklist does not intercept surnames', () => {
+  for (const surname of ['胡', '于', '安', '乌']) {
+    const person = generate({ surname, seed: 3 }, pack);
+    assert.equal(person.surname.text, surname);
+  }
+});
+
 test('check catches blacklist and famous collision', () => {
   assert.equal(checkName('范统', pack).valid, false);
   assert.equal(checkName('彭真', pack).valid, false);
