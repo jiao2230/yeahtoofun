@@ -2704,17 +2704,6 @@
     "weight": 15
   },
   {
-    "char": "邵",
-    "pinyin": "shào",
-    "tone": 4,
-    "meaning": "邵；高远",
-    "gender": "male",
-    "styles": [
-      "写意"
-    ],
-    "weight": 16
-  },
-  {
     "char": "穆",
     "pinyin": "mù",
     "tone": 4,
@@ -2785,6 +2774,17 @@
     "pinyin": "hàn",
     "tone": 4,
     "meaning": "瀚海；浩瀚",
+    "gender": "male",
+    "styles": [
+      "写意"
+    ],
+    "weight": 16
+  },
+  {
+    "char": "劭",
+    "pinyin": "shào",
+    "tone": 4,
+    "meaning": "劭美；勉励",
     "gender": "male",
     "styles": [
       "写意"

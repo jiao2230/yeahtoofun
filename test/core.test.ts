@@ -468,7 +468,7 @@ test('functional characters are blocked for elegant names', () => {
 });
 
 test('male writeyi character supplements are available', () => {
-  const required = ['邵', '穆', '淳', '徽', '桢', '攸', '昭', '朗', '端', '霄', '瀚', '华'];
+  const required = ['劭', '穆', '淳', '徽', '桢', '攸', '昭', '朗', '端', '霄', '瀚', '华'];
   for (const char of required) {
     const entry = pack.chars.find((item) => item.char === char);
     assert.ok(entry, char);
