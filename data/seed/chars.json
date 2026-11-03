@@ -2928,5 +2928,49 @@
       "写意"
     ],
     "weight": 12
+  },
+  {
+    "char": "弄",
+    "pinyin": "nòng",
+    "tone": 4,
+    "meaning": "弄玉；把玩",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "黑",
+    "pinyin": "hēi",
+    "tone": 1,
+    "meaning": "黑；玄黑",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "女",
+    "pinyin": "nǚ",
+    "tone": 3,
+    "meaning": "女；女子",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "雒",
+    "pinyin": "luò",
+    "tone": 4,
+    "meaning": "雒；鸟名/水名",
+    "gender": "female",
+    "styles": [
+      "写意"
+    ],
+    "weight": 10
   }
 ]

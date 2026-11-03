@@ -553,7 +553,7 @@ function pickReligiousGiven(
     item: entry.char,
     score: scoreGiven(pack, plainChars(pack, entry.char), profile),
   }));
-  const companion = sampleTopK(scored, rng, 24);
+  const companion = sampleTopK(scored, rng, 256);
   const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
   return chars.map((ch) => toNameChar(pack, ch, []));
 }
@@ -649,7 +649,7 @@ function pickGivenOnce(
         item: entry.text,
         score: scoreGiven(pack, plainChars(pack, entry.text), profile),
       }));
-      return sampleTopK(scored, rng, 24)
+      return sampleTopK(scored, rng, 256)
         .split('')
         .map((c) => toNameChar(pack, c, warnings));
     }
@@ -687,7 +687,7 @@ function pickGivenOnce(
       item: entry.text,
       score: scoreGiven(pack, plainChars(pack, entry.text), profile),
     }));
-    return sampleTopK(scored, rng, 24)
+    return sampleTopK(scored, rng, 256)
       .split('')
       .map((c) => toNameChar(pack, c, warnings));
   }
@@ -722,7 +722,7 @@ function findPairWithGeneration(
     item: entry.text,
     score: scoreGiven(pack, plainChars(pack, entry.text), profile),
   }));
-  return sampleTopK(scored, rng, 24);
+  return sampleTopK(scored, rng, 256);
 }
 
 function pickOtherChar(
@@ -764,7 +764,7 @@ function pickOtherChar(
     item: c.char,
     score: scoreGiven(pack, plainChars(pack, c.char), profile),
   }));
-  return sampleTopK(scored, rng, 24);
+  return sampleTopK(scored, rng, 256);
 }
 
 function toNameChar(pack: SeedPack, char: string, warnings: Warning[]): NameChar {
@@ -791,8 +791,11 @@ function isFemaleNameBlocked(text: string, profile: ResolvedProfile): boolean {
   return profile.gender === 'female' && FEMALE_NAME_BLOCKLIST.has(text);
 }
 
+const HISTORICAL_GIVEN_ALLOWLIST = new Set(['贵妃', '灵妃', '幼妃', '阿妃']);
+
 function isGivenCharBlocked(text: string, pack: SeedPack, profile: ResolvedProfile): boolean {
   if (profile.class === '俗人') return false;
+  if (HISTORICAL_GIVEN_ALLOWLIST.has(text)) return false;
   const blocked = pack.blockedChars;
   return Boolean(blocked?.length) && Array.from(text).some((char) => blocked!.includes(char));
 }

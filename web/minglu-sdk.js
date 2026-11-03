@@ -1081,7 +1081,7 @@ function pickReligiousGiven(profile, pack, rng, surname, surnameChars, wantSingl
     item: entry.char,
     score: scoreGiven(pack, plainChars(pack, entry.char), profile)
   }));
-  const companion = sampleTopK(scored, rng, 24);
+  const companion = sampleTopK(scored, rng, 256);
   const chars = rng.next() < 0.5 ? [religious, companion] : [companion, religious];
   return chars.map((ch) => toNameChar(pack, ch, []));
 }
@@ -1149,7 +1149,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
         item: entry.text,
         score: scoreGiven(pack, plainChars(pack, entry.text), profile)
       }));
-      return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
+      return sampleTopK(scored, rng, 256).split("").map((c) => toNameChar(pack, c, warnings));
     }
   }
   if (wantSingle) {
@@ -1183,7 +1183,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       item: entry.text,
       score: scoreGiven(pack, plainChars(pack, entry.text), profile)
     }));
-    return sampleTopK(scored, rng, 24).split("").map((c) => toNameChar(pack, c, warnings));
+    return sampleTopK(scored, rng, 256).split("").map((c) => toNameChar(pack, c, warnings));
   }
   const a = pickOtherChar(pack, profile, rng, surname, void 0, surnameChars);
   const b = pickOtherChar(pack, profile, rng, surname, a, surnameChars);
@@ -1207,7 +1207,7 @@ function findPairWithGeneration(pack, generation, profile, rng, surname) {
     item: entry.text,
     score: scoreGiven(pack, plainChars(pack, entry.text), profile)
   }));
-  return sampleTopK(scored, rng, 24);
+  return sampleTopK(scored, rng, 256);
 }
 function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__PURE__ */ new Set(), single = false) {
   const blocked = (c) => single && SINGLE_NAME_STOP.has(c.char) || profile.class === "\u96C5\u58EB" && ELEGANT_BANNED_CHARS.has(c.char) || profile.class !== "\u4FD7\u4EBA" && Boolean(pack.blockedChars?.includes(c.char));
@@ -1225,7 +1225,7 @@ function pickOtherChar(pack, profile, rng, surname, avoid, surnameChars = /* @__
     item: c.char,
     score: scoreGiven(pack, plainChars(pack, c.char), profile)
   }));
-  return sampleTopK(scored, rng, 24);
+  return sampleTopK(scored, rng, 256);
 }
 function toNameChar(pack, char, warnings) {
   const meta = findChar(pack, char);
@@ -1248,8 +1248,10 @@ var charIndexCache = /* @__PURE__ */ new WeakMap();
 function isFemaleNameBlocked(text, profile) {
   return profile.gender === "female" && FEMALE_NAME_BLOCKLIST.has(text);
 }
+var HISTORICAL_GIVEN_ALLOWLIST = /* @__PURE__ */ new Set(["\u8D35\u5983", "\u7075\u5983", "\u5E7C\u5983", "\u963F\u5983"]);
 function isGivenCharBlocked(text, pack, profile) {
   if (profile.class === "\u4FD7\u4EBA") return false;
+  if (HISTORICAL_GIVEN_ALLOWLIST.has(text)) return false;
   const blocked = pack.blockedChars;
   return Boolean(blocked?.length) && Array.from(text).some((char) => blocked.includes(char));
 }
