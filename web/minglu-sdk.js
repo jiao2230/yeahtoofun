@@ -1129,6 +1129,7 @@ function pickGivenOnce(profile, pack, rng, generation, warnings, surname) {
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (!isClassicWordGenderAllowed(entry.text, pack, profile)) return false;
       if (isGivenCharBlocked(entry.text, pack, profile)) return false;
       if (isFemaleNameBlocked(entry.text, profile)) return false;
       if (profile.gender === "any") return true;
@@ -1252,6 +1253,10 @@ function isFemaleNameBlocked(text, profile) {
   return profile.gender === "female" && FEMALE_NAME_BLOCKLIST.has(text);
 }
 var HISTORICAL_GIVEN_ALLOWLIST = /* @__PURE__ */ new Set(["\u8D35\u5983", "\u7075\u5983", "\u5E7C\u5983", "\u963F\u5983"]);
+function isClassicWordGenderAllowed(text, pack, profile) {
+  const gender = pack.classicWordGenders?.[text];
+  return !gender || gender === "neutral" || profile.gender === "any" || gender === profile.gender;
+}
 function isGivenCharBlocked(text, pack, profile) {
   if (profile.class === "\u4FD7\u4EBA") return false;
   if (HISTORICAL_GIVEN_ALLOWLIST.has(text)) return false;

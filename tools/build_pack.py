@@ -153,6 +153,9 @@ def main() -> int:
     blocked_path = seed_dir / "blocked-chars.json"
     if blocked_path.exists():
         write(args.out / "blocked-chars.json", json.loads(blocked_path.read_text(encoding="utf-8")))
+    gender_path = seed_dir / "classic-word-genders.json"
+    if gender_path.exists():
+        write(args.out / "classic-word-genders.json", json.loads(gender_path.read_text(encoding="utf-8")))
     qinhan_path = seed_dir / "qinhan-female-names.json"
     if qinhan_path.exists():
         write(args.out / "qinhan-female-names.json", json.loads(qinhan_path.read_text(encoding="utf-8")))

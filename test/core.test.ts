@@ -536,6 +536,20 @@ test('Yunji Qiqian names are loaded into xianxia pools', () => {
   assert.ok(female.has('兰香'));
 });
 
+test('Tang and Song allusion genders are enforced', () => {
+  assert.equal(pack.classicWordGenders?.['江枫'], 'male');
+  assert.equal(pack.classicWordGenders?.['兰舟'], 'neutral');
+  assert.equal(pack.classicWordGenders?.['凝香'], 'female');
+  for (const gender of ['male', 'female'] as const) {
+    const people = generateBatch({ era: 'tangsong', gender, allusion: 'tangshi', givenLength: 2, count: 200, seed: 17 }, pack);
+    for (const person of people) {
+      const given = person.given.map((c) => c.text).join('');
+      const tagged = pack.classicWordGenders?.[given];
+      if (tagged && tagged !== 'neutral') assert.equal(tagged, gender, `${gender}:${given}`);
+    }
+  }
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');

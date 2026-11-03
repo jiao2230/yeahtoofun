@@ -145,6 +145,9 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
     blockedChars: existsSync(new URL('blocked-chars.json', dir))
       ? readJson<string[]>('blocked-chars.json', dir)
       : [],
+    classicWordGenders: existsSync(new URL('classic-word-genders.json', dir))
+      ? readJson<SeedPack['classicWordGenders']>('classic-word-genders.json', dir)
+      : {},
     famous: readJson<string[]>('famous.json', dir),
     collision: existsSync(new URL('collision.json', dir))
       ? readJson<string[]>('collision.json', dir)

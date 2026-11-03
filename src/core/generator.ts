@@ -635,6 +635,7 @@ function pickGivenOnce(
       if (Array.from(entry.text).some((c) => ALLUSION_STOP_CHARS.has(c))) return false;
       if (Array.from(entry.text).some((c) => surnameChars.has(c))) return false;
       if (!isElegantGivenAllowed(entry.text, profile)) return false;
+      if (!isClassicWordGenderAllowed(entry.text, pack, profile)) return false;
       if (isGivenCharBlocked(entry.text, pack, profile)) return false;
       if (isFemaleNameBlocked(entry.text, profile)) return false;
       if (profile.gender === 'any') return true;
@@ -801,6 +802,11 @@ function isFemaleNameBlocked(text: string, profile: ResolvedProfile): boolean {
 }
 
 const HISTORICAL_GIVEN_ALLOWLIST = new Set(['贵妃', '灵妃', '幼妃', '阿妃']);
+
+function isClassicWordGenderAllowed(text: string, pack: SeedPack, profile: ResolvedProfile): boolean {
+  const gender = pack.classicWordGenders?.[text];
+  return !gender || gender === 'neutral' || profile.gender === 'any' || gender === profile.gender;
+}
 
 function isGivenCharBlocked(text: string, pack: SeedPack, profile: ResolvedProfile): boolean {
   if (profile.class === '俗人') return false;

@@ -272,6 +272,9 @@ def main() -> int:
     blocked_path = seed_dir / "blocked-chars.json"
     if blocked_path.exists():
         (args.out / "blocked-chars.json").write_text(blocked_path.read_text(encoding="utf-8"), encoding="utf-8")
+    gender_path = seed_dir / "classic-word-genders.json"
+    if gender_path.exists():
+        (args.out / "classic-word-genders.json").write_text(gender_path.read_text(encoding="utf-8"), encoding="utf-8")
     qinhan_path = seed_dir / "qinhan-female-names.json"
     if qinhan_path.exists():
         (args.out / "qinhan-female-names.json").write_text(qinhan_path.read_text(encoding="utf-8"), encoding="utf-8")

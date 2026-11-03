@@ -107,6 +107,12 @@ export function validatePack(pack: SeedPack): void {
   requireArray(pack.generations, 'generations');
   requireArray(pack.blacklist, 'blacklist');
   optionalArray(pack.blockedChars, 'blockedChars');
+  if (pack.classicWordGenders !== undefined) {
+    if (!pack.classicWordGenders || typeof pack.classicWordGenders !== 'object' || Array.isArray(pack.classicWordGenders)) fail('classicWordGenders must be an object');
+    for (const [word, gender] of Object.entries(pack.classicWordGenders)) {
+      if (word.length !== 2 || !['male', 'female', 'neutral'].includes(gender)) fail('invalid classic word gender');
+    }
+  }
   if (pack.blockedChars) {
     for (const char of pack.blockedChars) {
       if (typeof char !== 'string' || char.length !== 1 || !HAN_TEXT.test(char)) {

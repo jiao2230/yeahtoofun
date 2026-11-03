@@ -59,6 +59,7 @@
 - 从《云笈七签》人名表补 66 个男性、22 个女性仙道两字名，仙号不混入普通池。
 - 补 弄/黑/女/雒 字，放宽候选 top-K 到 256，修复新增低频名无法生成。
 - 修复俗人女性叠字被音形冲突重掷的问题；叠字候选显式豁免。
+- 唐宋词加性别标签：16 男性、15 中性、60 女性；用典时按标签过滤。
 - 典故出处上限 5→10，批量同名上限 + 重掷 32 次，避免稀疏唐诗池整批重复。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
@@ -83,7 +84,7 @@
 
 ### Verification
 
-- `npm test`：74 core ＋ 6 M3 = 80 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：75 core ＋ 6 M3 = 81 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

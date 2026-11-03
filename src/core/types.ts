@@ -277,6 +277,7 @@ export interface SeedPack {
   techniques: TechniquePack;
   blacklist: string[];
   blockedChars?: string[];
+  classicWordGenders?: Record<string, 'male' | 'female' | 'neutral'>;
   famous: string[];
   collision: string[];
 }
