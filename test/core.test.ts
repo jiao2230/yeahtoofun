@@ -140,10 +140,10 @@ test('俗人 class uses colloquial name patterns and gender-appropriate tails', 
   assert.equal(locked.era, 'tangsong');
   assert.deepEqual(locked.style, []);
   assert.equal(locked.generation, null);
-  const maleTails = new Set('郎毛柱根锁蛋狗牛马白良生石虎长保龙旺存安宝福贵财喜来有铁顺'.split(''));
-  const femaleTails = new Set('娘丫花兰秀英桃杏菊春满玉枝桂莲爱妹娣妞娃白宝福贵喜来有'.split(''));
+  const maleTails = new Set('郎毛柱根锁蛋狗牛马白良生石虎长保龙旺存安平宁和顺宝福贵财喜来有铁'.split(''));
+  const femaleTails = new Set('娘丫花兰秀英桃杏菊春满玉枝桂莲爱妹娣妞娃奴宝福喜有平宁和顺'.split(''));
   const numerals = new Set('大小二三四五六七八九十'.split(''));
-  const special = new Set('奴阿金月红香娇柔庆宜星富元馨均珍巧珠拂袅癸惜盈安端怜莺师赛'.split(''));
+  const special = new Set('奴阿金月红香娇柔庆宜星富元馨均珍巧珠拂袅癸惜盈安端怜莺师赛华秋艳惠贞'.split(''));
   const people = generateBatch({ class: '俗人', count: 200, seed: 4 }, pack);
   for (const person of people) {
     assert.equal(person.pattern, 'colloquial');
