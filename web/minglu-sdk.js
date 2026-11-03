@@ -1004,6 +1004,9 @@ function pickSurname(profile, pack, rng, generationChar) {
 function pickGiven(profile, pack, rng, generation, warnings, surname) {
   for (let attempt = 0; attempt < 4; attempt++) {
     const chars = pickGivenOnce(profile, pack, rng, generation, warnings, surname);
+    if (profile.class === "\u4FD7\u4EBA" && profile.gender === "female" && chars.length === 2 && chars[0]?.text === chars[1]?.text) {
+      return chars;
+    }
     const issues = phoneticIssues(EMPTY_SURNAME, chars);
     if (issues.length === 0 || attempt === 3) {
       if (issues.length > 0) {

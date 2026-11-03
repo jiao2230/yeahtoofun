@@ -422,6 +422,15 @@ function pickGiven(
 ): NameChar[] {
   for (let attempt = 0; attempt < 4; attempt++) {
     const chars = pickGivenOnce(profile, pack, rng, generation, warnings, surname);
+    // 俗人女性叠字是刻意构词，不应按“同音冲突”重掷掉。
+    if (
+      profile.class === '俗人' &&
+      profile.gender === 'female' &&
+      chars.length === 2 &&
+      chars[0]?.text === chars[1]?.text
+    ) {
+      return chars;
+    }
     const issues = phoneticIssues(EMPTY_SURNAME, chars);
     if (issues.length === 0 || attempt === 3) {
       if (issues.length > 0) {

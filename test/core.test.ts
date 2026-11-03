@@ -485,7 +485,7 @@ test('female colloquial names support 奴/阿/reduplication', () => {
   const givens = people.map((p) => p.given.map((c) => c.text).join(''));
   assert.ok(givens.some((g) => g.endsWith('奴')));
   assert.ok(givens.some((g) => g.startsWith('阿')));
-  assert.ok(givens.some((g) => g.length === 2 && g[0] === g[1]));
+  assert.ok(givens.filter((g) => g.length === 2 && g[0] === g[1]).length >= 10);
 });
 
 test('Ming female high-frequency names are loaded', () => {
