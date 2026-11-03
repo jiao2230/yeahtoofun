@@ -54,6 +54,7 @@
 - 从《魏晋南北朝名字》抽取两字女性名候选 240 条（历史 220 / 宗教 20），暂未接入生成器。
 - 从两份秦汉/汉简 DOCX 附录抽取 1,341 行、去重 751 名；335 个双字名接入 `qinhan` 女性时代池。
 - 从《汉魏南北朝墓志汇编》xlsx 抽取 44 个双字女性名，接入 `weijin` 女性时代池；贵妃为元贵妃名保留。
+- 从《明清女性姓名补充》xlsx 抽取 23 个双字女性名，并入 `mingqing` 女性时代池。
 - 典故出处上限 5→10，批量同名上限 + 重掷 32 次，避免稀疏唐诗池整批重复。
 - 新增 pack 运行时契约校验：坏字段、坏时代/风格池、坏典故出处加载即报 `E_PACK_INVALID`。
 - 新增 `tools/build_data.py` / `npm run build:data`，统一典故、core、cbdb（可选 MQWW）构建顺序。
@@ -78,7 +79,7 @@
 
 ### Verification
 
-- `npm test`：72 core ＋ 6 M3 = 78 项通过；AC-58 OpenCC 往返 100/100。
+- `npm test`：73 core ＋ 6 M3 = 79 项通过；AC-58 OpenCC 往返 100/100。
 - `npm run typecheck`：0 错误。
 - GitHub Actions：Ubuntu/Windows/macOS × Node 22/24，6/6 全绿。
 - M3 基准见 `reports/m3-bench-20261031.md`。

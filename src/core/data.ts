@@ -78,6 +78,14 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
   const cnc = existsSync(new URL('given-names-cnc.json', dir))
     ? readJson<{ writeyiFemale?: GivenEntry[] }>('given-names-cnc.json', dir)
     : null;
+  const femaleEraSource: NonNullable<SeedPack['femaleGivenNamesByEra']> = (existsSync(new URL('female-given-names-by-era.json', dir))
+    ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
+    : {}) ?? {};
+  const mingqingSupplement = existsSync(new URL('mingqing-female-names.json', dir))
+    ? readJson<Array<{ text: string; length?: number }>>('mingqing-female-names.json', dir)
+        .filter((entry) => (entry.length ?? entry.text.length) === 2)
+        .map((entry) => ({ text: entry.text, weight: 1, gender: 'female' as const }))
+    : [];
   const pack: SeedPack = {
     id: manifest?.id ?? packId,
     version: manifest?.version ?? '0.1.0',
@@ -94,8 +102,14 @@ export function loadPack(id = DEFAULT_PACK): SeedPack {
     },
     givenNamesByStyle: extra?.['写意'] ? { 写意: extra['写意'] } : undefined,
     femaleGivenNamesByEra: {
-      ...(existsSync(new URL('female-given-names-by-era.json', dir))
-        ? readJson<SeedPack['femaleGivenNamesByEra']>('female-given-names-by-era.json', dir)
+      ...femaleEraSource,
+      ...(mingqingSupplement.length > 0
+        ? {
+            mingqing: [...new Map(
+              [...(femaleEraSource.mingqing ?? []), ...mingqingSupplement]
+                .map((entry) => [entry.text, entry]),
+            ).values()],
+          }
         : {}),
       ...(existsSync(new URL('qinhan-female-names.json', dir))
         ? {
