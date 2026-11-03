@@ -523,6 +523,16 @@ test('Ming-Qing supplement names are loaded', () => {
   for (const name of ['妙果', '淑悌', '淑贤', '雒娟', '翠观']) assert.ok(pool.has(name), name);
 });
 
+test('Yunji Qiqian names are loaded into xianxia pools', () => {
+  const male = new Set((pack.givenNamesByEra?.xianxia ?? []).map((entry) => entry.text));
+  const female = new Set((pack.femaleGivenNamesByEra?.xianxia ?? []).map((entry) => entry.text));
+  assert.ok(male.has('子乔'));
+  assert.ok(male.has('伯阳'));
+  assert.ok(female.has('弄玉'));
+  assert.ok(female.has('华存'));
+  assert.ok(female.has('兰香'));
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
