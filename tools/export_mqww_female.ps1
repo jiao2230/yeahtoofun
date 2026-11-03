@@ -1,5 +1,5 @@
 param(
-  [string]$Db = "mqww202512.accdb",
+  [string]$Db = "primitive-data/mqww202512.accdb",
   [string]$Out = "tmp/mqww-female-poets.csv"
 )
 

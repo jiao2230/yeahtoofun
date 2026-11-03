@@ -7,7 +7,7 @@ Default order:
   3. build cbdb from CBDB + Chinese-Names-Corpus
 
 MQWW is optional and runs after packs, because it adds a local female pool
-to the cbdb pack. It needs mqww202512.accdb and PowerShell's ACE provider.
+to the cbdb pack. It needs primitive-data/mqww202512.accdb and PowerShell's ACE provider.
 """
 
 from __future__ import annotations
@@ -31,8 +31,8 @@ def run(label: str, command: list[str], dry_run: bool) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--packs", default="core,cbdb", help="comma separated: core,cbdb")
-    parser.add_argument("--cbdb", type=Path, default=ROOT / "cbdb_20261024" / "cbdb_20261024.sqlite3")
-    parser.add_argument("--cnc", type=Path, default=ROOT / "Chinese-Names-Corpus-master")
+    parser.add_argument("--cbdb", type=Path, default=ROOT / "primitive-data" / "cbdb_20261024" / "cbdb_20261024.sqlite3")
+    parser.add_argument("--cnc", type=Path, default=ROOT / "primitive-data" / "Chinese-Names-Corpus-master")
     parser.add_argument("--out", type=Path, default=ROOT / "data" / "packs")
     parser.add_argument("--skip-allusions", action="store_true")
     parser.add_argument("--skip-cnc", action="store_true")
@@ -108,7 +108,7 @@ def main() -> int:
         )
 
     if args.with_mqww:
-        accdb = ROOT / "mqww202512.accdb"
+        accdb = ROOT / "primitive-data" / "mqww202512.accdb"
         if not accdb.exists():
             parser.error(f"MQWW database not found: {accdb}")
         if "cbdb" not in packs:

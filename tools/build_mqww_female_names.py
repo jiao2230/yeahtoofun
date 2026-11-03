@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a local female given-name pool from a Ming Qing Women's Writings CSV.
 
-The CSV is exported from mqww202512.accdb by tools/export_mqww_female.ps1.
+The CSV is exported from primitive-data/mqww202512.accdb by tools/export_mqww_female.ps1.
 The .accdb and raw CSV stay local; only aggregate name counts and the pool are
 written. The pool is intended for the local cbdb pack, not for redistribution.
 """
@@ -89,7 +89,7 @@ def main() -> None:
     lines = [
         "# 名箓 · MQWW 女性名统计",
         "",
-        "> 来源：`mqww202512.accdb` 的 `poet` 表，`Sex='女'`。",
+        "> 来源：`primitive-data/mqww202512.accdb` 的 `poet` 表，`Sex='女'`。",
         "> 用途：本地个人研究；`.accdb` 与原始 CSV 不提交，仅保留聚合名池。",
         "> 清洗：去姓、繁转简、只取 2 字名、剔除“皇后/夫人/某氏/节妇”等身份词。",
         "",

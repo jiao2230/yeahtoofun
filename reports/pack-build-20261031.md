@@ -1,7 +1,7 @@
 # pack 构建报告（cbdb + core）
 
 > 日期：2026-10-31
-> 输入：`cbdb_20261024/cbdb_20261024.sqlite3`（560 MB）、`Chinese-Names-Corpus-master/`
+> 输入：`primitive-data/cbdb_20261024/cbdb_20261024.sqlite3`（560 MB）、`primitive-data/Chinese-Names-Corpus-master/`
 > 输出：`data/packs/cbdb/`、`data/packs/core/`
 
 ---
@@ -85,10 +85,10 @@ MINGLU_PACK=core node src/cli.ts gen --era song --gender male --class 士族 --s
 ## 3. 复跑
 
 ```bash
-python tools/build_pack.py --cbdb ./cbdb_20261024/cbdb_20261024.sqlite3 \
-  --cnc ./Chinese-Names-Corpus-master --out ./data/packs/cbdb
+python tools/build_pack.py --cbdb ./primitive-data/cbdb_20261024/cbdb_20261024.sqlite3 \
+  --cnc ./primitive-data/Chinese-Names-Corpus-master --out ./data/packs/cbdb
 
-python tools/build_core_pack.py --cnc ./Chinese-Names-Corpus-master --out ./data/packs/core
+python tools/build_core_pack.py --cnc ./primitive-data/Chinese-Names-Corpus-master --out ./data/packs/core
 ```
 
 原始数据与 `data/packs/cbdb/` 已加入 `.gitignore`；`data/packs/core/` 技术上可分发，但项目不规划商用。

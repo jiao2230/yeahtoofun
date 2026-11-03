@@ -5,7 +5,7 @@ This script never writes raw names to the report. It emits aggregate counts only
 
 Usage:
   python tools/audit_sources.py \
-    --cbdb /path/to/cbdb_20261024.sqlite3 \
+    --cbdb /path/to/primitive-data/cbdb_20261024/cbdb_20261024.sqlite3 \
     --cnc /path/to/Chinese-Names-Corpus \
     --poetry /path/to/chinese-poetry \
     --out reports/data-audit.json

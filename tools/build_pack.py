@@ -6,8 +6,8 @@ also marked CC-BY-NC-SA-4.0. Do not publish it.
 
 Usage:
   python tools/build_pack.py \
-    --cbdb ./cbdb_20261024/cbdb_20261024.sqlite3 \
-    --cnc ./Chinese-Names-Corpus-master \
+    --cbdb ./primitive-data/cbdb_20261024/cbdb_20261024.sqlite3 \
+    --cnc ./primitive-data/Chinese-Names-Corpus-master \
     --out ./data/packs/cbdb
 """
 

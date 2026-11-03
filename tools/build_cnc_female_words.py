@@ -29,7 +29,7 @@ def main() -> int:
     parser.add_argument(
         "--gender-file",
         type=Path,
-        default=ROOT / "Chinese-Names-Corpus-master" / "Chinese_Names_Corpus" / "Chinese_Names_Corpus_Gender（120W）.txt",
+        default=ROOT / "primitive-data" / "Chinese-Names-Corpus-master" / "Chinese_Names_Corpus" / "Chinese_Names_Corpus_Gender（120W）.txt",
     )
     parser.add_argument("--out", type=Path, default=ROOT / "data" / "seed" / "given-names-cnc.json")
     parser.add_argument("--report", type=Path, default=ROOT / "reports" / "cnc-female-writeyi-20261101.md")

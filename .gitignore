@@ -17,3 +17,7 @@ reports/data-audit.json
 reports/audit-summary.txt
 data/vendor/unihan/Unihan.zip
 *.log
+/primitive-data/cbdb_20261024/
+/primitive-data/Chinese-Names-Corpus-master/
+/primitive-data/mqww202512.accdb
+/primitive-data/*.accdb

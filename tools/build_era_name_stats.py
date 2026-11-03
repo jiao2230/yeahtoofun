@@ -50,7 +50,7 @@ def simplify(name: str, table: dict[str, str]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cbdb", type=Path, default=Path("cbdb_20261024/cbdb_20261024.sqlite3"))
+    parser.add_argument("--cbdb", type=Path, default=Path("primitive-data/cbdb_20261024/cbdb_20261024.sqlite3"))
     parser.add_argument("--opencc", type=Path, default=Path("data/vendor/opencc/ts-inverted.json"))
     parser.add_argument("--out", type=Path, default=Path("reports"))
     parser.add_argument("--top", type=int, default=100)

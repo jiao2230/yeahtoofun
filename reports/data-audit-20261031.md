@@ -3,7 +3,7 @@
 > 日期：2026-10-31
 > 状态：**CBDB 与 CNC 已实测完成；chinese-poetry 的楚辞/诗经/论语已接入，其余未提供**
 > 原则：只记录聚合信息；不把完整姓名列表写进报告。
-> 原始数据：`cbdb_20261024/`（560 MB）、`Chinese-Names-Corpus-master/`，均不提交仓库。
+> 原始数据：`primitive-data/cbdb_20261024/`（560 MB）、`primitive-data/Chinese-Names-Corpus-master/`，均不提交仓库。
 
 ---
 
@@ -100,8 +100,8 @@
 
 ```bash
 python tools/audit_sources.py \
-  --cbdb ./cbdb_20261024/cbdb_20261024.sqlite3 \
-  --cnc ./Chinese-Names-Corpus-master \
+  --cbdb ./primitive-data/cbdb_20261024/cbdb_20261024.sqlite3 \
+  --cnc ./primitive-data/Chinese-Names-Corpus-master \
   --out ./reports/data-audit.json
 ```
 
