@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.6.0 — 2026-10-31
+## 0.6.0 — 2026-11-03（完成）
 
 ### Removed
 
@@ -83,6 +83,12 @@
 
 - 名字长度按 CBDB 实测校准（明 53.2% 单字，清 18.2% 单字）。
 - `core` / `cbdb` 包重建为 GB2312、有调号、有偏旁/笔画。
+
+### Status
+
+- v0.6.0 完成，个人自用版本。
+- 浏览器 smoke：五类命名可生成，未见突兀/怪异用词。
+- GitHub Actions：Ubuntu / Windows / macOS 共 6/6 通过。
 
 ### Verification
 
