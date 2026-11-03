@@ -527,6 +527,9 @@ test('Yunji Qiqian names are loaded into xianxia pools', () => {
   const male = new Set((pack.givenNamesByEra?.xianxia ?? []).map((entry) => entry.text));
   const female = new Set((pack.femaleGivenNamesByEra?.xianxia ?? []).map((entry) => entry.text));
   assert.ok(male.has('子乔'));
+  assert.ok(male.has('季昌'));
+  assert.ok(male.has('长生'));
+  assert.ok(!male.has('季主'));
   assert.ok(male.has('伯阳'));
   assert.ok(female.has('弄玉'));
   assert.ok(female.has('华存'));

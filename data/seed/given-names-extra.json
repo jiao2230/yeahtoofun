@@ -249,11 +249,6 @@
       "gender": "male"
     },
     {
-      "text": "季主",
-      "weight": 3,
-      "gender": "male"
-    },
-    {
       "text": "稚坚",
       "weight": 3,
       "gender": "male"
@@ -530,6 +525,16 @@
     },
     {
       "text": "灵素",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "季昌",
+      "weight": 3,
+      "gender": "male"
+    },
+    {
+      "text": "长生",
       "weight": 3,
       "gender": "male"
     }
