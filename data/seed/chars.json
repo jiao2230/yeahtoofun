@@ -2972,5 +2972,101 @@
       "写意"
     ],
     "weight": 10
+  },
+  {
+    "char": "鸿",
+    "pinyin": "hóng",
+    "tone": 2,
+    "meaning": "鸿雁；宏大",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "铭",
+    "pinyin": "míng",
+    "tone": 2,
+    "meaning": "铭刻；铭记",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "鼎",
+    "pinyin": "dǐng",
+    "tone": 3,
+    "meaning": "鼎盛；鼎立",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "鸣",
+    "pinyin": "míng",
+    "tone": 2,
+    "meaning": "鸣玉；鸣响",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "雍",
+    "pinyin": "yōng",
+    "tone": 1,
+    "meaning": "雍容；时雍",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "迥",
+    "pinyin": "jiǒng",
+    "tone": 3,
+    "meaning": "迥远；高远",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "驰",
+    "pinyin": "chí",
+    "tone": 2,
+    "meaning": "驰骋；瞻驰",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
+  },
+  {
+    "char": "齐",
+    "pinyin": "qí",
+    "tone": 2,
+    "meaning": "齐一；修齐",
+    "gender": "male",
+    "styles": [
+      "写意",
+      "史实"
+    ],
+    "weight": 12
   }
 ]

@@ -550,6 +550,11 @@ test('Tang and Song allusion genders are enforced', () => {
   }
 });
 
+test('supplemental male Tang/Song imagery is tagged', () => {
+  const words = '鸿远 濯锦 铭鼎 殊章 鸣玉 瑞彰 时雍 云迥 登龙 定国 唯良 峻岳 瞻驰 寿永 坤珍 茂林 修齐 椿寿 粲宗 沛然'.split(' ');
+  for (const word of words) assert.equal(pack.classicWordGenders?.[word], 'male', word);
+});
+
 test('defaults are resolved', () => {
   const profile = resolveProfile({});
   assert.equal(profile.era, 'tangsong');
